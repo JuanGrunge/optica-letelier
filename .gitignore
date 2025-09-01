@@ -1,0 +1,31 @@
+# Sistema Óptica Letelier - .gitignore
+
+# Dependencias y builds
+node_modules/
+dist/
+build/
+.cache/
+.parcel-cache/
+.next/
+out/
+*.map
+
+# Sistemas y editores
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Logs y entorno
+*.log
+logs/
+.env
+.env.*
+
+# Temporal
+*.tmp
+*.swp
+*.swo
+
+# Cobertura/tests
+coverage/

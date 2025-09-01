@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Óptica Letelier - Sistema</title>
+  <meta name="description" content="Sistema de gestión para Óptica Letelier: ingreso y búsqueda de pacientes, recetas y boletas.">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header>
+    <h2><img src="assets/img/logo.png" alt="logo" class="logo" style="vertical-align: middle;"></h2>
+    <nav>
+      <ul>
+        <li onclick="showSection('ingresar')">Ingresar Paciente</li>
+        <li onclick="showSection('buscar')">Buscar Paciente</li>
+      </ul>
+    </nav>
+    <span class="menu-toggle">☰</span>
+    <div class="theme-switch-wrapper">
+      <label class="theme-switch">
+        <input type="checkbox" id="darkModeToggle">
+        <span class="slider round"></span>
+      </label>
+    </div>
+  </header>
+
+  <section id="ingresar" class="active">
+    <h2>Ingresar Paciente</h2>
+    <form>
+      <label>Nombre Completo</label>
+      <input type="text" placeholder="Ej: Juan Pérez">
+
+      <label>RUT</label>
+      <input type="text" placeholder="Ej: 12.345.678-9">
+
+      <label>Edad</label>
+      <input type="number" placeholder="Ej: 35">
+
+      <h3>Receta Óptica</h3>
+      <div class="overflow-x-auto">
+        <table>
+          <thead>
+            <tr>
+              <th>Ojo</th>
+              <th>Esfera</th>
+              <th>Cilindro</th>
+              <th>Eje</th>
+              <th>ADD</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>OD</td>
+              <td><input type="number" step="0.25"></td>
+              <td><input type="number" step="0.25"></td>
+              <td><input type="number" step="1"></td>
+              <td><input type="number" step="0.25"></td>
+            </tr>
+            <tr>
+              <td>OI</td>
+              <td><input type="number" step="0.25"></td>
+              <td><input type="number" step="0.25"></td>
+              <td><input type="number" step="0.25"></td>
+              <td><input type="number" step="1"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <h4>Cristal</h4>
+      <div class="checkbox-group">
+        <label> Filtro azul<input type="checkbox"></label>
+        <label> Fotocromáticos<input type="checkbox"></label>
+        <label> Bifocales/Multifocales<input type="checkbox"></label>
+      </div>
+
+      <label>Distancia Pupilar (DP mm)</label>
+      <input type="number">
+
+      <label>Observaciones</label>
+      <textarea rows="3"></textarea>
+
+      <button type="submit">Ingresar Paciente</button>
+    </form>
+  </section>
+
+  <section id="buscar">
+    <h2>Buscar Paciente</h2>
+    <form onsubmit="event.preventDefault(); mostrarPaciente();">
+      <label>RUT</label>
+      <input type="text" id="rutBuscar" placeholder="Ej: 12.345.678-9">
+      <button type="submit">Buscar</button>
+    </form>
+
+    <div id="resultado" style="margin-top:1.5rem; display:none;">
+      <h3>Información del Paciente</h3>
+      <p><b>Nombre:</b> Juan Pérez</p>
+      <p><b>Edad:</b> 35</p>
+      <p><b>Receta:</b></p>
+      <ul>
+        <li>OD: Esfera -1.25, Cilindro -0.50, Eje 90°</li>
+        <li>OI: Esfera -1.00, Cilindro -0.25, Eje 80°</li>
+        <li>DP: 62 mm</li>
+        <li>Opciones: Filtro azul</li>
+      </ul>
+      <button>Editar Receta</button>
+      <button>Generar Boleta</button>
+    </div>
+  </section>
+
+  <script src="assets/js/script.js"></script>
+</body>
+</html>
