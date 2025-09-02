@@ -6,16 +6,23 @@
   <title>Óptica Letelier - Sistema</title>
   <meta name="description" content="Sistema de gestión para Óptica Letelier: ingreso y búsqueda de pacientes, recetas y boletas.">
   <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon.png">
 </head>
 <body>
   <header>
     <h2 class="brand"><img src="assets/img/logo.png" alt="logo" class="logo"></h2>
     <nav>
       <ul>
-        <li onclick="showSection('ingresar')">Ingresar Paciente</li>
-        <li onclick="showSection('archivo')">Archivo</li>
+        <li onclick="guardShowSection('ingresar')">Ingresar Paciente</li>
+        <li onclick="guardShowSection('archivo')">Archivo</li>
       </ul>
     </nav>
+
+    <div class="session-area">
+      <span id="userBadge" class="user-badge" aria-live="polite" hidden></span>
+      <button id="btnLogout" class="btn-logout" type="button" hidden>Cerrar sesión</button>
+    </div>
+
     <span class="menu-toggle" aria-label="Abrir menú">☰</span>
     <div class="theme-switch-wrapper">
       <label class="theme-switch" title="Modo oscuro">
@@ -24,6 +31,28 @@
       </label>
     </div>
   </header>
+
+  <!-- OVERLAY LOGIN -->
+  <section id="loginOverlay" class="login-overlay" aria-label="Inicio de sesión">
+    <div class="login-card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+      <h2 id="loginTitle">Iniciar sesión</h2>
+      <form id="loginForm">
+        <label for="loginUser">Usuario</label>
+        <input id="loginUser" type="text" autocomplete="username" placeholder="Ej: admin" required>
+
+        <label for="loginPass">Contraseña</label>
+        <input id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••" required>
+
+        <button type="submit" class="login-btn">Entrar</button>
+        <p id="loginMsg" class="login-msg" aria-live="polite"></p>
+
+        <details class="hint">
+          <summary>¿Primera vez?</summary>
+          <small>Admin inicial: <strong>admin</strong> / <strong>Letelier#2025</strong>. Luego cambia la clave.</small>
+        </details>
+      </form>
+    </div>
+  </section>
 
   <!-- INGRESAR -->
   <section id="ingresar" class="active">
@@ -91,18 +120,6 @@
         <label class="check-row"><span class="check-text">Presbicie</span><input type="checkbox" name="dx" value="Presbicie"></label>
       </div>
 
-      <h4>Cristal</h4>
-      <div class="checkbox-grid">
-        <label class="check-row"><span class="check-text">Antirreflejo</span><input type="checkbox" name="cristal" value="Antirreflejo"></label>
-        <label class="check-row"><span class="check-text">Fotocromático</span><input type="checkbox" name="cristal" value="Fotocromático"></label>
-        <label class="check-row"><span class="check-text">Bifocal</span><input type="checkbox" name="cristal" value="Bifocal"></label>
-        <label class="check-row"><span class="check-text">Multifocal</span><input type="checkbox" name="cristal" value="Multifocal"></label>
-        <label class="check-row"><span class="check-text">Filtro Azul</span><input type="checkbox" name="cristal" value="Filtro Azul"></label>
-        <label class="check-row"><span class="check-text">Filtro UV</span><input type="checkbox" name="cristal" value="Filtro UV"></label>
-        <label class="check-row"><span class="check-text">Lejos</span><input type="checkbox" name="cristal" value="Lejos"></label>
-        <label class="check-row"><span class="check-text">Cerca</span><input type="checkbox" name="cristal" value="Cerca"></label>
-      </div>
-
       <label>Observaciones</label>
       <textarea id="obs" rows="3" placeholder="Notas clínicas, indicaciones, etc."></textarea>
 
@@ -121,9 +138,8 @@
       <div class="filters single">
         <div class="search-wrap">
           <input id="fQuery" type="text" placeholder="Ej: 12.345.678-K • Juan • Plaza Central">
-          <button class="icon-search-btn" type="submit" aria-label="Buscar">
-            <!-- Lupa minimal en SVG -->
-            <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+          <button class="icon-search-btn" type="submit" aria-label="Buscar" title="Buscar">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
               <path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.71.71l.27.28v.79L20 21.5 21.5 20l-6-6zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z" fill="currentColor"/>
             </svg>
           </button>
@@ -135,6 +151,101 @@
       <h3>Resultados</h3>
       <div id="listaResultados" class="lista-resultados"></div>
       <p id="msgResultados" class="subtle"></p>
+    </div>
+  </section>
+
+  <!-- MODAL EDICIÓN PACIENTE -->
+  <section id="editModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+      <div class="modal-header">
+        <h3 id="editTitle">Editar paciente</h3>
+        <!-- Se eliminó la X redundante -->
+      </div>
+
+      <form id="editForm">
+        <div class="modal-content">
+          <div class="grid-two">
+            <div>
+              <label>Nombre Completo</label>
+              <input id="mNombre" type="text" required>
+            </div>
+            <div>
+              <label>RUT</label>
+              <input id="mRut" type="text" required>
+              <small id="mRutError" class="field-error" aria-live="polite"></small>
+            </div>
+          </div>
+
+          <div class="grid-two">
+            <div>
+              <label>Dirección</label>
+              <input id="mDireccion" type="text">
+            </div>
+            <div>
+              <label>Fecha de Nacimiento</label>
+              <input id="mFechaNac" type="date">
+            </div>
+          </div>
+
+          <div>
+            <label>Lugar de Operativo</label>
+            <input id="mOperativo" type="text" required>
+          </div>
+
+          <h4>Receta Óptica</h4>
+          <div class="overflow-x-auto">
+            <table class="rx-table">
+              <thead>
+                <tr>
+                  <th>Ojo</th>
+                  <th>Esfera</th>
+                  <th>Cilindro</th>
+                  <th>Eje</th>
+                  <th>ADD</th>
+                  <th>PD (mm)</th>
+                  <th>ALT (mm)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="eye-tag">OD</td>
+                  <td><input id="mOdEsf" type="number" step="0.25"></td>
+                  <td><input id="mOdCil" type="number" step="0.25"></td>
+                  <td><input id="mOdEje" type="number" step="1" min="0" max="180"></td>
+                  <td><input id="mOdAdd" type="number" step="0.25"></td>
+                  <td><input id="mOdPD"  type="number" step="0.5" min="0"></td>
+                  <td><input id="mOdALT" type="number" step="0.5" min="0"></td>
+                </tr>
+                <tr>
+                  <td class="eye-tag">OI</td>
+                  <td><input id="mOiEsf" type="number" step="0.25"></td>
+                  <td><input id="mOiCil" type="number" step="0.25"></td>
+                  <td><input id="mOiEje" type="number" step="1" min="0" max="180"></td>
+                  <td><input id="mOiAdd" type="number" step="0.25"></td>
+                  <td><input id="mOiPD"  type="number" step="0.5" min="0"></td>
+                  <td><input id="mOiALT" type="number" step="0.5" min="0"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h4>Diagnóstico</h4>
+          <div class="checkbox-grid">
+            <label class="check-row"><span class="check-text">Miopía</span><input type="checkbox" name="mdx" value="Miopía"></label>
+            <label class="check-row"><span class="check-text">Astigmatismo</span><input type="checkbox" name="mdx" value="Astigmatismo"></label>
+            <label class="check-row"><span class="check-text">Hipermetropía</span><input type="checkbox" name="mdx" value="Hipermetropía"></label>
+            <label class="check-row"><span class="check-text">Presbicie</span><input type="checkbox" name="mdx" value="Presbicie"></label>
+          </div>
+
+          <label>Observaciones</label>
+          <textarea id="mObs" rows="3"></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="secondary" id="btnCancelEdit">Cancelar</button>
+          <button type="submit">Guardar cambios</button>
+        </div>
+      </form>
     </div>
   </section>
 
