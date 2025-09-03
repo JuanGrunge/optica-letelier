@@ -1,22 +1,30 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- ================================
+       LETELIER - WebApp Clínica Óptica
+       Estructura HTML depurada
+       ================================= -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Óptica Letelier - Sistema</title>
   <meta name="description" content="Sistema de gestión para Óptica Letelier: ingreso y búsqueda de pacientes, recetas y órdenes.">
   <link rel="stylesheet" href="assets/css/styles.css">
-  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon.ico">
 </head>
-<body>
+<body class="preboot">
+
+  <!-- ======================
+       HEADER (siempre visible)
+       ====================== -->
   <header>
     <h2 class="brand"><img src="assets/img/logo.png" alt="logo" class="logo"></h2>
 
-    <!-- Navegación con píldoras (Archivo primero) -->
+    <!-- Navegación (Archivo primero) -->
     <nav>
       <ul>
         <li>
-          <button type="button" class="nav-pill" onclick="guardShowSection('archivo')" aria-label="Archivo">
+          <button type="button" class="nav-pill" onclick="openArchivo()" aria-label="Archivo">
             <!-- icono libro -->
             <svg viewBox="0 0 24 24" aria-hidden="true" class="nav-ic">
               <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -45,6 +53,7 @@
       </ul>
     </nav>
 
+    <!-- Sesión + control tema -->
     <div class="session-area">
       <span id="userBadge" class="user-badge" aria-live="polite" hidden></span>
       <button id="btnLogout" class="btn-logout" type="button" hidden>Cerrar sesión</button>
@@ -59,7 +68,9 @@
     </div>
   </header>
 
-  <!-- OVERLAY LOGIN (se activa solo cuando no hay sesión) -->
+  <!-- ====================
+       LOGIN (no tapa header)
+       ==================== -->
   <section id="loginOverlay" class="login-overlay" aria-label="Inicio de sesión">
     <div class="login-card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
       <h2 id="loginTitle">Iniciar sesión</h2>
@@ -81,7 +92,9 @@
     </div>
   </section>
 
-  <!-- INGRESAR (se activa por JS según estado) -->
+  <!-- =====================
+       SECCIÓN: INGRESAR
+       ===================== -->
   <section id="ingresar">
     <h2>Ingresar Paciente</h2>
 
@@ -127,7 +140,7 @@
               <td><input id="odCil" type="text" inputmode="decimal" placeholder="−0.00"></td>
               <td><input id="odEje" type="number" step="1" min="0" max="180" placeholder="0–180"></td>
               <td><input id="odAdd" type="text" inputmode="decimal" placeholder="+0.00"></td>
-              <td><input id="odDP"  type="number" step="0.5" min="26" max="38" placeholder="26–38"></td>
+              <td><input id="odDP"  type="number" step="0.5" min="20" max="40" placeholder="26–38"></td>
               <td><input id="odALT" type="number" step="0.5" min="10" max="40" placeholder="10–40"></td>
             </tr>
             <tr>
@@ -136,22 +149,21 @@
               <td><input id="oiCil" type="text" inputmode="decimal" placeholder="−0.00"></td>
               <td><input id="oiEje" type="number" step="1" min="0" max="180" placeholder="0–180"></td>
               <td><input id="oiAdd" type="text" inputmode="decimal" placeholder="+0.00"></td>
-              <td><input id="oiDP"  type="number" step="0.5" min="26" max="38" placeholder="26–38"></td>
+              <td><input id="oiDP"  type="number" step="0.5" min="20" max="40" placeholder="26–38"></td>
               <td><input id="oiALT" type="number" step="0.5" min="10" max="40" placeholder="10–40"></td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- DP de cerca opcional -->
+      <!-- DP de cerca (horizontal, off = se guarda 0) -->
       <div class="dp-extra">
         <label class="inline-check">
-          <input id="dpCercaToggle" type="checkbox"> Añadir DP de cerca (binocular)
+          <input id="dpCercaToggle" type="checkbox"> DP Cerca (binocular)
         </label>
-        <div id="dpCercaBox" class="dp-c-row hidden">
-          <label>DP Cerca (binocular) [mm]</label>
-          <input id="dpCerca" type="number" step="0.5" min="40" max="80" placeholder="Ej: 61.0">
-          <small class="subtle">Sugerido: DP Lejos − 3.0 mm</small>
+        <div id="dpCercaBox" class="dp-inline hidden">
+          <input id="dpCerca" type="number" inputmode="decimal" step="0.5" min="40" max="80" placeholder="Ej: 61.0 (40–80)">
+          <small id="dpCercaHint" class="subtle"></small>
         </div>
       </div>
 
@@ -175,7 +187,9 @@
     <p id="msgGuardado" class="msg-estado" aria-live="polite"></p>
   </section>
 
-  <!-- ARCHIVO -->
+  <!-- =====================
+       SECCIÓN: ARCHIVO
+       ===================== -->
   <section id="archivo">
     <h2>Archivo</h2>
     <p class="subtle">Busca por <strong>RUT, Nombre o Lugar de Operativo</strong> con un solo campo.</p>
@@ -200,7 +214,9 @@
     </div>
   </section>
 
-  <!-- MODAL EDICIÓN PACIENTE -->
+  <!-- =============================
+       MODAL: EDICIÓN DE PACIENTE
+       ============================= -->
   <section id="editModal" class="modal-overlay" aria-hidden="true">
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editTitle">
       <div class="modal-header">
@@ -262,7 +278,7 @@
                   <td><input id="mOdCil" type="text" inputmode="decimal" placeholder="−0.00"></td>
                   <td><input id="mOdEje" type="number" step="1" min="0" max="180" placeholder="0–180"></td>
                   <td><input id="mOdAdd" type="text" inputmode="decimal" placeholder="+0.00"></td>
-                  <td><input id="mOdDP"  type="number" step="0.5" min="26" max="38" placeholder="26–38"></td>
+                  <td><input id="mOdDP"  type="number" step="0.5" min="20" max="40" placeholder="26–38"></td>
                   <td><input id="mOdALT" type="number" step="0.5" min="10" max="40" placeholder="10–40"></td>
                 </tr>
                 <tr>
@@ -271,22 +287,20 @@
                   <td><input id="mOiCil" type="text" inputmode="decimal" placeholder="−0.00"></td>
                   <td><input id="mOiEje" type="number" step="1" min="0" max="180" placeholder="0–180"></td>
                   <td><input id="mOiAdd" type="text" inputmode="decimal" placeholder="+0.00"></td>
-                  <td><input id="mOiDP"  type="number" step="0.5" min="26" max="38" placeholder="26–38"></td>
+                  <td><input id="mOiDP"  type="number" step="0.5" min="20" max="40" placeholder="26–38"></td>
                   <td><input id="mOiALT" type="number" step="0.5" min="10" max="40" placeholder="10–40"></td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <!-- DP de cerca opcional -->
           <div class="dp-extra">
             <label class="inline-check">
-              <input id="mDpCercaToggle" type="checkbox"> Añadir DP de cerca (binocular)
+              <input id="mDpCercaToggle" type="checkbox"> DP Cerca (binocular)
             </label>
-            <div id="mDpCercaBox" class="dp-c-row hidden">
-              <label>DP Cerca (binocular) [mm]</label>
-              <input id="mDpCerca" type="number" step="0.5" min="40" max="80" placeholder="Ej: 61.0">
-              <small class="subtle">Sugerido: DP Lejos − 3.0 mm</small>
+            <div id="mDpCercaBox" class="dp-inline hidden">
+              <input id="mDpCerca" type="number" inputmode="decimal" step="0.5" min="40" max="80" placeholder="Ej: 61.0 (40–80)">
+              <small id="mDpCercaHint" class="subtle"></small>
             </div>
           </div>
 
@@ -308,7 +322,29 @@
     </div>
   </section>
 
+  <!-- =====================
+       TOAST de notificación
+       ===================== -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- ==============
+       BOOT TEMPRANO
+       ============== -->
+  <script>
+  (function(){
+    try{
+      var sess = null;
+      try { sess = JSON.parse(localStorage.getItem('sesion')||'null'); } catch(e){}
+      var has = !!sess;
+      var last = localStorage.getItem('lastSection') || 'archivo';
+      document.body.classList.toggle('no-session', !has);
+      document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
+      if(!has){ document.getElementById('loginOverlay')?.classList.add('active'); }
+      else{ (document.getElementById(last)||document.getElementById('archivo'))?.classList.add('active'); }
+    }catch(e){}
+    document.body.classList.remove('preboot');
+  })();
+  </script>
 
   <script src="assets/js/script.js"></script>
 </body>
