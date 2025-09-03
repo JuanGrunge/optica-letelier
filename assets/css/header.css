@@ -1,0 +1,59 @@
+/* Header y navegación */
+header{
+  background:linear-gradient(90deg, var(--c1) 0%, #0b4fa0 100%);
+  color:#fff; padding:.75rem 1rem;
+  display:flex; align-items:center; gap:1rem;
+  position:sticky; top:0; z-index:3000;
+}
+.logo{height:56px;width:auto;object-fit:contain;display:block}
+
+nav{flex:1;text-align:center}
+nav ul{list-style:none;margin:0;padding:0;display:inline-flex;gap:.6rem}
+
+.nav-pill{
+  display:inline-flex;align-items:center;gap:.55rem;
+  background:transparent; border:none; color:#ffffffd8;
+  padding:.35rem .6rem; border-radius:999px; cursor:pointer;
+  transition:opacity .2s ease, transform .06s ease;
+}
+.nav-pill:hover,.nav-pill:focus-visible{ opacity:1; color:#fff; }
+.nav-pill:active{ transform:translateY(1px); }
+.nav-ic{ width:22px; height:22px; flex:0 0 22px; }
+.nav-label{
+  white-space:nowrap; overflow:hidden;
+  max-width:0; opacity:.0;
+  font-size:1.1rem; font-weight:600; letter-spacing:.01em;
+  transition:max-width .28s ease, opacity .28s ease;
+}
+.nav-pill:hover .nav-label,.nav-pill:focus-visible .nav-label{ max-width:20ch; opacity:1; }
+
+.session-area{display:flex;gap:.5rem;align-items:center}
+.user-badge{background:rgba(255,255,255,.18);padding:.35rem .6rem;border-radius:999px;font-size:.9rem}
+.btn-logout{background:#ffffff20;border:1px solid #ffffff40;color:#fff;padding:.35rem .6rem;border-radius:8px;cursor:pointer}
+.btn-logout:hover{background:#ffffff30}
+
+.menu-toggle{display:none;font-size:1.5rem;cursor:pointer}
+.theme-switch-wrapper{display:flex;align-items:center}
+header > .theme-switch-wrapper{ margin-left:auto; order:99; }
+.theme-switch{display:inline-block;height:30px;position:relative;width:54px}
+.theme-switch input{display:none}
+.slider{background:#c9d5e7;position:absolute;inset:0;border-radius:30px;cursor:pointer;transition:.3s}
+.slider:before{content:"";position:absolute;left:3px;bottom:3px;height:24px;width:24px;border-radius:50%;background:#fff;transition:.3s}
+input:checked + .slider{background:#004aad}
+input:checked + .slider:before{transform:translateX(24px)}
+
+body.no-session nav,
+body.no-session .session-area{ display:none !important; }
+
+@media (max-width:768px){
+  .logo{height:44px}
+  header{padding:.6rem .8rem}
+  .menu-toggle{ display:block; margin-left:.25rem; color:#fff; line-height:1; }
+  nav{flex:0 0 auto;position:absolute;top:100%;left:0;right:0;background:#0b4fa0;display:none;box-shadow:0 2px 6px rgba(0,0,0,.35);z-index:100}
+  nav.active{display:block}
+  nav ul{flex-direction:column;gap:0}
+  nav li{border-top:1px solid #ffffff1a}
+  nav li:last-child{border-bottom:1px solid #ffffff1a}
+  .nav-pill{justify-content:flex-start;width:100%;border-radius:0;padding:.8rem 1rem}
+  .nav-label{max-width:100%;opacity:1}
+}
