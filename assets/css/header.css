@@ -57,3 +57,15 @@ body.no-session .session-area{ display:none !important; }
   .nav-pill{justify-content:flex-start;width:100%;border-radius:0;padding:.8rem 1rem}
   .nav-label{max-width:100%;opacity:1}
 }
+
+/* === Theme switch with intuitive icons (◐ / ◑) === */
+.theme-switch .slider:before{
+  display:flex; align-items:center; justify-content:center;
+  content:"\25D0"; /* ◐ */
+  color:#0e1726; /* icon color inside white knob */
+  font-size:14px; line-height:1;
+}
+.theme-switch input:checked + .slider:before{
+  content:"\25D1"; /* ◑ */
+  transform:translateX(24px);
+}

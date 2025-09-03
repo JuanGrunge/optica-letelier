@@ -44,7 +44,15 @@ function showToast(t){const el=document.getElementById('toast'); if(!el) return;
 export function initAuth(){
   seedUsers();
 
-  document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+  
+  // Autocompletar admin para pruebas rápidas
+  const userField = document.getElementById('loginUser');
+  const passField = document.getElementById('loginPass');
+  if (userField && passField) {
+    userField.value = 'admin';
+    passField.value = 'letelier25';
+  }
+document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
     const u=val(document.getElementById('loginUser').value);
     const p=document.getElementById('loginPass').value;
@@ -59,11 +67,25 @@ export function initAuth(){
     setSession({username:user.username,role:user.role,at:new Date().toISOString()});
     document.getElementById('loginForm').reset();
     requireAuth();
+    // Navegar a Archivo sin importar router (evita import circular)
+    try {
+      localStorage.setItem('lastSection','archivo');
+      const btn = document.getElementById('navArchivo');
+      if (btn) btn.dispatchEvent(new Event('click', { bubbles: true }));
+    } catch {}
+
     showToast('Sesión iniciada');
   });
 
   document.getElementById('btnLogout')?.addEventListener('click', () => {
     clearSession();
     requireAuth();
+    // Navegar a Archivo sin importar router (evita import circular)
+    try {
+      localStorage.setItem('lastSection','archivo');
+      const btn = document.getElementById('navArchivo');
+      if (btn) btn.dispatchEvent(new Event('click', { bubbles: true }));
+    } catch {}
+
   });
 }

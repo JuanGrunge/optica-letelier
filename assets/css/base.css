@@ -15,7 +15,7 @@ body{
   margin:0; background:var(--bg); color:var(--text); text-align:center;
   transition:background-color .3s,color .3s;
 }
-body.preboot section{display:none !important}
+body.preboot /* removed invalid global hide */
 
 section{
   display:none; padding:1.5rem; max-width:1000px; margin:1.25rem auto 2rem;
@@ -47,3 +47,8 @@ button.secondary:hover{background:#555}
 
 .grid-two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 @media (max-width:768px){ .grid-two{grid-template-columns:1fr} }
+
+
+/* --- Vistas explícitas: sólo las secciones marcadas como .view se muestran con .active --- */
+section.view{ display:none; }
+section.view.active{ display:block; }

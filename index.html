@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <script src="assets/js/early-boot.js"></script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Óptica Letelier - Sistema</title>
@@ -71,10 +72,10 @@
       <h2 id="loginTitle">Iniciar sesión</h2>
       <form id="loginForm">
         <label for="loginUser">Usuario</label>
-        <input id="loginUser" type="text" autocomplete="username" placeholder="Ej: admin" required>
+        <input id="loginUser" autocomplete="username" type="text" autocomplete="username" placeholder="Ej: admin" required>
 
         <label for="loginPass">Contraseña</label>
-        <input id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••" required>
+        <input id="loginPass" autocomplete="current-password" type="password" autocomplete="current-password" placeholder="••••••••" required>
 
         <button type="submit" class="login-btn">Entrar</button>
         <p id="loginMsg" class="login-msg" aria-live="polite"></p>
@@ -88,7 +89,7 @@
   </section>
 
   <!-- Ingresar -->
-  <section id="ingresar">
+  <section id="ingresar" class="view">
     <h2>Ingresar Paciente</h2>
 
     <form id="formIngresar">
@@ -180,7 +181,7 @@
   </section>
 
   <!-- Archivo -->
-  <section id="archivo">
+  <section id="archivo" class="view">
     <h2>Archivo</h2>
     <p class="subtle">Busca por <strong>RUT, Nombre o Lugar de Operativo</strong> con un solo campo.</p>
 
