@@ -6,6 +6,7 @@
   --card:#f2f4f7;
   --text:#111;
   --border:#dcdfe4;
+  --warn:#f59e0b;
 }
 *{box-sizing:border-box}
 html, body{ overscroll-behavior: none; }
@@ -28,10 +29,44 @@ header{
 }
 header .brand{margin:0}
 .logo{height:56px;width:auto;object-fit:contain;object-position:left center;display:block}
+
+/* ===== Navegación con píldoras expandibles ===== */
 nav{flex:1; text-align:center}
-nav ul{list-style:none;margin:0;padding:0;display:inline-flex;gap:1rem}
-nav ul li{cursor:pointer;padding:.4rem .9rem;border-radius:8px;transition:background-color .2s}
-nav ul li:hover{background:rgba(255,255,255,.12)}
+nav ul{list-style:none;margin:0;padding:0;display:inline-flex;gap:.6rem}
+.nav-pill{
+  display:inline-flex; align-items:center; gap:.5rem;
+  background:rgba(255,255,255,.14); color:#fff;
+  border:1px solid rgba(255,255,255,.22);
+  padding:.5rem .6rem; border-radius:999px; cursor:pointer;
+  transition: background-color .2s ease, border-color .2s ease;
+  overflow:hidden;
+}
+.nav-pill .nav-ic{ width:18px; height:18px; flex:0 0 18px; }
+.nav-pill .nav-label{
+  white-space:nowrap; overflow:hidden;
+  max-width:0; opacity:0;
+  transition:max-width .25s ease, opacity .25s ease;
+}
+.nav-pill:hover, .nav-pill:focus-visible{
+  background:rgba(255,255,255,.22); border-color:rgba(255,255,255,.32);
+}
+.nav-pill:hover .nav-label,
+.nav-pill:focus-visible .nav-label{
+  max-width:16ch; opacity:1;
+}
+.dark-mode .nav-pill{
+  background:rgba(255,255,255,.12);
+  border-color:rgba(255,255,255,.18);
+}
+.dark-mode .nav-pill:hover,
+.dark-mode .nav-pill:focus-visible{
+  background:rgba(255,255,255,.2);
+  border-color:rgba(255,255,255,.28);
+}
+@media (hover:none){
+  .nav-pill .nav-label{ max-width:16ch; opacity:1; }
+}
+
 .menu-toggle{display:none;font-size:1.5rem;cursor:pointer}
 
 /* ===== Sesión en header ===== */
@@ -78,6 +113,7 @@ input, textarea{
 }
 .field-error{display:block;color:#b00020;font-size:.9rem;margin-top:-.4rem;margin-bottom:1rem}
 input.is-invalid{border-color:#b00020;outline-color:#b00020}
+.inline-check{display:inline-flex; align-items:center; gap:.5rem;}
 
 /* Botones */
 button{background:#0b5bd7;color:#fff;padding:.7rem 1.2rem;border:none;border-radius:10px;cursor:pointer;transition:transform .06s, background-color .15s}
@@ -105,26 +141,65 @@ button.secondary:hover{background:#555}
 .rx-table thead th{background:linear-gradient(180deg,#f7f9fc,#eef2f7);color:#0f172a;font-weight:700;font-size:.9rem;letter-spacing:.02em;padding:.6rem .5rem;border-bottom:1px solid var(--border)}
 .rx-table tbody td{border-top:1px solid var(--border);padding:.45rem .45rem}
 .rx-table tbody tr:nth-child(even){background:#fafbfe}
-.rx-table td input[type="number"]{width:100%;padding:.4rem .35rem;border:1px solid #cfd6de;border-radius:8px;text-align:center;background:#fff;color:#0f172a}
+.rx-table td input[type="number"], .rx-table td input[type="text"]{width:100%;padding:.4rem .35rem;border:1px solid #cfd6de;border-radius:8px;background:#fff;color:#0f172a;text-align:center}
 .eye-tag{font-weight:700;background:#eef5ff;border-right:1px solid var(--border)}
 .rx-table th:nth-child(4), .rx-table td:nth-child(4){border-right:2px dashed #cfd6de}
 .dark-mode .rx-table{background:#111821;color:#e6edf3;border-color:#2a3442}
 .dark-mode .rx-table thead th{background:#0f1722;color:#e6edf3;border-bottom-color:#2a3442}
 .dark-mode .rx-table tbody td{border-top-color:#2a3442}
 .dark-mode .rx-table tbody tr:nth-child(even){background:#121b26}
-.dark-mode .rx-table td input[type="number"]{background:#0e1319;color:#e6edf3;border-color:#2a3442}
+.dark-mode .rx-table td input[type="number"], .dark-mode .rx-table td input[type="text"]{background:#0e1319;color:#e6edf3;border-color:#2a3442}
 .dark-mode .eye-tag{background:#132033;border-right-color:#2a3442}
 .dark-mode .rx-table th:nth-child(4), .dark-mode .rx-table td:nth-child(4){border-right:2px dashed #3a4658}
 
-/* ===== Tarjetas resultados ===== */
+/* Chips (etiquetas) */
+.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.25rem}
+.chip{display:inline-block;padding:.22rem .55rem;border:1px solid #d4d4d4;border-radius:999px;background:#f6f7fb;font-size:.85rem;line-height:1;white-space:nowrap}
+.chip.suggested{border-style:dashed;cursor:pointer;opacity:.9}
+.dark-mode .chip{background:#161f2a;border-color:#2a3442;color:#e6edf3}
+
+/* Paneles / tarjetas */
 .lista-resultados{display:flex;flex-direction:column;gap:1rem}
 .result-card{position:relative;background:#fff;border:1px solid var(--border);border-radius:12px;padding:1rem 1rem 1.25rem 1rem;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .dark-mode .result-card{background:#111821;border-color:#2a3442;box-shadow:0 1px 3px rgba(0,0,0,.4)}
-.result-card h4{margin:0 0 .75rem 0;font-size:1.05rem}
+.result-card h4{margin:0 0 .75rem 0;font-size:1.05rem;display:flex;align-items:center;gap:.5rem}
+.warn-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:999px;background:var(--warn);color:#111;font-weight:700;font-size:.85rem}
 .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem 1rem}
 .result-field{display:flex;flex-direction:column}
 .result-field label{font-size:.85rem;opacity:.8;margin:0 0 .25rem 0}
 .result-recipe{grid-column:1 / -1}
+.card-actions{margin-top:1rem;display:flex;gap:.5rem;justify-content:flex-end}
+.btn-edit{background:#1e70b8;color:#fff;border:none;border-radius:8px;padding:.5rem .9rem;cursor:pointer}
+.btn-edit:hover{background:#15558a}
+
+/* Checkbox grandes */
+.checkbox-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem 1rem;margin-bottom:1rem}
+.checkbox-grid .check-row{display:grid;grid-template-columns:1fr auto;align-items:center;background:#fff;border:1px solid #ddd;border-radius:10px;padding:.65rem .85rem;cursor:pointer;transition:background-color .2s,border-color .2s}
+.checkbox-grid .check-row:hover{background:#f8faff;border-color:#c9def3}
+.dark-mode .checkbox-grid .check-row{background:#111821;border-color:#2a3442}
+.dark-mode .checkbox-grid .check-row:hover{background:#151e2a;border-color:#3a4658}
+.checkbox-grid .check-text{text-align:left;margin-right:1rem}
+.checkbox-grid input[type="checkbox"]{width:28px;height:28px;accent-color:var(--c1)}
+@supports not (accent-color: auto){.checkbox-grid input[type="checkbox"]{transform:scale(1.35);transform-origin:center}}
+
+/* DP extra */
+.dp-extra{margin:.75rem 0}
+.dp-c-row.hidden{display:none}
+
+/* ===== Login ===== */
+.login-overlay{
+  position:fixed; inset:0; background:rgba(4,10,20,.6);
+  display:none; align-items:center; justify-content:center; padding:1rem; z-index:2000;
+}
+.login-overlay.active{ display:flex; }
+.login-card{
+  width:100%; max-width:380px; background:var(--card); border:1px solid var(--border);
+  border-radius:14px; padding:1.2rem 1.2rem 1rem; box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+.login-card h2{ margin:0 0 .75rem 0; text-align:center; }
+.login-btn{ width:100%; margin-top:.25rem; }
+.login-msg{ text-align:center; margin:.5rem 0 0 0; min-height:1.25rem; font-weight:600; }
+.hint{ margin-top:.6rem; }
 
 /* ===== Modal edición ===== */
 .modal-overlay{
@@ -134,7 +209,7 @@ button.secondary:hover{background:#555}
   backdrop-filter: blur(6px);
   display:none; align-items:center; justify-content:center;
   padding:1rem; z-index:2100;
-  overflow:hidden;                 /* el overlay NO scrollea */
+  overflow:hidden;
 }
 .modal-overlay.active{display:flex}
 body.modal-open{overflow:hidden; touch-action:none}
@@ -145,27 +220,20 @@ body.modal-open{overflow:hidden; touch-action:none}
   border-radius:14px; padding:0; box-shadow:0 10px 30px rgba(0,0,0,.2);
   max-height:calc(100dvh - 32px);
   display:flex; flex-direction:column;
+  pointer-events:auto;
 }
-
-/* Header simple (no sticky) */
 .modal-header{
   display:flex; align-items:center; justify-content:space-between;
   padding:.9rem 1rem; border-bottom:1px solid var(--border);
 }
-
-/* El FORM es el contenedor que scrollea */
 #editForm{
   display:flex; flex-direction:column;
   flex:1 1 auto; min-height:0;
-  overflow:auto;                        /* << scroller */
+  overflow:auto;
   -webkit-overflow-scrolling:touch;
   overscroll-behavior:contain;
 }
-
-/* Contenido "elástico" dentro del form */
 .modal-content{ padding:1rem; flex:0 0 auto; }
-
-/* Acciones dentro de los márgenes, visibles siempre */
 .modal-actions{
   padding:1rem; border-top:1px solid var(--border);
   display:flex; justify-content:flex-end; gap:.5rem;
@@ -173,15 +241,13 @@ body.modal-open{overflow:hidden; touch-action:none}
   position:sticky; bottom:0; z-index:1;
 }
 
-/* Checkbox grandes, etc. (sin cambios relevantes) */
-.checkbox-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem 1rem;margin-bottom:1rem}
-.checkbox-grid .check-row{display:grid;grid-template-columns:1fr auto;align-items:center;background:#fff;border:1px solid #ddd;border-radius:10px;padding:.65rem .85rem;cursor:pointer;transition:background-color .2s,border-color .2s}
-.checkbox-grid .check-row:hover{background:#f8faff;border-color:#c9def3}
-.dark-mode .checkbox-grid .check-row{background:#111821;border-color:#2a3442}
-.dark-mode .checkbox-grid .check-row:hover{background:#151e2a;border-color:#3a4658}
-.checkbox-grid .check-text{text-align:left;margin-right:1rem}
-.checkbox-grid input[type="checkbox"]{width:28px;height:28px;accent-color:var(--c1)}
-@supports not (accent-color: auto){.checkbox-grid input[type="checkbox"]{transform:scale(1.35);transform-origin:center}}
+/* ===== Toast ===== */
+.toast{
+  position:fixed; right:16px; bottom:16px; z-index:2200;
+  background:#111; color:#fff; padding:.6rem .8rem; border-radius:10px; box-shadow:0 6px 20px rgba(0,0,0,.35);
+  opacity:0; transform:translateY(10px); pointer-events:none; transition:opacity .25s ease, transform .25s ease;
+}
+.toast.show{ opacity:1; transform:translateY(0); }
 
 /* ===== Responsive ===== */
 @media (max-width:768px){
