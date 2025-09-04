@@ -1,17 +1,17 @@
 /* Formularios, buscador, checks */
 .filters.single{margin-bottom:1rem}
 .search-wrap{position:relative;display:flex;align-items:center;background:var(--white);border:1px solid #bfc5cc;border-radius: var(--radius-3);padding:.1rem .1rem .1rem .75rem}
-.search-wrap input{border:none;outline:none;background:transparent;margin:0;padding:.7.0rem .7.0rem;width:100%;font-size: var(--fs-base);padding-right:3rem}
+.search-wrap input{border:none;outline:none;background:transparent;margin:0;padding:0.7rem 0.7rem;width:100%;font-size: var(--fs-base);padding-right:3rem}
 .icon-search-btn{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:44px;height:44px;border:none;background:transparent;color:var(--focus);border-radius: var(--radius-2);cursor:pointer;display:grid;place-items:center}
 .icon-search-btn:hover{background:#eef2f7}
 .icon-search-btn:focus-visible{outline:2px solid #4f94ff;outline-offset:2px}
 
-.checkbox-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6.0rem var(--space-4);margin-bottom:1rem}
-.checkbox-grid .check-row{display:grid;grid-template-columns:1fr auto;align-items:center;background:var(--white);border:1px solid #ddd;border-radius: var(--radius-3);padding:.65.0rem .85.0rem;cursor:pointer}
+.checkbox-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0.6rem var(--space-4);margin-bottom:1rem}
+.checkbox-grid .check-row{display:grid;grid-template-columns:1fr auto;align-items:center;background:var(--white);border:1px solid #ddd;border-radius: var(--radius-3);padding:0.65rem 0.85rem;cursor:pointer}
 .checkbox-grid .check-text{text-align:left;margin-right:1rem}
 
 .dp-extra{margin:.75rem 0}
-.dp-inline{display:inline-flex;align-items:center;gap:.6.0rem;margin-left:.75rem;flex-wrap:wrap}
+.dp-inline{display:inline-flex;align-items:center;gap:0.6rem;margin-left:.75rem;flex-wrap:wrap}
 .dp-inline input{width:140px;text-align:center}
 
 /* moved from base.css */
@@ -20,3 +20,25 @@
 
 .chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.25rem}
 .msg-estado{margin-top:.5rem;font-weight:bold}
+
+/* === Polish: checkbox alignment & spacing inside cards === */
+.checkbox-grid{ gap: var(--space-4) var(--space-4); }
+.checkbox-grid .check-row{
+  display:grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  column-gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+}
+.checkbox-grid .check-row input[type="checkbox"]{
+  margin: 0;
+  transform: none;
+}
+.checkbox-grid .check-text{
+  margin: 0;
+  line-height: var(--lh-base);
+}
+
+/* Round text buttons used in forms cards if any */
+.btn-edit{ border-radius: var(--radius-pill); padding: .45rem .9rem; }
+

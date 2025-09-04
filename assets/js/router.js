@@ -8,6 +8,7 @@ function allViews(){ return Array.from(document.querySelectorAll('section.view')
 function getView(id){ return document.getElementById(validSection(id)); }
 
 export function showSection(id){
+  if (!requireAuth()) return;
   const target = getView(id);
   if (!target) return;
   allViews().forEach(s => s.classList.remove('active'));

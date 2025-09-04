@@ -15,9 +15,9 @@
   width:100%; max-width:380px; background:var(--card); border:1px solid var(--border);
   border-radius: var(--radius-4); padding:var(--space-5) var(--space-5) var(--space-4); box-shadow:0 10px 30px rgba(0,0,0,.2);
 }
-.login-card h2{ margin:0 0 .75.0rem 0; text-align:center; }
+.login-card h2{ margin:0 0 0.75rem 0; text-align:center; }
 .login-btn{ width:100%; margin-top:.25rem; }
-.login-msg{ text-align:center; margin:.5.0rem 0 0 0; min-height:1.25rem; font-weight:600; }
+.login-msg{ text-align:center; margin:0.5rem 0 0 0; min-height:1.25rem; font-weight:600; }
 .hint{ margin-top:.6rem; }
 
 .modal-overlay{
@@ -33,10 +33,10 @@ body.modal-open{overflow:hidden; touch-action:none}
   width:100%; max-width:900px; background:var(--card); border:1px solid var(--border); border-radius: var(--radius-4); padding:0;
   box-shadow:0 10px 30px rgba(0,0,0,.2); max-height:calc(100dvh - var(--header-height) - 32px); display:flex; flex-direction:column;
 }
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:.9.0rem var(--space-4);border-bottom:1px solid var(--border)}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:0.9rem var(--space-4);border-bottom:1px solid var(--border)}
 #editForm{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .modal-content{ padding:var(--space-4); flex:0 0 auto; }
-.modal-actions{ padding:var(--space-4);border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:.5.0rem;background:var(--card);position:sticky;bottom:0;z-index:1 }
+.modal-actions{ padding:var(--space-4);border-top:1px solid var(--border);display:flex;justify-content:flex-end;gap:0.5rem;background:var(--card);position:sticky;bottom:0;z-index:1 }
 
-.toast{ position:fixed; right:16px; bottom:16px; z-index: var(--z-toast); background:#111; color:var(--white); padding:.6.0rem .8.0rem; border-radius: var(--radius-3); box-shadow:0 6px 20px rgba(0,0,0,.35); opacity:0; transform:translateY(10px); pointer-events:none; transition:opacity .25s, transform .25s }
+.toast{ position:fixed; right:16px; bottom:16px; z-index: var(--z-toast); background:#111; color:var(--white); padding:0.6rem 0.8rem; border-radius: var(--radius-3); box-shadow:0 6px 20px rgba(0,0,0,.35); opacity:0; transform:translateY(10px); pointer-events:none; transition:opacity .25s, transform .25s }
 .toast.show{ opacity:1; transform:translateY(0); }

@@ -19,12 +19,15 @@ async function seedUsers(){
 }
 
 export function requireAuth(){
+  const protectedEls = document.querySelectorAll('[data-auth="protected"]');
+
   const s=getSession();
   const overlay=document.getElementById('loginOverlay');
   const badge=document.getElementById('userBadge');
   const logout=document.getElementById('btnLogout');
 
   if(!s){
+    protectedEls.forEach(el=> el.hidden = true);
     document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
     overlay?.classList.add('active');
     badge.hidden = true; logout.hidden = true;
@@ -33,6 +36,7 @@ export function requireAuth(){
     return false;
   }
   overlay?.classList.remove('active');
+  protectedEls.forEach(el=> el.hidden = false);
   if (badge){ badge.textContent=`${s.username} (${s.role||'usuario'})`; badge.hidden=false; }
   if (logout){ logout.hidden=false; }
   document.body.classList.remove('no-session');

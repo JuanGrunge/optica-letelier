@@ -1,5 +1,6 @@
 /* Base: colores, tipografías y layout */
 :root{
+  --header-pad-x: var(--space-6);
   --c1:#1E70B8;
   --c1-dark:#00327A;
   --bg:#f9fbfd;
@@ -83,3 +84,18 @@ button.secondary{background:#777}
 button.secondary:hover{background:#555}
 .subtle{opacity:.85;margin:.25rem 0 .75rem}
 /* --- Vistas explícitas: sólo las secciones marcadas como .view se muestran con .active --- */
+
+
+/* === Polish: focus-visible & inputs ring (accesible) === */
+:where(button,[role="button"],input,select,textarea):focus-visible{
+  outline:2px solid var(--focus);
+  outline-offset:2px;
+}
+:where(input,textarea,select):focus{
+  border-color: var(--focus);
+  box-shadow: 0 0 0 3px rgba(11,91,215,.15);
+}
+@media (prefers-reduced-motion: reduce){
+  *{ transition-duration: .01ms !important; animation-duration: .01ms !important; animation-iteration-count:1 !important; }
+}
+

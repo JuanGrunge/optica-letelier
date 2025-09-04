@@ -3,23 +3,23 @@
   width:100%;min-width:780px;border-collapse:separate;border-spacing:0;
   background:var(--white);color:var(--card);border:1px solid var(--border);border-radius: var(--radius-3);overflow:hidden
 }
-.rx-table thead th{background:linear-gradient(180deg,#f7f9fc,#eef2f7);color:var(--card);font-weight:700;font-size:.9rem;letter-spacing:.02em;padding:.6.0rem .5.0rem;border-bottom:1px solid var(--border)}
+.rx-table thead th{background:linear-gradient(180deg,#f7f9fc,#eef2f7);color:var(--card);font-weight:700;font-size:.9rem;letter-spacing:.02em;padding:0.6rem 0.5rem;border-bottom:1px solid var(--border)}
 .rx-table tbody td{border-top:1px solid var(--border);padding:.45rem .45rem}
 .rx-table tbody tr:nth-child(even){background:#fafbfe}
-.rx-table td input[type="number"], .rx-table td input[type="text"]{ width:100%;padding:.4.0rem .35.0rem;border:1px solid #cfd6de;border-radius: var(--radius-2);background:var(--white);color:var(--card);text-align:center; }
+.rx-table td input[type="number"], .rx-table td input[type="text"]{ width:100%;padding:0.4rem 0.35rem;border:1px solid #cfd6de;border-radius: var(--radius-2);background:var(--white);color:var(--card);text-align:center; }
 .eye-tag{font-weight:700;background:#eef5ff;border-right:1px solid var(--border)}
 .rx-table th:nth-child(4), .rx-table td:nth-child(4){border-right:2px dashed #cfd6de}
 
 .lista-resultados{display:flex;flex-direction:column;gap:1rem}
 .result-card{position:relative;background:var(--white);border:1px solid var(--border);border-radius: var(--radius-3);padding:var(--space-4) var(--space-4) var(--space-5) var(--space-4);box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.result-card h4{margin:0 0 .75.0rem 0;font-size:1.05rem;display:flex;align-items:center;gap:.5rem}
+.result-card h4{margin:0 0 0.75rem 0;font-size:1.05rem;display:flex;align-items:center;gap:.5rem}
 .warn-icon{display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius: var(--radius-pill);background:var(--warn);color:#111;font-weight:700;font-size:.85rem}
 .result-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem 1rem}
 .result-field{display:flex;flex-direction:column}
 .result-field label{font-size:.85rem;opacity:.8;margin:0 0 .25rem 0}
 .result-recipe{grid-column:1 / -1}
-.card-actions{margin-top:1rem;display:flex;gap:.5.0rem;justify-content:flex-end}
-.btn-edit{background:var(--c1);color:var(--white);border:none;border-radius: var(--radius-2);padding:.5.0rem .9.0rem;cursor:pointer}
+.card-actions{margin-top:1rem;display:flex;gap:0.5rem;justify-content:flex-end}
+.btn-edit{background:var(--c1);color:var(--white);border:none;border-radius: var(--radius-2);padding:0.5rem 0.9rem;cursor:pointer}
 .btn-edit:hover{background:#15558a}
 
 @media (max-width:768px){

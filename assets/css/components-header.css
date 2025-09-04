@@ -69,3 +69,49 @@ body.no-session .session-area{ display:none !important; }
   content:"\25D1"; /* ◑ */
   transform:translateX(24px);
 }
+
+/* Standardized horizontal padding via token */
+header{ padding-left: var(--header-pad-x); padding-right: var(--header-pad-x); }
+
+
+/* Mobile: hamburger left | logo center | switch right */
+@media (max-width: 768px){
+  header{ position: relative; display:flex; align-items:center; }
+  .menu-toggle{ order:1; margin-right: var(--space-2); }
+  .brand{ order:2; position:absolute; left:50%; transform: translateX(-50%); }
+  .theme-switch-wrapper{ order:3; margin-left:auto; }
+}
+
+
+
+/* === Mobile layout normalization & alignment === */
+@media (max-width: 768px){
+  header{ position: relative; display:flex; align-items:center; }
+  .menu-toggle{ order:1; margin-right: var(--space-2); }
+  .session-area{ order:2; }
+  .brand{ order:3; position:absolute; left:50%; transform:translateX(-50%); }
+  .theme-switch-wrapper{ order:4; margin-left:auto; }
+  /* Badge hidden on small screens to prevent overlap */
+  .user-badge{ display:none !important; }
+  /* Align menu items with the same header horizontal padding */
+  nav{ padding-left: var(--header-pad-x); padding-right: var(--header-pad-x); text-align:left; }
+  nav ul{ display:flex; gap: var(--space-4); }
+}
+
+
+
+/* === Logout icon-only (all breakpoints) & pill styling === */
+.btn-logout.nav-pill{
+  display:inline-flex; align-items:center; justify-content:center;
+  background: var(--c1); color: var(--white);
+  border:none; border-radius: var(--radius-pill);
+  padding: .45rem .6rem; width:auto; flex:0 0 auto;
+  cursor:pointer; transition: background .2s ease, box-shadow .2s ease;
+}
+.btn-logout.nav-pill:hover{ background: var(--c1-dark); }
+.btn-logout.nav-pill .nav-ic{ width:20px; height:20px; }
+/* hide text label at all sizes */
+.btn-logout .nav-label{ display:none !important; }
+
+
+body.no-session .menu-toggle{ display:none !important; }

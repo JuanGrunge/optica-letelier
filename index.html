@@ -28,7 +28,7 @@
   <header>
     <h2 class="brand"><img src="assets/img/logo.png" alt="logo" class="logo"></h2>
 
-    <nav>
+    <nav data-auth="protected">
       <ul>
         <li>
           <button type="button" id="navArchivo" class="nav-pill" aria-label="Archivo">
@@ -58,12 +58,24 @@
       </ul>
     </nav>
 
-    <div class="session-area">
+    <div class="session-area" data-auth="protected">
       <span id="userBadge" class="user-badge" aria-live="polite" hidden></span>
-      <button id="btnLogout" class="btn-logout" type="button" hidden>Cerrar sesión</button>
-    </div>
+      
+    
+  <button id="btnLogout" class="btn-logout nav-pill" type="button" hidden aria-label="Cerrar sesión">
+  <svg viewBox="0 0 24 24" aria-hidden="true" class="nav-ic">
+    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+      <path d="M7 12h11"/>
+      <path d="M10 9l-3 3l3 3"/>
+    </g>
+  </svg>
+  <span class="nav-label">Cerrar sesión</span>
+</button>
+</div>
 
-    <span class="menu-toggle" aria-label="Abrir menú">☰</span>
+    <span class="menu-toggle" aria-label="Abrir menú" data-auth="protected">☰</span>
+  
     <div class="theme-switch-wrapper">
       <label class="theme-switch" title="Modo oscuro">
         <input type="checkbox" id="darkModeToggle">
