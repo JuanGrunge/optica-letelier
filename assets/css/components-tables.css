@@ -1,8 +1,7 @@
 /* Tablas de receta y resultados */
 .rx-table{
   width:100%;min-width:780px;border-collapse:separate;border-spacing:0;
-  background:var(--white);color:var(--card);border:1px solid var(--border);border-radius: var(--radius-3);overflow:hidden
-}
+  background:var(--white);color:var(--card);border:1px solid var(--border);border-radius: var(--radius-3);}
 .rx-table thead th{background:linear-gradient(180deg,#f7f9fc,#eef2f7);color:var(--card);font-weight:700;font-size:.9rem;letter-spacing:.02em;padding:0.6rem 0.5rem;border-bottom:1px solid var(--border)}
 .rx-table tbody td{border-top:1px solid var(--border);padding:.45rem .45rem}
 .rx-table tbody tr:nth-child(even){background:#fafbfe}
@@ -25,3 +24,133 @@
 @media (max-width:768px){
   .result-grid{grid-template-columns:1fr}
 }
+
+
+/* Ensure Rx tables scroll on narrow screens */
+@media (max-width: 768px){
+  .table-scroll{ display:block; overflow-x:auto; -webkit-overflow-scrolling: touch; }
+  /* allow overflow > container */
+}
+
+
+
+/* Rx table scroll (stable, no media queries) */
+.table-scroll{ overflow-x:auto; -webkit-overflow-scrolling: touch; }
+.table-scroll > .rx-table{ display:inline-table; width:auto; min-width:780px; }
+
+
+
+/* Results table (search list) */
+.results-table-wrap{
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+.results-table{
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-sm);
+}
+.results-table thead th{
+  text-align: left;
+  background: var(--bg-subtle);
+  color: var(--text-soft);
+  font-weight: 600;
+  padding: .65rem .8rem;
+  border-bottom: 1px solid var(--border);
+}
+.results-table tbody td{
+  padding: .65rem .8rem;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.results-table tbody tr:nth-child(even){
+  background: rgba(255,255,255,.04); /* zebra sutil; compatible con dark */
+}
+.results-table tbody tr:hover{
+  background: rgba(11,91,215,.10);
+  cursor: pointer;
+}
+@media (max-width:768px){
+  .results-table{ font-size: var(--fs-sm); }
+  .results-table thead th, .results-table tbody td{ padding:.55rem .6rem; }
+}
+
+
+
+/* Unify patient Rx table scroll behavior */
+.table-scroll{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  width:100%;
+  display:block;
+}
+.table-scroll > .rx-table{
+  display:inline-table;
+  width:auto;
+  min-width:780px;
+  overflow:visible; /* evita recorte de la barra en iOS/Android */
+}
+/* Evitar que contenedor tape la barra en móvil */
+@media (max-width: 768px){
+  .result-card{ overflow: visible; }
+}
+
+
+
+/* Flex fix: permite overflow horizontal dentro de tarjetas en layouts flex */
+.lista-resultados, .result-card{ min-width: 0; }
+
+/* Si se usa wrapper utilitario en la ficha, asegura desborde para scroll */
+.overflow-x-auto > .rx-table{ width: auto; min-width: 780px; }
+
+
+
+/* --- Rx table: scroll robusto en ficha (mobile/desktop) --- */
+.result-card{ min-width:0; } /* flex-safe */
+.result-card .overflow-x-auto{
+  overflow-x:auto;
+  -webkit-overflow-scrolling:touch;
+  display:block;
+  width:100%;
+}
+.result-card .overflow-x-auto > .rx-table{
+  display:inline-table;
+  width:auto;
+  min-width:780px;
+}
+
+
+
+/* Receta (ficha): 2 columnas OD/OI, responsivo y elegante */
+.rx-columns{
+  display:grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: .75rem;
+  margin-top: .25rem;
+}
+@media (max-width: 640px){
+  .rx-columns{ grid-template-columns: 1fr; }
+}
+.rx-eye-card{
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2);
+  padding: .75rem;
+}
+.rx-eye-title{
+  font-weight: 700;
+  color: var(--text-soft);
+  margin-bottom: .5rem;
+}
+.rx-rows{ display:grid; row-gap: .5rem; }
+.rx-row{
+  display:grid;
+  grid-template-columns: 1fr auto;
+  align-items:center;
+  gap: .75rem;
+  font-size: var(--fs-sm);
+}
+.rx-row + .rx-row{ border-top: 1px dashed var(--border-subtle); padding-top: .5rem; }
+.rx-k{ color: var(--text-soft); }
+.rx-v{ font-variant-numeric: tabular-nums; font-weight: 600; }

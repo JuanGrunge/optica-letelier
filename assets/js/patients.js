@@ -132,20 +132,39 @@ function buscarPacientes(ev){
     return;
   }
   const r=ps.filter(p=> (p.rut?contieneRut(p.rut,q):false) || (p.nombre||'').toLowerCase().includes(q) || (p.operativo||'').toLowerCase().includes(q));
-  renderFichas(r);
+  renderResultadosTabla(r);
   document.getElementById('msgResultados').textContent=r.length===0?'Sin resultados.':`${r.length} resultado(s).`;
 }
 
 function renderTarjetaPaciente(p){
   const od=p.receta?.od??{}, oi=p.receta?.oi??{}, dpOD=readDP(od), dpOI=readDP(oi);
-  const recetaTabla=`
-    <table class="rx-table">
-      <thead><tr><th>Ojo</th><th>Esfera</th><th>Cilindro</th><th>Eje</th><th>ADD</th><th>DP (mm)</th><th>ALT (mm)</th></tr></thead>
-      <tbody>
-        <tr><td>OD</td><td>${p.receta?.od?.esf ?? '—'}</td><td>${p.receta?.od?.cil ?? '—'}</td><td>${fmtEje(p.receta?.od?.eje)}</td><td>${p.receta?.od?.add ?? '—'}</td><td>${dpOD ?? '—'}</td><td>${p.receta?.od?.alt ?? '—'}</td></tr>
-        <tr><td>OI</td><td>${p.receta?.oi?.esf ?? '—'}</td><td>${p.receta?.oi?.cil ?? '—'}</td><td>${fmtEje(p.receta?.oi?.eje)}</td><td>${p.receta?.oi?.add ?? '—'}</td><td>${dpOI ?? '—'}</td><td>${p.receta?.oi?.alt ?? '—'}</td></tr>
-      </tbody>
-    </table>`;
+  
+const recetaTabla = `
+  <div class="rx-columns" role="group" aria-label="Receta Óptica">
+    <div class="rx-eye-card">
+      <div class="rx-eye-title">OI</div>
+      <div class="rx-rows">
+        <div class="rx-row"><span class="rx-k">Esfera</span><span class="rx-v">${oi.esf ?? '—'}</span></div>
+        <div class="rx-row"><span class="rx-k">Cilindro</span><span class="rx-v">${oi.cyl ?? '—'}</span></div>
+        <div class="rx-row"><span class="rx-k">Eje</span><span class="rx-v">${oi.eje ?? '—'}</span></div>
+        <div class="rx-row"><span class="rx-k">ADD</span><span class="rx-v">${oi.add ?? '—'}</span></div>
+        <div class="rx-row"><span class="rx-k">DP (mm)</span><span class="rx-v">${dpOI ?? '—'}</span></div>
+        <div class="rx-row"><span class="rx-k">ALT (mm)</span><span class="rx-v">${oi.alt ?? '—'}</span></div>
+      </div>
+    </div>
+    <div class="rx-eye-card">
+      <div class="rx-eye-title">OD</div>
+      <div class="rx-rows">
+        <div class="rx-row"><span class="rx-k">Esfera</span><span class="rx-v">${od.esf ?? '—'}</span></div>
+        <div class="rx-row"><span class="rx-k">Cilindro</span><span class="rx-v">${od.cyl ?? '—'}</span></div>
+        <div class="rx-row"><span class="rx-k">Eje</span><span class="rx-v">${od.eje ?? '—'}</span></div>
+        <div class="rx-row"><span class="rx-k">ADD</span><span class="rx-v">${od.add ?? '—'}</span></div>
+        <div class="rx-row"><span class="rx-k">DP (mm)</span><span class="rx-v">${dpOD ?? '—'}</span></div>
+        <div class="rx-row"><span class="rx-k">ALT (mm)</span><span class="rx-v">${od.alt ?? '—'}</span></div>
+      </div>
+    </div>
+  </div>`;
+
   return `
     <div class="result-card">
       <h4>${p.nombre||''}</h4>
@@ -176,6 +195,42 @@ function renderListaOperativo(rows){
       <div class="subtle">${p.operativo||''}</div>
     </div>`).join('');
 }
+
+function renderResultadosTabla(rows){
+  const cont=document.getElementById('listaResultados'); if(!cont) return;
+  if(!rows||!rows.length){ cont.innerHTML=''; return; }
+  cont.innerHTML = `
+    <div class="results-table-wrap">
+      <table class="results-table">
+        <thead>
+          <tr><th>RUT</th><th>Nombre</th><th>Operativo</th></tr>
+        </thead>
+        <tbody>
+          ${rows.map(p=>`
+            <tr data-view="${encodeURIComponent(p.rut||'')}">
+              <td class="rut">${p.rut||''}</td>
+              <td class="nombre">${p.nombre||'(Sin nombre)'}</td>
+              <td class="operativo">${p.operativo||''}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>`;
+
+  // Click row -> ver ficha
+  cont.querySelectorAll('tbody tr[data-view]').forEach(tr=>{
+    tr.addEventListener('click', ()=>{
+      const rut=decodeURIComponent(tr.getAttribute('data-view'));
+      const ps=leerPacientes();
+      const p=ps.find(x=>normalizarRut(x.rut||'')===normalizarRut(rut));
+      if(p){ cont.innerHTML=renderTarjetaPaciente(p);
+             document.getElementById('msgResultados').textContent='1 resultado.'; }
+      cont.scrollIntoView({behavior:'smooth', block:'start'});
+    });
+  });
+}
+
+
 
 function renderFichas(rs){
   const cont=document.getElementById('listaResultados'); if(!cont) return; if(!rs||!rs.length){cont.innerHTML=''; return;}
