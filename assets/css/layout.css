@@ -1,0 +1,6 @@
+.grid-two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media (max-width:768px){ .grid-two{grid-template-columns:1fr} }
+
+
+section.view{ display:none; }
+section.view.active{ display:block; }

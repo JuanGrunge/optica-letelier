@@ -7,7 +7,51 @@
   --text:#111;
   --border:#dcdfe4;
   --warn:#f59e0b;
-}
+  --white:#fff;
+  --danger:#b00020;
+  --focus:#0b5bd7;
+  --focus-darker:#084bb2;
+  --ink-2:#293241;
+  --muted:#bfc5cc;
+  --muted-2:#cfd6de;
+  --muted-3:#e0e0e0;
+  --dark-text:#e6edf3;
+  --dark-bg:#111821;
+  --dark-surface:#0f172a;
+  --dark-surface-2:#0e1319;
+  --dark-border:#2a3442;
+  --dark-accent:#3a4658;
+  --dark-chip:#161f2a;
+  --dark-chip-accent:#132033;
+  --shadow-weak:rgba(0,0,0,.06);
+  --shadow-mid:rgba(0,0,0,.2);
+  --shadow-strong:rgba(0,0,0,.35);
+
+  --space-0:0;
+  --space-1:.25rem;
+  --space-2:.5rem;
+  --space-3:.75rem;
+  --space-4:1rem;
+  --space-5:1.25rem;
+  --space-6:1.5rem;
+  --space-8:2rem;
+  --radius-1:4px;
+  --radius-2:8px;
+  --radius-3:12px;
+  --radius-4:14px;
+  --radius-pill:999px;
+  --fs-sm:.875rem;
+  --fs-base:1rem;
+  --fs-lg:1.25rem;
+  --lh-base:1.5;
+  --z-header:3000;
+  --z-dropdown:2100;
+  --z-overlay:2000;
+  --z-modal:3000;
+  --z-toast:3200;
+  --shadow-1:0 1px 2px rgba(0,0,0,.06);
+  --shadow-2:0 2px 6px rgba(0,0,0,.2);
+  --shadow-3:0 4px 12px rgba(0,0,0,.35);}
 *{box-sizing:border-box}
 html, body{ overscroll-behavior:none }
 body{
@@ -38,17 +82,4 @@ button:active{transform:translateY(1px)}
 button.secondary{background:#777}
 button.secondary:hover{background:#555}
 .subtle{opacity:.85;margin:.25rem 0 .75rem}
-.msg-estado{margin-top:.5rem;font-weight:bold}
-
-.overflow-x-auto{overflow-x:auto}
-.chips{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.25rem}
-.chip{display:inline-block;padding:.22rem .55rem;border:1px solid #d4d4d4;border-radius:999px;background:#f6f7fb;font-size:.85rem;line-height:1;white-space:nowrap}
-.chip.suggested{border-style:dashed;cursor:pointer;opacity:.9}
-
-.grid-two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-@media (max-width:768px){ .grid-two{grid-template-columns:1fr} }
-
-
 /* --- Vistas explícitas: sólo las secciones marcadas como .view se muestran con .active --- */
-section.view{ display:none; }
-section.view.active{ display:block; }
