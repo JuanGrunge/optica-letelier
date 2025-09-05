@@ -22,6 +22,21 @@
 
 
 <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+
+  <style id="confirmDiscardStyles">
+    .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:1200}
+    .confirm-overlay.active{display:flex}
+    .confirm-card{background:var(--surface,#ffffff);color:var(--text,#0f172a);border:1px solid var(--line,#e5e7eb);border-radius:12px;max-width:420px;width:92%;padding:16px;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+    .confirm-card h3{margin:.25rem 0 .5rem;font-weight:600}
+    .confirm-card p{margin:0 0 1rem}
+    .confirm-actions{display:flex;gap:8px;justify-content:flex-end}
+    /* Dark overrides */
+    .dark .confirm-card,
+    [data-theme="dark"] .confirm-card{background:var(--surface-2,#111827);color:var(--text-contrast,#e5e7eb);border-color:var(--line-2,#334155)}
+    .dark .confirm-overlay,
+    [data-theme="dark"] .confirm-overlay{background:rgba(0,0,0,.55)}
+  </style>
+
 </head>
 <body class="preboot">
 
@@ -332,5 +347,18 @@
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
   <script type="module" src="assets/js/main.js"></script>
+
+  <!-- Confirmación de descarte de cambios -->
+  <div id="confirmDiscard" class="confirm-overlay" aria-hidden="true">
+    <div class="confirm-card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <h3 id="confirmTitle">Cambios sin guardar</h3>
+      <p id="confirmMsg">Tienes cambios sin guardar. ¿Deseas salir y descartar los cambios?</p>
+      <div class="confirm-actions">
+        <button id="btnConfirmOk" class="btn danger">Sí</button>
+        <button id="btnConfirmCancel" class="btn">No</button>
+      </div>
+    </div>
+  </div>
+
 </body>
 </html>

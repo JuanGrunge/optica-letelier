@@ -278,3 +278,16 @@ export function initPatients(){
 
   renderDxSugerencias('');
 }
+
+
+
+// === Patch appendix: refresh results when a patient is updated (non-intrusive) ===
+(function(){
+  document.addEventListener('pacienteActualizado', () => {
+    const frm = document.getElementById('formBuscar');
+    if (frm) {
+      // trigger a re-search to refresh list if logic in patients.js hooks to submit
+      frm.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+    }
+  });
+})();
