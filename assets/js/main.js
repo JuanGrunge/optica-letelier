@@ -1,7 +1,7 @@
 import { initAuth, requireAuth } from './auth.js';
 import { initTheme } from './theme.js';
 import { initRouter, openArchivo } from './router.js';
-import { initPatients } from './patients.js';
+import { initPatients } from './ui/patients.controller.js';
 import { initModal } from './modal.js';
 
 window.addEventListener('DOMContentLoaded', () => {

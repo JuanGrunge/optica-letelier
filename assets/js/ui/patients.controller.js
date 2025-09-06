@@ -1,7 +1,7 @@
 // assets/js/patients.js — versión estable para Guardar / Validar / Toast / Reset
 
-import { leerPacientes, guardarPacientes } from './storage.js';
-import { normalizarRut, esRutValido, formatearRut, parseDec, formatCylRaw, formatAddRaw, fmtEje, clampIntInRange, roundQ, two, validateRx } from './validators.js';
+import { leerPacientes, guardarPacientes } from '../storage.js';
+import { normalizarRut, esRutValido, formatearRut, parseDec, formatCylRaw, formatAddRaw, fmtEje, clampIntInRange, roundQ, two, validateRx } from '../validators.js';
 
 function showToast(text){
   const el = document.getElementById('toast');

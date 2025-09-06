@@ -19,3 +19,32 @@ section.view.active{ display:block; }
 @media (max-width: 420px){
   section.view{ padding: 1rem; margin: 0.75rem auto 1.5rem; }
 }
+/* BG PATTERN LAYER (with light fallback) 
+body::before{
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background-image: var(--bg-pattern-image, url("../img/pattern-light.png"));
+  background-repeat: repeat;
+  background-size: 150px 150px;
+  background-position: top left;
+}
+*/
+/* === Background mosaic on body (no pseudo-element) =====================
+   - Light (default): pattern-light.png
+   - Dark: switches via body.dark-mode
+   - Keeps background-color from var(--bg) for theme consistency
+======================================================================= */
+body{
+  background-color: var(--bg);
+  background-image: url("../img/pattern-light.png");
+  background-repeat: repeat;
+  background-size: 150px 150px;
+  background-position: top left;
+}
+
+body.dark-mode{
+  background-image: url("../img/pattern-dark.png");
+}

@@ -1,11 +1,11 @@
 /* Tablas de receta y resultados */
 .rx-table{
   width:100%;min-width:780px;border-collapse:separate;border-spacing:0;
-  background:var(--white);color:var(--card);border:1px solid var(--border);border-radius: var(--radius-3);}
-.rx-table thead th{background:linear-gradient(180deg,#f7f9fc,#eef2f7);color:var(--card);font-weight:700;font-size:.9rem;letter-spacing:.02em;padding:0.6rem 0.5rem;border-bottom:1px solid var(--border)}
+  background:var(--white);color: var(--text);border:1px solid var(--border);border-radius: var(--radius-3);}
+.rx-table thead th{background:linear-gradient(180deg,#f7f9fc,#eef2f7);color:var(--text);font-weight:700;font-size:.9rem;letter-spacing:.02em;padding:0.6rem 0.5rem;border-bottom:1px solid var(--border)}
 .rx-table tbody td{border-top:1px solid var(--border);padding:.45rem .45rem}
 .rx-table tbody tr:nth-child(even){background:#fafbfe}
-.rx-table td input[type="number"], .rx-table td input[type="text"]{ width:100%;padding:0.4rem 0.35rem;border:1px solid #cfd6de;border-radius: var(--radius-2);background:var(--white);color:var(--card);text-align:center; }
+.rx-table td input[type="number"], .rx-table td input[type="text"]{ width:100%;padding:0.4rem 0.35rem;border:1px solid #cfd6de;border-radius: var(--radius-2);background:var(--white);color:var(--text);text-align:center; }
 .eye-tag{font-weight:700;background:#eef5ff;border-right:1px solid var(--border)}
 .rx-table th:nth-child(4), .rx-table td:nth-child(4){border-right:2px dashed #cfd6de}
 
