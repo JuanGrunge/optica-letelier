@@ -1,6 +1,21 @@
 .grid-two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 @media (max-width:768px){ .grid-two{grid-template-columns:1fr} }
 
-
-section.view{ display:none; }
+/* Views act as centered cards with a max width (ensures background gutter visible) */
+section.view{
+  display:none;
+  max-width: 1000px;          /* matches core.css default to stay consistent */
+  margin: 1.25rem auto 2rem;  /* center with vertical rhythm */
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 18px var(--shadow-weak, rgba(0,0,0,.06));
+  text-align: left;
+}
 section.view.active{ display:block; }
+
+/* Optional: tighter gutters on very small screens */
+@media (max-width: 420px){
+  section.view{ padding: 1rem; margin: 0.75rem auto 1.5rem; }
+}
