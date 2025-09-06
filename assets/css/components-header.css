@@ -129,7 +129,7 @@ body.no-session .menu-toggle{ display:none !important; }
   header nav{ display: none; width: 100%; }
   /* when open, allow wrap and show nav below header */
   body.nav-open header{ flex-wrap: wrap; }
-  body.nav-open header nav{ display: block; width: 100%; margin-top: 8px; }
+  body.nav-open header nav{ display: block; width: 100%; margin-top: 0px; }
   body.nav-open header nav ul{
     display: flex;
     flex-direction: column;
