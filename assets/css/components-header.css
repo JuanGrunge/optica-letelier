@@ -115,3 +115,26 @@ header{ padding-left: var(--header-pad-x); padding-right: var(--header-pad-x); }
 
 
 body.no-session .menu-toggle{ display:none !important; }
+
+/* === PATCH: mobile hamburger dropdown (append-only, no desktop impact) === */
+@media (max-width: 768px){
+  header .menu-toggle{
+    display: inline-block;
+    font-size: 1.4rem;
+    line-height: 1;
+    padding: .25rem .4rem;
+    cursor: pointer;
+  }
+  /* nav hidden by default in mobile */
+  header nav{ display: none; width: 100%; }
+  /* when open, allow wrap and show nav below header */
+  body.nav-open header{ flex-wrap: wrap; }
+  body.nav-open header nav{ display: block; width: 100%; margin-top: 8px; }
+  body.nav-open header nav ul{
+    display: flex;
+    flex-direction: column;
+    gap: .35rem;
+    padding: 0; margin: 0;
+    align-items: flex-start;
+  }
+}
