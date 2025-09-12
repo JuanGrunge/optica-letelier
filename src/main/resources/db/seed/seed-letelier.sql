@@ -1,0 +1,89 @@
+
+-- =====================================================
+-- LETELIER - RESET + SEED *IDEMPOTENTE* (H2)
+-- Úsalo para dejar la BD limpia y cargar datos de prueba
+-- Paso 1: Ejecuta TODO este bloque (Reset)
+-- Paso 2: Ejecuta el bloque de "SEED (MERGE)" más abajo
+-- =====================================================
+
+-- --- RESET SEGURO (ignora FKs mientras truncamos) ---
+SET REFERENTIAL_INTEGRITY FALSE;
+
+TRUNCATE TABLE PATIENT_OPERATIVE;
+TRUNCATE TABLE INVOICE;
+TRUNCATE TABLE PRESCRIPTION;
+TRUNCATE TABLE OPERATIVE;
+TRUNCATE TABLE PATIENT;
+TRUNCATE TABLE AUDIT_LOG;
+
+SET REFERENTIAL_INTEGRITY TRUE;
+
+-- =====================================================
+-- SEED (MERGE) - idempotente: si ejecutas 2 veces NO duplica
+-- =====================================================
+
+-- ========== PACIENTES ==========
+MERGE INTO PATIENT (ID, NOMBRES, APELLIDOS, RUT, FECHA_NAC, TELEFONO, EMAIL, DIRECCION, ACTIVO)
+KEY (RUT) VALUES (DEFAULT, 'Juan',  'Rojas', '12.345.678-9', DATE '1990-05-10', '987654321', 'juan.rojas@example.com', 'Av. Central 123', TRUE);
+
+MERGE INTO PATIENT (ID, NOMBRES, APELLIDOS, RUT, FECHA_NAC, TELEFONO, EMAIL, DIRECCION, ACTIVO)
+KEY (RUT) VALUES (DEFAULT, 'Maria', 'Perez', '9.876.543-2',  DATE '1988-09-22', '912345678', 'maria.perez@example.com', 'Calle Norte 456', TRUE);
+
+-- ========== OPERATIVOS ==========
+MERGE INTO OPERATIVE (ID, NOMBRE, LUGAR, DIRECCION, FECHA, OBSERVACIONES, ACTIVO)
+KEY (NOMBRE, FECHA) VALUES (DEFAULT, 'Operativo Plaza', 'Plaza Central', 'Plaza 1, Comuna', DATE '2025-09-12', 'Jornada AM', TRUE);
+
+MERGE INTO OPERATIVE (ID, NOMBRE, LUGAR, DIRECCION, FECHA, OBSERVACIONES, ACTIVO)
+KEY (NOMBRE, FECHA) VALUES (DEFAULT, 'Operativo Sur',   'Sede Sur',      'Av. Sur 987',     DATE '2025-09-13', 'Jornada PM', TRUE);
+
+-- ========== RELACIÓN Paciente-Operativo ==========
+-- usamos MIN(ID) para garantizar 1 fila (evita "Scalar subquery contains more than one row")
+MERGE INTO PATIENT_OPERATIVE (PATIENT_ID, OPERATIVE_ID)
+KEY (PATIENT_ID, OPERATIVE_ID)
+VALUES (
+  (SELECT MIN(ID) FROM PATIENT   WHERE RUT='12.345.678-9'),
+  (SELECT MIN(ID) FROM OPERATIVE WHERE NOMBRE='Operativo Plaza' AND FECHA=DATE '2025-09-12')
+);
+
+-- ========== RECETAS ==========
+MERGE INTO PRESCRIPTION (ID, PACIENTE_ID, OD_ESFERA, OD_CILINDRO, OD_EJE, OI_ESFERA, OI_CILINDRO, OI_EJE, ADD_POWER, OBSERVACIONES, FECHA, ACTIVO)
+KEY (PACIENTE_ID, FECHA, OBSERVACIONES)
+VALUES (
+  DEFAULT,
+  (SELECT MIN(ID) FROM PATIENT WHERE RUT='12.345.678-9'),
+  -1.25, -0.50, 90, -1.00, -0.25, 80, 2.00,
+  'Lentes de lectura',
+  CURRENT_DATE,
+  TRUE
+);
+
+MERGE INTO PRESCRIPTION (ID, PACIENTE_ID, OD_ESFERA, OD_CILINDRO, OD_EJE, OI_ESFERA, OI_CILINDRO, OI_EJE, ADD_POWER, OBSERVACIONES, FECHA, ACTIVO)
+KEY (PACIENTE_ID, FECHA, OBSERVACIONES)
+VALUES (
+  DEFAULT,
+  (SELECT MIN(ID) FROM PATIENT WHERE RUT='9.876.543-2'),
+  -0.75, -0.25, 85, -0.50, -0.25, 95, NULL,
+  'Uso diario',
+  CURRENT_DATE,
+  TRUE
+);
+
+-- ========== BOLETAS (INVOICE) ==========
+MERGE INTO INVOICE (ID, PACIENTE_ID, PRESCRIPTION_ID, FECHA, TOTAL, DETALLE, ANULADO)
+KEY (PACIENTE_ID, FECHA, TOTAL, DETALLE)
+VALUES (
+  DEFAULT,
+  (SELECT MIN(ID) FROM PATIENT WHERE RUT='12.345.678-9'),
+  (SELECT MIN(ID) FROM PRESCRIPTION WHERE PACIENTE_ID=(SELECT MIN(ID) FROM PATIENT WHERE RUT='12.345.678-9')),
+  CURRENT_DATE,
+  35000,
+  'Armazon basico + cristales monofocales',
+  FALSE
+);
+
+-- ========== QUERIES DE VERIFICACIÓN ==========
+SELECT COUNT(*) AS pacientes   FROM PATIENT;
+SELECT COUNT(*) AS recetas     FROM PRESCRIPTION;
+SELECT COUNT(*) AS operativos  FROM OPERATIVE;
+SELECT COUNT(*) AS boletas     FROM INVOICE;
+SELECT * FROM PATIENT ORDER BY ID;
