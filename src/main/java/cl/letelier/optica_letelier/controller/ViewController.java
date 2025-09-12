@@ -5,8 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class ViewController {
-    @GetMapping({"/","/pacientes","/archivo","/login"})
-    public String index() {
+
+    @GetMapping({"/", "/login", "/pacientes", "/archivo"})
+    public String forward() {
         return "forward:/index.html";
     }
 }
