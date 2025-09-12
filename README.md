@@ -22,35 +22,18 @@
    git clone <tu-repo> optica-letelier
    cd optica-letelier
    ```
-3) **Configura H2 (desarrollo, volátil)** — en `src/main/resources/application.properties` deja:
-   ```properties
-   spring.datasource.url=jdbc:h2:mem:letelier;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
-   spring.datasource.username=sa
-   spring.datasource.password=
-   spring.jpa.hibernate.ddl-auto=update
-   spring.h2.console.enabled=true
-   ```
-4) **Semilla automática (opcional)** — para cargar datos en cada arranque, coloca el seed en:
-   ```
-   src/main/resources/db/seed/seed-letelier.sql
-   ```
-   y añade al final de `application.properties`:
-   ```properties
-   spring.sql.init.mode=always
-   spring.sql.init.data-locations=classpath:db/seed/seed-letelier.sql
-   spring.jpa.defer-datasource-initialization=true
-   ```
-5) **Compila** y **levanta** el backend:
+
+3) **Compila** y **levanta** el backend:
    ```bash
    mvn clean compile
    mvn spring-boot:run
    ```
-6) **Abre** en el navegador y verifica:
+4) **Abre** en el navegador y verifica:
    - App: `http://localhost:8080`  
    - Health: `http://localhost:8080/health`  
    - H2 Console (si está habilitada): `http://localhost:8080/h2-console/`  
      - JDBC: `jdbc:h2:mem:letelier` · Usuario: `sa` · Contraseña: *(vacío)*
-7) **Prueba la API** con un JWT válido (header `Authorization: Bearer <token>`).  
+5) **Prueba la API** con un JWT válido (header `Authorization: Bearer <token>`).  
    Ejemplo (listar pacientes):
    ```bash
    curl -H "Authorization: Bearer <TOKEN>" http://localhost:8080/api/patients
