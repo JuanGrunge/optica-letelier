@@ -9,9 +9,9 @@ public record PageResponse<T>(
         int size,
         long totalElements,
         int totalPages,
-        boolean last
-) {
-    public static <T> PageResponse<T> of(Page<T> page) {
+       boolean last
+){
+    public static <T> PageResponse<T> of(Page<T> page){
         return new PageResponse<>(
                 page.getContent(),
                 page.getNumber(),

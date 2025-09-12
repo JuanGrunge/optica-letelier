@@ -1,20 +1,20 @@
 package cl.letelier.optica_letelier.patient;
 
 public class PatientMapper {
-    public static PatientDTO toDTO(Patient p) {
+    public static PatientDTO toDTO(Patient p){
         return new PatientDTO(
-                p.getId(), p.getNombres(), p.getApellidos(), p.getRut(),
-                p.getFechaNac(), p.getTelefono(), p.getEmail(), p.getDireccion(), p.isActivo()
+            p.getId(), p.getNombres(), p.getApellidos(), p.getRut(),
+            p.getFechaNac(), p.getTelefono(), p.getEmail(), p.getDireccion(), p.isActivo()
         );
     }
-    public static void updateEntity(Patient p, PatientDTO dto) {
-        p.setNombres(dto.nombres());
-        p.setApellidos(dto.apellidos());
-        p.setRut(dto.rut());
-        p.setFechaNac(dto.fechaNac());
-        p.setTelefono(dto.telefono());
-        p.setEmail(dto.email());
-        p.setDireccion(dto.direccion());
-        p.setActivo(dto.activo());
+    public static void updateEntity(Patient p, PatientDTO d){
+        p.setNombres(d.nombres());
+        p.setApellidos(d.apellidos());
+        p.setRut(d.rut());
+        p.setFechaNac(d.fechaNac());
+        p.setTelefono(d.telefono());
+        p.setEmail(d.email());
+        p.setDireccion(d.direccion());
+        p.setActivo(d.activo());
     }
 }

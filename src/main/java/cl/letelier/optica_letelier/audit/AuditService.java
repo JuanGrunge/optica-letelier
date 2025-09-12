@@ -8,12 +8,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Service @Transactional
 public class AuditService {
     private final AuditLogRepository repo;
-    public AuditService(AuditLogRepository repo){ this.repo = repo; }
-
-    public void log(String accion, String entidad, Long entidadId, String detalle){
-        AuditLog l = new AuditLog();
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        l.setUsuario(auth != null ? auth.getName() : "system");
+    public AuditService(AuditLogRepository repo){this.repo=repo;}
+    public void log(String accion,String entidad,Long entidadId,String detalle){
+        AuditLog l=new AuditLog();
+        Authentication a= SecurityContextHolder.getContext().getAuthentication();
+        l.setUsuario(a!=null ? a.getName() : "system");
         l.setAccion(accion); l.setEntidad(entidad); l.setEntidadId(entidadId); l.setDetalle(detalle);
         repo.save(l);
     }
