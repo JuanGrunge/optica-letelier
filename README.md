@@ -30,17 +30,27 @@
    spring.jpa.hibernate.ddl-auto=update
    spring.h2.console.enabled=true
    ```
-4) **Compila** y **levanta** el backend:
+4) **Semilla automática (opcional)** — para cargar datos en cada arranque, coloca el seed en:
+   ```
+   src/main/resources/db/seed/seed-letelier.sql
+   ```
+   y añade al final de `application.properties`:
+   ```properties
+   spring.sql.init.mode=always
+   spring.sql.init.data-locations=classpath:db/seed/seed-letelier.sql
+   spring.jpa.defer-datasource-initialization=true
+   ```
+5) **Compila** y **levanta** el backend:
    ```bash
    mvn clean compile
    mvn spring-boot:run
    ```
-5) **Abre** en el navegador y verifica:
+6) **Abre** en el navegador y verifica:
    - App: `http://localhost:8080`  
    - Health: `http://localhost:8080/health`  
    - H2 Console (si está habilitada): `http://localhost:8080/h2-console/`  
      - JDBC: `jdbc:h2:mem:letelier` · Usuario: `sa` · Contraseña: *(vacío)*
-6) **Prueba la API** con un JWT válido (header `Authorization: Bearer <token>`).  
+7) **Prueba la API** con un JWT válido (header `Authorization: Bearer <token>`).  
    Ejemplo (listar pacientes):
    ```bash
    curl -H "Authorization: Bearer <TOKEN>" http://localhost:8080/api/patients
@@ -48,22 +58,22 @@
 
 ---
 
-## Semilla de datos H2 (opcional, para pruebas)
-Coloca tu script en: **`src/main/resources/db/seed/seed-letelier.sql`**
+## Consultas de verificación (H2 Console)
+Ejecuta estas **solo para pruebas** (el seed **no** incluye SELECTs):
 
-### Opción A — Ejecutar desde la H2 Console (desarrollo)
-1. Abre `http://localhost:8080/h2-console/` y conecta.  
-2. Menú **Tools → Run Script…** → selecciona `src/main/resources/db/seed/seed-letelier.sql`.  
-3. Ejecuta. El script es **idempotente**.
-
-### Opción B — Ejecutar automáticamente al arrancar
-Añade a `application.properties`:
-```properties
-spring.sql.init.mode=always
-spring.sql.init.data-locations=classpath:db/seed/seed-letelier.sql
-spring.jpa.defer-datasource-initialization=true
+**Totales por entidad**
+```sql
+SELECT COUNT(*) AS pacientes   FROM PATIENT;
+SELECT COUNT(*) AS recetas     FROM PRESCRIPTION;
+SELECT COUNT(*) AS operativos  FROM OPERATIVE;
+SELECT COUNT(*) AS boletas     FROM INVOICE;
 ```
-> Con H2 en memoria, JPA crea el esquema y **luego** se carga el seed en cada arranque.
+
+**Listados rápidos**
+```sql
+SELECT * FROM PATIENT ORDER BY ID;
+```
+
 
 ---
 
@@ -83,5 +93,4 @@ spring.jpa.defer-datasource-initialization=true
 ## Notas
 - `ViewController` enruta `/, /pacientes, /archivo, /login` → `index.html`.
 - No se cambió tu front: se sirve desde `src/main/resources/static/`.
-- **Semilla H2**: `src/main/resources/db/seed/seed-letelier.sql` (H2 Console o auto-init con `spring.sql.init.*`).
 - Próximas actualizaciones: cablear front a la API; administración de usuarios (roles); deploy del backend para consumo desde GitHub Pages.
