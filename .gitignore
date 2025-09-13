@@ -1,31 +1,33 @@
-# Sistema Óptica Letelier - .gitignore
+HELP.md
+target/
+.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
 
-# Dependencias y builds
-node_modules/
-dist/
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
 build/
-.cache/
-.parcel-cache/
-.next/
-out/
-*.map
+!**/src/main/**/build/
+!**/src/test/**/build/
 
-# Sistemas y editores
-.DS_Store
-Thumbs.db
+### VS Code ###
 .vscode/
-.idea/
-
-# Logs y entorno
-*.log
-logs/
-.env
-.env.*
-
-# Temporal
-*.tmp
-*.swp
-*.swo
-
-# Cobertura/tests
-coverage/

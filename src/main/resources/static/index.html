@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <script src="/assets/js/early-boot.js"></script>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Óptica Letelier - Sistema</title>
+<link rel="stylesheet" href="/assets/css/core.css">
+<link rel="stylesheet" href="/assets/css/layout.css">
+<link rel="stylesheet" href="/assets/css/components-header.css">
+<link rel="stylesheet" href="/assets/css/components-forms.css">
+<link rel="stylesheet" href="/assets/css/components-tables.css">
+<link rel="stylesheet" href="/assets/css/components-modal.css">
+<link rel="stylesheet" href="/assets/css/utilities.css">
+<link rel="stylesheet" href="/assets/css/theme-dark.css">
+<meta name="description" content="Sistema de gestión para Óptica Letelier: ingreso y búsqueda de pacientes, recetas y órdenes.">
+
+  <!-- CSS modular -->
+
+
+
+
+
+<link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
+
+  <style id="confirmDiscardStyles">
+    .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:1200}
+    .confirm-overlay.active{display:flex}
+    .confirm-card{background:var(--surface,#ffffff);color:var(--text,#0f172a);border:1px solid var(--line,#e5e7eb);border-radius:12px;max-width:420px;width:92%;padding:16px;box-shadow:0 12px 30px rgba(0,0,0,.2)}
+    .confirm-card h3{margin:.25rem 0 .5rem;font-weight:600}
+    .confirm-card p{margin:0 0 1rem}
+    .confirm-actions{display:flex;gap:8px;justify-content:flex-end}
+    /* Dark overrides */
+    .dark .confirm-card,
+    [data-theme="dark"] .confirm-card{background:var(--surface-2,#111827);color:var(--text-contrast,#e5e7eb);border-color:var(--line-2,#334155)}
+    .dark .confirm-overlay,
+    [data-theme="dark"] .confirm-overlay{background:rgba(0,0,0,.55)}
+  </style>
+
+</head>
+<body class="preboot">
+
+  <header>
+    <h2 class="brand"><img src="/assets/img/logo.png" alt="logo" class="logo"></h2>
+
+    <nav data-auth="protected">
+      <ul>
+        <li>
+          <button type="button" id="navArchivo" class="nav-pill" aria-label="Archivo">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="nav-ic">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 19a9 9 0 0 1 9 -9h9"/>
+                <path d="M3 6h18"/>
+                <path d="M3 6v13a2 2 0 0 0 2 2h13"/>
+              </g>
+            </svg>
+            <span class="nav-label">Archivo</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" id="navIngresar" class="nav-pill" aria-label="Ingresar paciente">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="nav-ic">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/>
+                <path d="M6 21v-2a4 4 0 0 1 4 -4h4"/>
+                <path d="M16 19h6"/>
+                <path d="M19 16v6"/>
+              </g>
+            </svg>
+            <span class="nav-label">Ingresar paciente</span>
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+    <div class="session-area" data-auth="protected">
+      <span id="userBadge" class="user-badge" aria-live="polite" hidden></span>
+      
+    
+  <button id="btnLogout" class="btn-logout nav-pill" type="button" hidden aria-label="Cerrar sesión">
+  <svg viewBox="0 0 24 24" aria-hidden="true" class="nav-ic">
+    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+      <path d="M7 12h11"/>
+      <path d="M10 9l-3 3l3 3"/>
+    </g>
+  </svg>
+  <span class="nav-label">Cerrar sesión</span>
+</button>
+</div>
+
+    <span class="menu-toggle" aria-label="Abrir menú" data-auth="protected">☰</span>
+  
+    <div class="theme-switch-wrapper">
+      <label class="theme-switch" title="Modo oscuro">
+        <input type="checkbox" id="darkModeToggle">
+        <span class="slider round"></span>
+      </label>
+    </div>
+  </header>
+
+  <!-- Login -->
+  <section id="loginOverlay" class="login-overlay" aria-label="Inicio de sesión">
+    <div class="login-card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+      <h2 id="loginTitle">Iniciar sesión</h2>
+      <form id="loginForm">
+        <label for="loginUser">Usuario</label>
+        <input id="loginUser" autocomplete="username" type="text" autocomplete="username" placeholder="Ej: admin" required>
+
+        <label for="loginPass">Contraseña</label>
+        <input id="loginPass" autocomplete="current-password" type="password" autocomplete="current-password" placeholder="••••••••" required>
+
+        <button type="submit" class="login-btn">Entrar</button>
+        <p id="loginMsg" class="login-msg" aria-live="polite"></p>
+
+        <details class="hint">
+          <summary>¿Primera vez?</summary>
+          <small>Admin: <strong>admin</strong> / <strong>letelier25</strong></small>
+        </details>
+      </form>
+    </div>
+  </section>
+
+  <!-- Ingresar -->
+  <section id="ingresar" class="view">
+    <h2>Ingresar Paciente</h2>
+
+    <form id="formIngresar">
+      <label>Nombre Completo</label>
+      <input id="nombre" type="text" placeholder="Ej: Juan Pérez" required>
+
+      <label>RUT</label>
+      <input id="rut" type="text" placeholder="Ej: 12.345.678-K" required>
+      <small id="rutError" class="field-error" aria-live="polite"></small>
+
+      <label>Dirección</label>
+      <input id="direccion" type="text" placeholder="Ej: Av. Siempre Viva 742">
+
+      <label>Fecha de Nacimiento</label>
+      <input id="fechaNac" type="date">
+
+      <label>Lugar de Operativo</label>
+      <input id="operativo" type="text" placeholder="Ej: Operativo Plaza Central, Comuna X" required>
+
+      <h3>Receta Óptica</h3>
+      <div class="overflow-x-auto">
+        <table class="rx-table">
+          <colgroup>
+            <col style="width:7%"><col style="width:18%"><col style="width:18%">
+            <col style="width:14%"><col style="width:15%"><col style="width:14%"><col style="width:14%">
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Ojo</th>
+              <th>Esfera</th>
+              <th>Cilindro</th>
+              <th>Eje</th>
+              <th>ADD</th>
+              <th>DP (mm)</th>
+              <th>ALT (mm)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="eye-tag">OD</td>
+              <td><input id="odEsf" type="text" inputmode="decimal" placeholder="+0.00"></td>
+              <td><input id="odCil" type="text" inputmode="decimal" placeholder="−0.00"></td>
+              <td><input id="odEje" type="number" step="1" min="0" max="180" placeholder="0–180"></td>
+              <td><input id="odAdd" type="text" inputmode="decimal" placeholder="+0.00"></td>
+              <td><input id="odDP"  type="number" step="0.5" min="20" max="40" placeholder="26–38"></td>
+              <td><input id="odALT" type="number" step="0.5" min="10" max="40" placeholder="10–40"></td>
+            </tr>
+            <tr>
+              <td class="eye-tag">OI</td>
+              <td><input id="oiEsf" type="text" inputmode="decimal" placeholder="+0.00"></td>
+              <td><input id="oiCil" type="text" inputmode="decimal" placeholder="−0.00"></td>
+              <td><input id="oiEje" type="number" step="1" min="0" max="180" placeholder="0–180"></td>
+              <td><input id="oiAdd" type="text" inputmode="decimal" placeholder="+0.00"></td>
+              <td><input id="oiDP"  type="number" step="0.5" min="20" max="40" placeholder="26–38"></td>
+              <td><input id="oiALT" type="number" step="0.5" min="10" max="40" placeholder="10–40"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="dp-extra">
+        <label class="inline-check">
+          <input id="dpCercaToggle" type="checkbox"> DP Cerca (binocular)
+        </label>
+        <div id="dpCercaBox" class="dp-inline hidden">
+          <input id="dpCerca" type="number" inputmode="decimal" step="0.5" min="40" max="80" placeholder="Ej: 61.0 (40–80)">
+          <small id="dpCercaHint" class="subtle"></small>
+        </div>
+      </div>
+
+      <small id="rxMsg" class="field-error" aria-live="polite"></small>
+
+      <h4>Diagnóstico</h4>
+      <div class="checkbox-grid">
+        <label class="check-row"><span class="check-text">Miopía</span><input type="checkbox" name="dx" value="Miopía"></label>
+        <label class="check-row"><span class="check-text">Astigmatismo</span><input type="checkbox" name="dx" value="Astigmatismo"></label>
+        <label class="check-row"><span class="check-text">Hipermetropía</span><input type="checkbox" name="dx" value="Hipermetropía"></label>
+        <label class="check-row"><span class="check-text">Presbicie</span><input type="checkbox" name="dx" value="Presbicie"></label>
+      </div>
+      <div id="dxSugeridos" class="chips"></div>
+
+      <label>Observaciones</label>
+      <textarea id="obs" rows="3" placeholder="Notas clínicas, indicaciones, etc."></textarea>
+
+      <button id="btnGuardar" type="submit">Guardar</button>
+    </form>
+
+    <p id="msgGuardado" class="msg-estado" aria-live="polite"></p>
+  </section>
+
+  <!-- Archivo -->
+  <section id="archivo" class="view">
+    <h2>Archivo</h2>
+    <p class="subtle">Busca por <strong>RUT, Nombre o Lugar de Operativo</strong> con un solo campo.</p>
+
+    <form id="formBuscar">
+      <div class="filters single">
+        <div class="search-wrap">
+          <input id="fQuery" type="text" placeholder="Ej: 12.345.678-K • Juan • Plaza Central">
+          <button class="icon-search-btn" type="submit" aria-label="Buscar" title="Buscar">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.71.71l.27.28v.79L20 21.5 21.5 20l-6-6zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <div id="resultados" class="resultados">
+      <h3>Resultados</h3>
+      <div id="listaResultados" class="lista-resultados"></div>
+      <p id="msgResultados" class="subtle"></p>
+    </div>
+  </section>
+
+  <!-- Modal edición -->
+  <section id="editModal" class="modal-overlay" aria-hidden="true">
+    <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+      <div class="modal-header">
+        <h3 id="editTitle">Editar paciente</h3>
+      </div>
+
+      <form id="editForm">
+        <div class="modal-content">
+          <div class="grid-two">
+            <div>
+              <label>Nombre Completo</label>
+              <input id="mNombre" type="text" required>
+            </div>
+            <div>
+              <label>RUT</label>
+              <input id="mRut" type="text" required>
+              <small id="mRutError" class="field-error" aria-live="polite"></small>
+            </div>
+          </div>
+
+          <div class="grid-two">
+            <div>
+              <label>Dirección</label>
+              <input id="mDireccion" type="text">
+            </div>
+            <div>
+              <label>Fecha de Nacimiento</label>
+              <input id="mFechaNac" type="date">
+            </div>
+          </div>
+
+          <div>
+            <label>Lugar de Operativo</label>
+            <input id="mOperativo" type="text" required>
+          </div>
+
+          <h4>Receta Óptica</h4>
+          <div class="overflow-x-auto">
+            <table class="rx-table">
+              <colgroup>
+                <col style="width:7%"><col style="width:18%"><col style="width:18%">
+                <col style="width:14%"><col style="width:15%"><col style="width:14%"><col style="width:14%">
+              </colgroup>
+              <thead>
+                <tr>
+                  <th>Ojo</th>
+                  <th>Esfera</th>
+                  <th>Cilindro</th>
+                  <th>Eje</th>
+                  <th>ADD</th>
+                  <th>DP (mm)</th>
+                  <th>ALT (mm)</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="eye-tag">OD</td>
+                  <td><input id="mOdEsf" type="text" inputmode="decimal" placeholder="+0.00"></td>
+                  <td><input id="mOdCil" type="text" inputmode="decimal" placeholder="−0.00"></td>
+                  <td><input id="mOdEje" type="number" step="1" min="0" max="180" placeholder="0–180"></td>
+                  <td><input id="mOdAdd" type="text" inputmode="decimal" placeholder="+0.00"></td>
+                  <td><input id="mOdDP"  type="number" step="0.5" min="20" max="40" placeholder="26–38"></td>
+                  <td><input id="mOdALT" type="number" step="0.5" min="10" max="40" placeholder="10–40"></td>
+                </tr>
+                <tr>
+                  <td class="eye-tag">OI</td>
+                  <td><input id="mOiEsf" type="text" inputmode="decimal" placeholder="+0.00"></td>
+                  <td><input id="mOiCil" type="text" inputmode="decimal" placeholder="−0.00"></td>
+                  <td><input id="mOiEje" type="number" step="1" min="0" max="180" placeholder="0–180"></td>
+                  <td><input id="mOiAdd" type="text" inputmode="decimal" placeholder="+0.00"></td>
+                  <td><input id="mOiDP"  type="number" step="0.5" min="20" max="40" placeholder="26–38"></td>
+                  <td><input id="mOiALT" type="number" step="0.5" min="10" max="40" placeholder="10–40"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="dp-extra">
+            <label class="inline-check">
+              <input id="mDpCercaToggle" type="checkbox"> DP Cerca (binocular)
+            </label>
+            <div id="mDpCercaBox" class="dp-inline hidden">
+              <input id="mDpCerca" type="number" inputmode="decimal" step="0.5" min="40" max="80" placeholder="Ej: 61.0 (40–80)">
+              <small id="mDpCercaHint" class="subtle"></small>
+            </div>
+          </div>
+
+          <h4>Diagnóstico</h4>
+          <div class="checkbox-grid">
+            <label class="check-row"><span class="check-text">Miopía</span><input type="checkbox" name="mdx" value="Miopía"></label>
+            <label class="check-row"><span class="check-text">Astigmatismo</span><input type="checkbox" name="mdx" value="Astigmatismo"></label>
+            <label class="check-row"><span class="check-text">Hipermetropía</span><input type="checkbox" name="mdx" value="Hipermetropía"></label>
+            <label class="check-row"><span class="check-text">Presbicie</span><input type="checkbox" name="mdx" value="Presbicie"></label>
+          </div>
+          <div id="dxSugeridosModal" class="chips"></div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" id="btnCancelEdit" class="secondary">Cancelar</button>
+          <button type="submit" id="btnSaveEdit">Guardar cambios</button>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="/assets/js/main.js"></script>
+
+  <!-- Confirmación de descarte de cambios -->
+  <div id="confirmDiscard" class="confirm-overlay" aria-hidden="true">
+    <div class="confirm-card" role="dialog" aria-modal="true" aria-labelledby="confirmTitle">
+      <h3 id="confirmTitle">Cambios sin guardar</h3>
+      <p id="confirmMsg">Tienes cambios sin guardar. ¿Deseas salir y descartar los cambios?</p>
+      <div class="confirm-actions">
+        <button id="btnConfirmOk" class="btn danger">Sí</button>
+        <button id="btnConfirmCancel" class="btn">No</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/assets/js/infra/repos/http.patients.repository.js"></script>
+</body>
+</html>
