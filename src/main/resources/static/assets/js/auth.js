@@ -1,95 +1,60 @@
-const AUTH_KEY='sesion', USERS_KEY='usuarios';
+// assets/js/auth.js
+// UI de autenticación. El backend maneja toda la sesión (cookie HttpOnly).
+import * as Auth from './services/auth.service.js';
 
-function val(v){return (v??'').toString().trim();}
-async function sha256Hex(text){
-  const enc=new TextEncoder().encode(text);
-  const buf=await crypto.subtle.digest('SHA-256',enc);
-  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-}
-function getUsers(){try{return JSON.parse(localStorage.getItem(USERS_KEY)||'[]')}catch{return[]}}
-function findUser(u){return getUsers().find(x=>(x.username||'').toLowerCase()===String(u||'').toLowerCase());}
-function setSession(s){localStorage.setItem(AUTH_KEY,JSON.stringify(s))}
-export function getSession(){try{return JSON.parse(localStorage.getItem(AUTH_KEY)||'null')}catch{return null}}
-function clearSession(){localStorage.removeItem(AUTH_KEY)}
+let _currentUser = null;
+export function getCurrentUser() { return _currentUser; }
 
-async function seedUsers(){
-  if(localStorage.getItem(USERS_KEY)) return;
-  const h=await sha256Hex('letelier25');
-  localStorage.setItem(USERS_KEY, JSON.stringify([{username:'admin',passHash:h,role:'admin'}]));
+export async function refreshSession() {
+  try { _currentUser = await Auth.me(); }
+  catch { _currentUser = null; }
+  applyAuthState();
 }
 
-export function requireAuth(){
-  const protectedEls = document.querySelectorAll('[data-auth="protected"]');
-
-  const s=getSession();
-  const overlay=document.getElementById('loginOverlay');
-  const badge=document.getElementById('userBadge');
-  const logout=document.getElementById('btnLogout');
-
-  if(!s){
-    protectedEls.forEach(el=> el.hidden = true);
-    document.querySelectorAll('section').forEach(s=>s.classList.remove('active'));
-    overlay?.classList.add('active');
-    badge.hidden = true; logout.hidden = true;
-    document.body.classList.add('no-session');
-    localStorage.removeItem('lastSection');
-    return false;
+export function initAuth() {
+  // Login
+  const form = document.querySelector('#loginForm');
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const fd = new FormData(form);
+      const username = fd.get('username') || fd.get('email');
+      const password = fd.get('password');
+      try {
+        await Auth.login({ username, password });
+        await refreshSession();
+      } catch (err) {
+        alert(err?.message || 'Login failed');
+      }
+    });
   }
-  overlay?.classList.remove('active');
-  protectedEls.forEach(el=> el.hidden = false);
-  if (badge){ badge.textContent=`${s.username} (${s.role||'usuario'})`; badge.hidden=false; }
-  if (logout){ logout.hidden=false; }
-  document.body.classList.remove('no-session');
-  return true;
+
+  // Logout
+  const logoutBtn = document.querySelector('#btnLogout');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', async (e) => {
+      e.preventDefault();
+      try { await Auth.logout(); }
+      finally { _currentUser = null; applyAuthState(); }
+    });
+  }
+
+  refreshSession();
 }
 
-function showToast(t){const el=document.getElementById('toast'); if(!el) return; el.textContent=t; el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),2300);}
+function applyAuthState() {
+  const loginView = document.querySelector('#login');
+  const appView   = document.querySelector('#app');
 
-export function initAuth(){
-  seedUsers();
-
-  
-  // Autocompletar admin para pruebas rápidas
-  const userField = document.getElementById('loginUser');
-  const passField = document.getElementById('loginPass');
-  if (userField && passField) {
-    userField.value = 'admin';
-    passField.value = 'letelier25';
+  if (_currentUser) {
+    if (loginView) loginView.style.display = 'none';
+    if (appView)   appView.style.display   = '';
+    const u = document.querySelector('#username');
+    if (u) u.textContent = _currentUser.username || 'user';
+  } else {
+    if (loginView) loginView.style.display = '';
+    if (appView)   appView.style.display   = 'none';
+    const u = document.querySelector('#username');
+    if (u) u.textContent = '';
   }
-document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const u=val(document.getElementById('loginUser').value);
-    const p=document.getElementById('loginPass').value;
-    const m=document.getElementById('loginMsg');
-    m.textContent='';
-
-    const user=findUser(u);
-    if(!user){ m.textContent='Usuario o contraseña inválidos.'; return; }
-    const h=await sha256Hex(p);
-    if(h!==user.passHash){ m.textContent='Usuario o contraseña inválidos.'; return; }
-
-    setSession({username:user.username,role:user.role,at:new Date().toISOString()});
-    document.getElementById('loginForm').reset();
-    requireAuth();
-    // Navegar a Archivo sin importar router (evita import circular)
-    try {
-      localStorage.setItem('lastSection','archivo');
-      const btn = document.getElementById('navArchivo');
-      if (btn) btn.dispatchEvent(new Event('click', { bubbles: true }));
-    } catch {}
-
-    showToast('Sesión iniciada');
-  });
-
-  document.getElementById('btnLogout')?.addEventListener('click', () => {
-    clearSession();
-    requireAuth();
-    // Navegar a Archivo sin importar router (evita import circular)
-    try {
-      localStorage.setItem('lastSection','archivo');
-      const btn = document.getElementById('navArchivo');
-      if (btn) btn.dispatchEvent(new Event('click', { bubbles: true }));
-    } catch {}
-
-  });
 }

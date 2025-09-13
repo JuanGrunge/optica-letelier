@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <script src="assets/js/early-boot.js"></script>
+  <script src="/assets/js/early-boot.js"></script>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <title>Óptica Letelier - Sistema</title>
-<link rel="stylesheet" href="assets/css/core.css">
-<link rel="stylesheet" href="assets/css/layout.css">
-<link rel="stylesheet" href="assets/css/components-header.css">
-<link rel="stylesheet" href="assets/css/components-forms.css">
-<link rel="stylesheet" href="assets/css/components-tables.css">
-<link rel="stylesheet" href="assets/css/components-modal.css">
-<link rel="stylesheet" href="assets/css/utilities.css">
-<link rel="stylesheet" href="assets/css/theme-dark.css">
+<link rel="stylesheet" href="/assets/css/core.css">
+<link rel="stylesheet" href="/assets/css/layout.css">
+<link rel="stylesheet" href="/assets/css/components-header.css">
+<link rel="stylesheet" href="/assets/css/components-forms.css">
+<link rel="stylesheet" href="/assets/css/components-tables.css">
+<link rel="stylesheet" href="/assets/css/components-modal.css">
+<link rel="stylesheet" href="/assets/css/utilities.css">
+<link rel="stylesheet" href="/assets/css/theme-dark.css">
 <meta name="description" content="Sistema de gestión para Óptica Letelier: ingreso y búsqueda de pacientes, recetas y órdenes.">
 
   <!-- CSS modular -->
@@ -21,7 +21,7 @@
 
 
 
-<link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+<link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
 
   <style id="confirmDiscardStyles">
     .confirm-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:1200}
@@ -41,7 +41,7 @@
 <body class="preboot">
 
   <header>
-    <h2 class="brand"><img src="assets/img/logo.png" alt="logo" class="logo"></h2>
+    <h2 class="brand"><img src="/assets/img/logo.png" alt="logo" class="logo"></h2>
 
     <nav data-auth="protected">
       <ul>
@@ -346,7 +346,7 @@
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
-  <script type="module" src="assets/js/main.js"></script>
+  <script type="module" src="/assets/js/main.js"></script>
 
   <!-- Confirmación de descarte de cambios -->
   <div id="confirmDiscard" class="confirm-overlay" aria-hidden="true">
@@ -360,5 +360,6 @@
     </div>
   </div>
 
+  <script src="/assets/js/infra/repos/http.patients.repository.js"></script>
 </body>
 </html>

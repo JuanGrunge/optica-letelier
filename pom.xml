@@ -13,10 +13,10 @@
     </parent>
 
     <groupId>cl.letelier</groupId>
-    <artifactId>optica-letelier</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
-    <name>optica-letelier</name>
-    <description>Webapp para Óptica Letelier</description>
+        <artifactId>letelier</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <name>letelier</name>
+        <description>Webapp para Óptica Letelier</description>
     <packaging>jar</packaging>
 
     <properties>

@@ -1,79 +1,81 @@
-# LETELIER – Proyecto unificado (Spring Boot + Front incrustado)
+# Proyecto Óptica Letelier
 
-> **Estado:** fase temprana con avances confirmados  
-> **Última actualización:** 12 Sep 2025
+## Estado actual (Septiembre 2025)
 
----
+Este prototipo refleja el **refactor completo del sistema**, cuyo objetivo principal fue:
 
-## Estado actual (resumen)
-- ✅ Autenticación **JWT** operativa (login + filtro).
-- ✅ Consola **H2** disponible en desarrollo (`/h2-console/`).
-- ✅ **CRUD backend**: **Pacientes**, **Recetas**, **Operativos** y **Boletas**  
-  *(paginación, DTOs, borrado lógico, `@PreAuthorize` por rol)*.
-- 🛠️ Integración del **Front** con la **API** en curso (reemplazo de `localStorage` por `fetch()`).
-- 🧪 H2 en **memoria** para iteración rápida (reiniciar la app limpia los datos).
+- **Unificación de arquitectura (MPA):**
+  Eliminación de lógicas antiguas de tipo SPA o repositorios locales.  
+  Todo el flujo ahora responde al backend Java/Spring como fuente única de datos.
 
----
+- **Limpieza de código y imports:**
+  - Se retiraron `storage.js`, validadores de prueba y dependencias obsoletas.  
+  - Se corrigieron imports inválidos (`requireAuth`, `openArchivo`) que impedían la carga del front.  
+  - Los módulos actuales (`auth.js`, `router.js`, `theme.js`, `main.js`) están cohesionados y sin duplicidades.
 
-## Cómo correr (paso a paso)
-1) **Requisitos**: Java 21 (o 17) y Maven instalados y en el PATH.  
-2) **Clona** el repo y entra al proyecto:
-   ```bash
-   git clone <tu-repo> optica-letelier
-   cd optica-letelier
-   ```
-
-3) **Compila** y **levanta** el backend:
-   ```bash
-   mvn clean compile
-   mvn spring-boot:run
-   ```
-4) **Abre** en el navegador y verifica:
-   - App: `http://localhost:8080`  
-   - Health: `http://localhost:8080/health`  
-   - H2 Console (si está habilitada): `http://localhost:8080/h2-console/`  
-     - JDBC: `jdbc:h2:mem:letelier` · Usuario: `sa` · Contraseña: *(vacío)*
-5) **Prueba la API** con un JWT válido (header `Authorization: Bearer <token>`).  
-   Ejemplo (listar pacientes):
-   ```bash
-   curl -H "Authorization: Bearer <TOKEN>" http://localhost:8080/api/patients
-   ```
+- **Normalización de estilos y scripts:**
+  - **Tema oscuro**: ahora consistente con `html[data-theme="dark"]` (JS y CSS hablan el mismo lenguaje).  
+  - **Hamburguesa**: un solo controlador en `router.js`, clase `menu-open` para abrir/cerrar en mobile.  
+  - **Header y logout**: en desktop se mantiene completo; en mobile se compacta pero siempre accesible tras login.
 
 ---
 
-## Consultas de verificación (H2 Console)
-Ejecuta estas **solo para pruebas** (el seed **no** incluye SELECTs):
+## Flujo actual de la aplicación
 
-**Totales por entidad**
-```sql
-SELECT COUNT(*) AS pacientes   FROM PATIENT;
-SELECT COUNT(*) AS recetas     FROM PRESCRIPTION;
-SELECT COUNT(*) AS operativos  FROM OPERATIVE;
-SELECT COUNT(*) AS boletas     FROM INVOICE;
-```
+1. **Login**: formulario para personal del staff.  
+2. **Navegación**:  
+   - Vista `Archivo` → listado de pacientes y operativos.  
+   - Vista `Ingresar` → formulario de paciente/receta.  
+3. **Logout**: botón siempre disponible tras login.  
+4. **Tema**: switch claro/oscuro persistente.  
+5. **Responsive**:  
+   - Desktop: navegación visible.  
+   - Mobile: hamburguesa abre/cierra menú sin romper el layout.
 
-**Listados rápidos**
+---
+
+## Pruebas con H2 (base de datos en memoria)
+
+Para validar el backend en desarrollo, entrar a la consola H2 en  
+`http://localhost:8080/h2-console` y ejecutar:
+
 ```sql
 SELECT * FROM PATIENT ORDER BY ID;
 ```
 
+Esto devuelve la tabla de pacientes actual.  
+De momento es suficiente para testear inserciones y consultas.
 
 ---
 
-## API clínica (endpoints)
-- **Pacientes**: `GET/POST/PUT/DELETE /api/patients` (+ `/{id}`)
-- **Recetas**: `GET/POST/PUT/DELETE /api/prescriptions` (+ `/{id}`)
-- **Operativos**: `GET/POST/PUT/DELETE /api/operatives` (+ `/{id}`)
-- **Boletas**: `GET/POST/PUT /api/invoices` (+ `/{id}`) · `POST /api/invoices/{id}/annul`
+## Próximos pasos
 
-### Seguridad (roles)
-- Lectura: **ADMIN**, **OPTICO**, **RECEPTOR**  
-- Escritura: **ADMIN**, **OPTICO**  
-- Operaciones sensibles (anulación/borrado): **ADMIN**
+- Levantar y poblar más tablas (recetas, boletas, operativos).  
+- Integrar la generación de boletas en la vista correspondiente.  
+- Continuar pruebas de UI con el cliente para pulir detalles visuales y de flujo.  
 
 ---
 
-## Notas
-- `ViewController` enruta `/, /pacientes, /archivo, /login` → `index.html`.
-- No se cambió tu front: se sirve desde `src/main/resources/static/`.
-- Próximas actualizaciones: cablear front a la API; administración de usuarios (roles); deploy del backend para consumo desde GitHub Pages.
+## Notas internas (para desarrollo)
+
+- El proyecto se ejecuta desde la raíz (`optica-letelier/`) con `mvn spring-boot:run`.  
+- Módulos front clave:
+  - `auth.js` → login/logout + estado de sesión.  
+  - `router.js` → navegación + hamburguesa.  
+  - `theme.js` → control de tema.  
+  - `main.js` → inicialización general.  
+- CSS relevantes:
+  - `theme-dark.css` → normalizado a `data-theme`.  
+  - `components-header.css` → header unificado, responsive, logout fijo.  
+
+---
+
+## Para el cliente
+
+En esta etapa el sistema ya está consolidado técnicamente:  
+- Login/Logout operativo.  
+- Gestión de pacientes accesible.  
+- Interfaz responsive y usable tanto en computador como en celular.  
+- Cambio de tema claro/oscuro integrado.  
+
+A partir de esta base estable, avanzaremos hacia funcionalidades finales: recetas, boletas y reportes.

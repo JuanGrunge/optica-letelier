@@ -1,5 +1,4 @@
 import { normalizarRut, esRutValido } from './validators.js';
-import { leerPacientes, guardarPacientes } from './storage.js';
 
 export function initModal(){
   const overlay = document.getElementById('editModal');
