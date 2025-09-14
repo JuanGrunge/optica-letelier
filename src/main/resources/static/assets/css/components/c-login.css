@@ -1,0 +1,36 @@
+/* Capa oscura y centrado del overlay */
+.c-login{
+  position: fixed; inset: 0;
+  display: grid; place-items: center;
+  background: rgba(0,0,0, var(--opacity-overlay));
+  z-index: var(--z-overlay);
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* Tarjeta del login */
+.c-login__card{
+  width: min(420px, 92vw);
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: var(--space-5);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+  display: grid; gap: var(--space-3);
+}
+
+/* Campos y botón (solo tokens) */
+.c-login__input{
+  width:100%; padding:10px 12px;
+  background: var(--color-field);
+  color: var(--color-text);
+  border:1px solid var(--color-field-border);
+  border-radius: var(--radius-md);
+}
+.c-login__btn{
+  padding:10px 14px; border:0;
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  cursor:pointer;
+}

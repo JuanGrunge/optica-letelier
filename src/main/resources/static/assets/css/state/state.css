@@ -1,0 +1,10 @@
+/* Estado de sesión / FOUC */
+#app{ display:block; }
+#loginOverlay{ display:none; }
+.no-session #app{ display:none !important; }
+.no-session #loginOverlay{ display:grid !important; }
+.no-session [data-auth="protected"]{ display:none !important; }
+
+/* Toggle de vistas */
+.view{ display:none; }
+.view.active{ display:block; }

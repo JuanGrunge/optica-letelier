@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -9,9 +10,14 @@
   <meta name="api-base" content=""/>
 
   <!-- CSS (rutas RELATIVAS) -->
-  <link rel="stylesheet" href="assets/css/core.css">
+  <link rel="stylesheet" href="assets/css/settings/tokens.css">
+  <link rel="stylesheet" href="assets/css/settings/theme-dark.css">
   <link rel="stylesheet" href="assets/css/layout.css">
   <link rel="stylesheet" href="assets/css/components-header.css">
+  <link rel="stylesheet" href="assets/css/components/c-header.css">
+  <link rel="stylesheet" href="assets/css/components/c-login.css">
+  <link rel="stylesheet" href="assets/css/objects/o-grid.css">
+  <link rel="stylesheet" href="assets/css/state/state.css">
   <link rel="stylesheet" href="assets/css/components-forms.css">
   <link rel="stylesheet" href="assets/css/components-tables.css">
   <link rel="stylesheet" href="assets/css/components-modal.css">
@@ -22,14 +28,14 @@
   <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
 </head>
 <body class="no-session">
-  <!-- Early boot -->
+  <!-- Early boot aquí para evitar body null -->
   <script src="assets/js/early-boot.js"></script>
 
-  <header>
-    <h2 class="brand"><img src="assets/img/logo.png" alt="logo" class="logo"></h2>
+  <header class="c-header">
+    <div class="c-header__brand"><h2 class="brand"><img src="assets/img/logo.png" alt="logo" class="logo"></h2></div>
 
-    <nav data-auth="protected">
-      <ul>
+    <nav class="c-header__nav" data-auth="protected">
+      <ul class="c-header__nav-list">
         <li>
           <button type="button" id="navArchivo" class="nav-pill" aria-label="Archivo">
             <svg viewBox="0 0 24 24" aria-hidden="true" class="nav-ic">
@@ -58,7 +64,7 @@
       </ul>
     </nav>
 
-    <div class="session-area" data-auth="protected">
+    <div class="c-header__session" data-auth="protected">
       <span id="userBadge" class="user-badge" aria-live="polite" hidden></span>
       <button id="btnLogout" class="btn-logout nav-pill" type="button" hidden aria-label="Cerrar sesión">
         <svg viewBox="0 0 24 24" aria-hidden="true" class="nav-ic">
@@ -72,7 +78,7 @@
       </button>
     </div>
 
-    <span class="menu-toggle" aria-label="Abrir menú" data-auth="protected">☰</span>
+    <span class="c-header__btn c-header__btn--menu" data-js="menu" aria-label="Abrir menú" data-auth="protected">☰</span>
 
     <div class="theme-switch-wrapper">
       <label class="theme-switch" title="Modo oscuro">
@@ -83,59 +89,60 @@
   </header>
 
   <!-- Login -->
-  <section id="loginOverlay" class="login-overlay" aria-label="Inicio de sesión">
-    <div class="login-card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+  <section id="loginOverlay" class="c-login" aria-label="Inicio de sesión">
+    <div class="c-login__card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
       <h2 id="loginTitle">Iniciar sesión</h2>
       <form id="loginForm">
         <label for="loginUser">Usuario</label>
-        <input id="loginUser" autocomplete="username" type="text" placeholder="Ej: admin" required>
+        <input class="c-login__input" id="loginUser" autocomplete="username" type="text" placeholder="Ej: admin" required>
 
         <label for="loginPass">Contraseña</label>
-        <input id="loginPass" autocomplete="current-password" type="password" placeholder="••••••••" required>
+        <input class="c-login__input" id="loginPass" autocomplete="current-password" type="password" placeholder="••••••••" required>
 
-        <button type="submit" class="login-btn">Entrar</button>
+        <button type="submit" class="c-login__btn">Entrar</button>
         <p id="loginMsg" class="login-msg" aria-live="polite"></p>
 
         <details class="hint">
           <summary>¿Primera vez?</summary>
-          <small>Admin: <strong>admin</strong> / <strong>admin123</strong></small>
+          <small>Admin: <strong>admin</strong> / <strong>letelier25</strong></small>
         </details>
       </form>
     </div>
   </section>
 
-  <main id="app">
-    <!-- Ingresar -->
-    <section id="ingresar" class="view" aria-hidden="true">
-      <h2>Ingresar Paciente</h2>
-      <!-- … contenido de ingresar (igual que tu proyecto) … -->
-    </section>
+  <!-- Ingresar -->
+  <section id="ingresar" class="view" aria-hidden="true">
+    <h2>Ingresar Paciente</h2>
+    <!-- ... (igual que antes) ... -->
+  </section>
 
-    <!-- Archivo (SIN .active para evitar flash) -->
-    <section id="archivo" class="view" aria-hidden="true">
-      <h2>Archivo</h2>
-      <p class="subtle">Busca por <strong>RUT, Nombre o Lugar de Operativo</strong> con un solo campo.</p>
-      <form id="formBuscar">
-        <div class="filters single">
-          <div class="search-wrap">
-            <input id="fQuery" type="text" placeholder="Ej: 12.345.678-K • Juan • Plaza Central">
-            <button class="icon-search-btn" type="submit" aria-label="Buscar" title="Buscar">
-              <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-                <path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.71.71l.27.28v.79L20 21.5 21.5 20l-6-6zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z" fill="currentColor"/>
-              </svg>
-            </button>
-          </div>
+  <!-- Archivo -->
+  <section id="archivo" class="view" aria-hidden="false">
+    <h2>Archivo</h2>
+    <p class="subtle">Busca por <strong>RUT, Nombre o Lugar de Operativo</strong> con un solo campo.</p>
+    <form id="formBuscar">
+      <div class="filters single">
+        <div class="c-search">
+          <input id="fQuery" class="c-search__input" type="text" placeholder="Ej: 12.345.678-K • Juan • Plaza Central">
+          <button class="c-search__btn" type="submit" aria-label="Buscar" title="Buscar">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.71.71l.27.28v.79L20 21.5 21.5 20l-6-6zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z" fill="currentColor"/>
+            </svg>
+          </button>
         </div>
-      </form>
-      <div id="resultados" class="resultados">
-        <h3>Resultados</h3>
-        <div id="listaResultados" class="lista-resultados"></div>
-        <p id="msgResultados" class="subtle"></p>
       </div>
-    </section>
-  </main>
+    </form>
+    <div id="resultados" class="resultados">
+      <h3>Resultados</h3>
+      <div id="listaResultados" class="lista-resultados"></div>
+      <p id="msgResultados" class="subtle"></p>
+    </div>
+  </section>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Comportamiento de header (hamburguesa + tema) -->
+  <!--script defer src="assets/js/ui/header.behavior.js"></script>
 
   <!-- JS principal como módulo -->
   <script type="module" src="assets/js/main.js"></script>

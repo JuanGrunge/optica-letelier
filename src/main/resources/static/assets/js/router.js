@@ -1,60 +1,71 @@
-// assets/js/router.js – espera auth:ready antes de mostrar Archivo
+
+// assets/js/router.js (contextual)
+// Mantiene hamburguesa y navegación, y protege cambios del form.
 let currentSection = null;
 let dirtySnapshot = null;
 
-const q = (s)=>document.querySelector(s);
+export function initRouter() {
+  const navArchivo  = document.querySelector('#navArchivo');
+  const navIngresar = document.querySelector('#navIngresar');
 
-function setActive(targetId){
-  document.querySelectorAll('section.view').forEach(sec=>{
-    const isTarget = sec.id === targetId;
-    sec.classList.toggle('active', isTarget);
-    sec.setAttribute('aria-hidden', isTarget ? 'false' : 'true');
+  if (navArchivo) {
+    navArchivo.addEventListener('click', (e) => {
+      e.preventDefault();
+      showSection('archivo');
+    });
+  }
+  if (navIngresar) {
+    navIngresar.addEventListener('click', (e) => {
+      e.preventDefault();
+      showSection('ingresar');
+    });
+  }
+
+  // Hamburguesa (mobile)
+  const burger = document.querySelector('[data-js="menu"]');
+  if (burger) {
+    burger.addEventListener('click', () => {
+      document.body.classList.toggle('nav-open');
+    });
+  }
+  document.addEventListener('click', (ev) => {
+    const t = ev.target;
+    if (t.closest && (t.closest('#navArchivo') || t.closest('#navIngresar'))) {
+      document.body.classList.remove('nav-open');
+    }
   });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') document.body.classList.remove('nav-open');
+  });
+
+  // Sección inicial visible
+  showSection('archivo');
 }
 
-export function showSection(id){
-  if (currentSection === id) return;
+function showSection(name) {
+  if (currentSection === name) return;
 
-  if (isDirty()){
+  if (isDirty()) {
     if (!confirm('Hay cambios sin guardar, ¿quieres salir igualmente?')) return;
     dirtySnapshot = null;
   }
-  setActive(id);
-  currentSection = id;
 
-  if (id === 'ingresar'){
-    const form = q('#formIngresar');
+  document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+  const el = document.querySelector(`#${name}`);
+  if (el) el.style.display = '';
+  currentSection = name;
+
+  if (name === 'ingresar') {
+    const form = document.querySelector('#formIngresar'); // id real del index
     if (form) dirtySnapshot = new FormData(form);
   }
 }
 
-export function initRouter(){
-  const navArchivo  = q('#navArchivo');
-  const navIngresar = q('#navIngresar');
-
-  if (navArchivo)  navArchivo.addEventListener('click', (e)=>{ e.preventDefault(); showSection('archivo'); });
-  if (navIngresar) navIngresar.addEventListener('click', (e)=>{ e.preventDefault(); showSection('ingresar'); });
-
-  // Hamburguesa
-  const burger = q('.menu-toggle');
-  if (burger) burger.addEventListener('click', ()=> document.body.classList.toggle('nav-open'));
-  document.addEventListener('click', (ev)=>{
-    const t = ev.target;
-    if (t.closest && (t.closest('#navArchivo') || t.closest('#navIngresar'))) document.body.classList.remove('nav-open');
-  });
-  document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape') document.body.classList.remove('nav-open'); });
-
-  // SOLO tras sesión lista activamos una vista
-  document.addEventListener('auth:ready', ()=>{
-    showSection('archivo');
-  });
-}
-
-function isDirty(){
-  const form = q('#formIngresar');
+function isDirty() {
+  const form = document.querySelector('#formIngresar');
   if (!form || !dirtySnapshot) return false;
   const now = new FormData(form);
-  for (const [k,v] of dirtySnapshot.entries()){
+  for (const [k, v] of dirtySnapshot.entries()) {
     if (now.get(k) !== v) return true;
   }
   return false;

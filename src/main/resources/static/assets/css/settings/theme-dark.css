@@ -1,0 +1,15 @@
+/* settings/theme-dark.css — overrides SOLO de tokens */
+html[data-theme="dark"]{
+  --color-bg: #0e1116;
+  --color-surface: #11151b;
+  --color-text: #e5e7eb;
+  --color-text-muted: #9aa4b2;
+  --color-border: #1f2937;
+  --color-field: #0e1319;
+  --color-field-border: #223142;
+  --color-accent: #4da3ff;
+  --color-on-accent: #0b1020;
+
+  --shadow-1: 0 8px 24px rgba(0,0,0,.40);
+  --shadow-2: 0 16px 48px rgba(0,0,0,.50);
+}

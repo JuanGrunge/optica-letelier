@@ -1,0 +1,32 @@
+/* settings/tokens.css — tokens base (LIGHT por defecto), sin aliases antiguos */
+:root{
+  /* color */
+  --color-bg: #f6f7f9;
+  --color-surface: #ffffff;
+  --color-text: #0f172a;
+  --color-text-muted: #475569;
+  --color-border: #e5e7eb;
+  --color-field: #ffffff;
+  --color-field-border: #d1d5db;
+  --color-accent: #0d5ae5;
+  --color-on-accent: #ffffff;
+
+  /* space (escala 4/8) */
+  --space-0: 0;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px;
+  --space-4: 16px; --space-5: 24px; --space-6: 32px;
+
+  /* radius */
+  --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-pill: 9999px;
+
+  /* shadow */
+  --shadow-1: 0 6px 18px rgba(0,0,0,.06);
+  --shadow-2: 0 12px 40px rgba(0,0,0,.25);
+
+  /* z-index */
+  --z-header: 1000; --z-overlay: 900; --z-modal: 3000; --z-toast: 4000;
+
+  /* size y otros */
+  --size-header: 72px;
+  --opacity-overlay: .45;
+}
