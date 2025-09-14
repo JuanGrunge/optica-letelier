@@ -1,9 +1,10 @@
-// assets/js/router.js  (MPA definitivo)
+
+// assets/js/router.js (contextual)
+// Mantiene hamburguesa y navegación, y protege cambios del form.
 let currentSection = null;
 let dirtySnapshot = null;
 
 export function initRouter() {
-  // Navegación de secciones
   const navArchivo  = document.querySelector('#navArchivo');
   const navIngresar = document.querySelector('#navIngresar');
 
@@ -20,35 +21,30 @@ export function initRouter() {
     });
   }
 
-  // Hamburguesa (mobile) — usa SIEMPRE la misma clase en <body>
+  // Hamburguesa (mobile)
   const burger = document.querySelector('.menu-toggle');
   if (burger) {
     burger.addEventListener('click', () => {
-      document.body.classList.toggle('nav-open'); // <-- unificamos aquí
+      document.body.classList.toggle('nav-open');
     });
   }
-
-  // Cerrar menú al navegar
   document.addEventListener('click', (ev) => {
     const t = ev.target;
     if (t.closest && (t.closest('#navArchivo') || t.closest('#navIngresar'))) {
-      document.body.classList.remove('nav-open'); // <-- unificamos aquí
+      document.body.classList.remove('nav-open');
     }
   });
-
-  // Escape cierra menú
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') document.body.classList.remove('nav-open');
   });
 
-  // Sección inicial
+  // Sección inicial visible
   showSection('archivo');
 }
 
 function showSection(name) {
   if (currentSection === name) return;
 
-  // proteger formularios con cambios
   if (isDirty()) {
     if (!confirm('Hay cambios sin guardar, ¿quieres salir igualmente?')) return;
     dirtySnapshot = null;
@@ -60,13 +56,13 @@ function showSection(name) {
   currentSection = name;
 
   if (name === 'ingresar') {
-    const form = document.querySelector('#patientForm');
+    const form = document.querySelector('#formIngresar'); // id real del index
     if (form) dirtySnapshot = new FormData(form);
   }
 }
 
 function isDirty() {
-  const form = document.querySelector('#patientForm');
+  const form = document.querySelector('#formIngresar');
   if (!form || !dirtySnapshot) return false;
   const now = new FormData(form);
   for (const [k, v] of dirtySnapshot.entries()) {

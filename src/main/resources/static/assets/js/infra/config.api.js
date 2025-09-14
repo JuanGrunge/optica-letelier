@@ -1,0 +1,34 @@
+;(() => {
+  const meta = document.querySelector('meta[name="api-base"]');
+  const META_BASE = meta?.content || '';
+  const WIN_BASE = window.API_BASE || '';
+  const API_BASE = (META_BASE || WIN_BASE || '').replace(/\/$/, '');
+
+  let MEM_TOKEN = null;
+  function setToken(tok){ MEM_TOKEN = tok || null; }
+  function getToken(){ return MEM_TOKEN; }
+
+  function withAuthHeaders(h = {}) {
+    const headers = { 'Content-Type': 'application/json', ...h };
+    if (MEM_TOKEN) headers['Authorization'] = `Bearer ${MEM_TOKEN}`;
+    return headers;
+  }
+
+  async function apiFetch(path, options = {}) {
+    const url = `${API_BASE}${path}`;
+    const res = await fetch(url, {
+      credentials: 'include',
+      ...options,
+      headers: withAuthHeaders(options.headers || {})
+    });
+    if (!res.ok) {
+      let detail = '';
+      try { detail = await res.text(); } catch {}
+      throw new Error(`HTTP ${res.status} ${url}${detail ? ' — ' + detail.slice(0, 200) : ''}`);
+    }
+    const ct = res.headers.get('content-type') || '';
+    return ct.includes('application/json') ? res.json() : res.text();
+  }
+
+  window.ApiConfig = { API_BASE, apiFetch, setToken, getToken, withAuthHeaders };
+})();

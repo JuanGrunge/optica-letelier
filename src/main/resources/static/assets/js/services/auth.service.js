@@ -1,7 +1,12 @@
+
+// assets/js/services/auth.service.js
+const JSON_HEADERS = { 'Content-Type': 'application/json' };
+const WITH_CREDENTIALS = { credentials: 'include' };
+
 export async function login(username, password){
   const resp = await fetch('/api/auth/login', {
     method: 'POST',
-    headers: {'Content-Type':'application/json'},
+    headers: JSON_HEADERS,
     credentials: 'include',
     body: JSON.stringify({username, password})
   });
