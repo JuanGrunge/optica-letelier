@@ -1,11 +1,95 @@
-.grid-two{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-@media (max-width:768px){ .grid-two{grid-template-columns:1fr} }
+/* layout.css — Tweak solicitado
+   - .no-session SOLO controla visibilidad (no colores)
+   - Header SIEMPRE visible; sin cambios de borde por no-session
+   - Aumenta altura del header (rellena el espacio): --header-height (72px)
+   - Hamburguesa: sin overrides de color; hereda del tema
+   - Overlay de login centrado; por DEBAJO del header (header z>overlay)
+*/
 
-/* Views act as centered cards with a max width (ensures background gutter visible) */
+/* ===== Estado de sesión / FOUC ===== */
+#app{ display:block; }
+#loginOverlay{ display:none; }
+
+body.no-session #app{ display:none !important; }
+body.no-session #loginOverlay{ display:grid !important; }
+body.no-session [data-auth="protected"]{ display:none !important; }
+
+/* ===== Header ===== */
+.app-header{
+  --header-height: 72px;             /* << altura aumentada */
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  padding: 0 14px;
+  min-height: var(--header-height);
+  position:relative; z-index: 1000;  /* por encima del overlay */
+  /* Colores/borde/gradiente los define tu theme/components */
+}
+.logo{ height:28px; }
+
+.app-nav{ display:flex; gap:10px; }
+.nav-pill{
+  padding:8px 12px;
+  border:1px solid var(--card-border);
+  border-radius:10px;
+  background: var(--surface);
+  cursor:pointer;
+}
+.nav-pill:hover{ background: var(--surface-hover); }
+
+/* Hamburguesa: solo herencia (sin overrides de color) */
+.menu-toggle{
+  display:none;
+  background: var(--surface);
+  border:1px solid var(--card-border);
+  border-radius:10px; padding:8px 10px; cursor:pointer;
+}
+
+.session-area .btn-logout{
+  padding:8px 12px; border:0; border-radius:10px;
+  background: var(--accent, #0d5ae5); color: var(--accent-contrast);
+  cursor:pointer;
+}
+
+/* Mobile */
+@media (max-width: 768px){
+  .menu-toggle{ display:inline-block; }
+  body.nav-open .app-nav{ display:flex; }
+  .app-nav{ display:none; }
+}
+
+/* ===== Login overlay ===== */
+.login-overlay{
+  position: fixed; inset:0;
+  display:grid; place-items:center;  /* centrado perfecto */
+  background: rgba(0,0,0, var(--overlay-alpha, .45));
+  z-index: 900;                       /* por DEBAJO del header */
+  min-height: 100vh; min-height: 100dvh;
+}
+.login-card{
+  width:min(420px, 92vw);
+  background: var(--card);
+  color: var(--fg);
+  padding:24px; border-radius:16px;
+  box-shadow:0 12px 40px rgba(0,0,0,.25);
+  display:grid; gap: var(--gap, 12px);
+  margin:0;
+}
+.login-card input{
+  width:100%; padding:10px 12px; border:1px solid var(--input-border);
+  border-radius:10px; background: var(--input-bg); color: var(--fg);
+}
+.login-card input::placeholder{ color: var(--placeholder, #94a3b8); opacity:1; }
+.login-card button{
+  padding:10px 14px; border:0; border-radius:10px;
+  background: var(--accent, #0d5ae5); color: var(--accent-contrast);
+  cursor:pointer;
+}
+.login-msg{ min-height:1.2em; }
+
+/* ===== Vistas ===== */
 section.view{
   display:none;
-  max-width: 1000px;          /* matches core.css default to stay consistent */
-  margin: 1.25rem auto 2rem;  /* center with vertical rhythm */
+  max-width: 1000px;
+  margin: 1.25rem auto 2rem;
   background: var(--card);
   border: 1px solid var(--border);
   border-radius: 14px;
@@ -15,21 +99,16 @@ section.view{
 }
 section.view.active{ display:block; }
 
-/* Optional: tighter gutters on very small screens */
-@media (max-width: 420px){
-  section.view{ padding: 1rem; margin: 0.75rem auto 1.5rem; }
-}
-/* BG PATTERN LAYER (with light fallback) 
-body::before{
-  content: "";
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: -1;
-  background-image: var(--bg-pattern-image, url("../img/pattern-light.png"));
-  background-repeat: repeat;
-  background-size: 150px 150px;
-  background-position: top left;
+/* Utilities */
+.grid-two{ display:grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 768px){ .grid-two{ grid-template-columns: 1fr; } }
+
+/* Search */
+.search-wrap{
+  display:flex; align-items:center; gap:.5rem;
+  padding:.25rem .5rem;
+  border:1px solid var(--card-border);
+  border-radius:12px; background: var(--input-bg);
 }
 */
 /* === Background mosaic on body (no pseudo-element) =====================
