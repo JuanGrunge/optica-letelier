@@ -1,0 +1,30 @@
+/* assets/css/components/c-modal.css */
+.c-modal__overlay{
+  position: fixed; inset:0;
+  background: color-mix(in oklab, black 40%, transparent);
+  backdrop-filter: blur(2px);
+  z-index: var(--z-overlay);
+}
+.c-modal{
+  position: fixed; inset: 10% 50% auto 50%;
+  transform: translate(-50%, 0);
+  width: min(640px, 92vw);
+  background: var(--color-surface); color: var(--color-text);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+  z-index: var(--z-modal);
+  display:grid; grid-template-rows: auto 1fr auto;
+}
+.c-modal__header{ padding: var(--space-4) var(--space-5); border-bottom: 1px solid var(--color-border); }
+.c-modal__content{ padding: var(--space-4) var(--space-5); }
+.c-modal__actions{ padding: var(--space-4) var(--space-5); display:flex; gap:var(--space-3); justify-content:flex-end; }
+
+/* Toast simple (si lo usas) */
+.c-toast{
+  position: fixed; right: var(--space-5); bottom: var(--space-5);
+  background: var(--color-surface); color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  box-shadow: var(--shadow-2); z-index: var(--z-toast);
+}

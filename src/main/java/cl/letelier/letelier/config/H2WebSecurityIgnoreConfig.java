@@ -7,7 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 
 /**
  * BYPASS TOTAL de seguridad para /h2-console/**.
- * Esto evita que CUALQUIER filtro (incluido JwtAuthFilter) intercepte esas requests.
+ * Esto evita que CUALQUIER filtro intercepte esas requests.
  * Se activa solo cuando spring.h2.console.enabled=true.
  */
 @Configuration
@@ -16,6 +16,6 @@ public class H2WebSecurityIgnoreConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/h2-console/**");
+        return (web) -> web.ignoring().requestMatchers("/h2/**");
     }
 }

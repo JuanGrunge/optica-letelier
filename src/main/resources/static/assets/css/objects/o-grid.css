@@ -1,4 +1,4 @@
 /* objects/o-grid.css — ya incluido también en layout.css si prefieres unificar */
 .o-grid{ display:grid; gap: var(--space-4); }
-.o-grid--2{ grid-template-columns: 1fr 1fr; }
-@media (max-width: 768px){ .o-grid--2{ grid-template-columns: 1fr; } }
+.o-grid__2{ grid-template-columns: 1fr 1fr; }
+@media (max-width: 768px){ .o-grid__2{ grid-template-columns: 1fr; } }

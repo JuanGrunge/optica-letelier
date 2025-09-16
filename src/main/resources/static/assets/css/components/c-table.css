@@ -1,0 +1,16 @@
+/* assets/css/components/c-table.css */
+.c-table{ width:100%; border-collapse: collapse; background: var(--color-surface); }
+.c-table th, .c-table td{ padding: 10px 12px; border: 1px solid var(--color-border); }
+.c-table th{
+  text-align:left; font-weight:600;
+  background: linear-gradient(180deg, color-mix(in oklab, var(--color-surface) 90%, white), var(--color-surface));
+}
+.c-table tr:nth-child(even){ background: color-mix(in oklab, var(--color-surface) 96%, black 4%); }
+.c-table-scroll{ overflow:auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+
+/* ALIAS para compatibilidad con nombres antiguos */
+.rx-table{ width:100%; border-collapse: collapse; background: var(--color-surface); }
+.rx-table th, .rx-table td{ padding: 10px 12px; border: 1px solid var(--color-border); }
+.rx-table th{ text-align:left; font-weight:600; background: linear-gradient(180deg, color-mix(in oklab, var(--color-surface) 90%, white), var(--color-surface)); }
+.rx-table tr:nth-child(even){ background: color-mix(in oklab, var(--color-surface) 96%, black 4%); }
+.table-scroll{ overflow:auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); }

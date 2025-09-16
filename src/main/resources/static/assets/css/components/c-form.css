@@ -1,0 +1,45 @@
+/* assets/css/components/c-form.css */
+.c-form__group{ display:grid; gap: var(--space-2); margin-bottom: var(--space-4); }
+.c-form__label{ font-weight:600; color: var(--color-text); }
+
+.c-form__control,
+.c-login__input{
+  width:100%; padding: 10px 12px;
+  background: var(--color-field);
+  color: var(--color-text);
+  border:1px solid var(--color-field-border);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: box-shadow .15s ease, border-color .15s ease;
+  box-sizing: border-box;
+}
+.c-form__control::placeholder,
+.c-login__input::placeholder{ color: var(--color-text-muted); }
+
+.c-form__control:focus,
+.c-login__input:focus{
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 25%, transparent);
+}
+
+.c-form__actions{ display:flex; gap: var(--space-3); align-items:center; }
+
+.c-btn,
+.c-login__btn{
+  display:inline-flex; align-items:center; justify-content:center;
+  gap:.5rem; padding:10px 14px;
+  border:0; border-radius: var(--radius-md);
+  background: var(--btn-bg); color: var(--btn-fg);
+  cursor:pointer;
+  transition: transform .05s ease, filter .15s ease, background-color .15s ease;
+  box-shadow: var(--shadow-1);
+}
+.c-btn:hover,
+.c-login__btn:hover{ background: var(--btn-bg-hover, var(--btn-bg)); filter: brightness(1.03); box-shadow: var(--shadow-2); }
+.c-btn:active,
+.c-login__btn:active{ transform: translateY(1px); }
+
+.c-btn--ghost{
+  background: transparent; color: var(--color-text);
+  border: 1px solid var(--color-border);
+}

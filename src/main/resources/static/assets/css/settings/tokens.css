@@ -1,36 +1,60 @@
-/* settings/tokens.css — tokens base (LIGHT por defecto), sin aliases antiguos */
+﻿/* settings/tokens.css â€” tokens base (LIGHT por defecto), sin aliases antiguos */
 :root{
   /* color */
   --color-bg: #f6f7f9;
-  --color-surface: #ffffff;
+  --color-surface: #f2f4f7;
   --color-text: #0f172a;
-  --color-text-muted: #475569;
-  --color-border: #e5e7eb;
+  --color-text-muted: #bfc5cc;
+  --color-border: #dcdfe4;
   --color-field: #ffffff;
   --color-field-border: #d1d5db;
-  --color-accent: #0d5ae5;
+  --color-accent: #0b5bd7;
   --color-on-accent: #ffffff;
+  --color-accent-hover:#084bb2;
 
-  /* space (escala 4/8) */
+  /* BotÃ³n (puede mapear a accent por defecto) */
+  --btn-bg: var(--color-accent);
+  --btn-fg: var(--color-on-accent);
+  --btn-bg-hover: var(--color-accent-hover);
+
+  
+  --brand-1:#1E70B8;
+  --brand-2:#0b4fa0;
+
+  /* ========== SPACE / RADIUS / SHADOW / Z / SIZE ========== */
   --space-0: 0;
   --space-1: 4px; --space-2: 8px; --space-3: 12px;
   --space-4: 16px; --space-5: 24px; --space-6: 32px;
 
-  /* radius */
   --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-pill: 9999px;
 
-  /* shadow */
   --shadow-1: 0 6px 18px rgba(0,0,0,.06);
   --shadow-2: 0 12px 40px rgba(0,0,0,.25);
 
-  /* z-index */
-  --z-header: 1000; --z-overlay: 900; --z-modal: 3000; --z-toast: 4000;
+  /* z-index layering (header por encima del overlay; modals aún sobre todo) */
+  --z-header: 2500;
+  --z-overlay: 2000;
+  --z-modal: 3000;
+  --z-toast: 4000;
 
-  /* size y otros */
   --size-header: 72px;
+  --logo-vpad: 6px; /* margen superior/inferior visual del logo dentro del header */
+  --logo-y: 3px;     /* ajuste Ã³ptico vertical del logo (positivo lo baja) */
+  --btn-icon-pad-x: 10px;
+  --btn-icon-size: 22px;
   --opacity-overlay: .45;
-  
   /* Background mosaic (light por defecto) */
   --bg-pattern: url("../../img/pattern-light.png");
   --bg-pattern-size: 256px 256px;
+  /* tipografía */
+  --ff-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+
+  /* gutter lateral del panel de vidrio */
+  --shell-side: clamp(16px, 6vw, 120px);
+  --shell-bottom-pad: var(--space-6);
+  /* Panel de vidrio (LIGHT): más sutil */
+  --shell-tint: rgba(0,0,0,.10);
+  --shell-blur: 10px;
+  --shell-saturate: 125%;
 }
+
