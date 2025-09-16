@@ -88,6 +88,99 @@ SELECT * FROM INVOICE;
 - `PasswordEncoder`: **Delegating** (acepta `{noop}`, `{bcrypt}`, etc.).
 - CORS y CSRF en configuración *permisiva* para desarrollo (se endurecerán en producción).
 - Rutas públicas: `/`, `/index.html`, `/assets/**`, `/api/auth/**`, `/h2/**` (DEV).
+LETELIER — Panel clínico (estado actual)
+
+Resumen general
+
+- WebApp SPA con login por sesión (JSESSIONID) y vistas protegidas.
+- Header fijo (siempre visible). En móvil, menú hamburguesa con efecto “vidrio”.
+- Tema claro/oscuro con interruptor.
+- Vistas principales: Archivo (búsqueda por RUT) e Ingresar Paciente (datos + receta).
+
+Cómo ejecutar (DEV)
+
+1) Requisitos: Java 17+, Maven.
+2) Arranque: mvn clean spring-boot:run
+3) Navegador: http://localhost:8080/
+4) Usuarios de prueba H2: admin/admin123, optico/optico123, receptor/receptor123
+
+Login
+
+- UI tipo overlay. Al iniciar sesión se oculta y habilita el resto de la interfaz.
+- Endpoints:
+  - POST /api/auth/login – autentica (crea cookie JSESSIONID)
+  - GET  /api/auth/me – usuario actual
+  - POST /api/auth/logout – cierra sesión
+
+Vista: Archivo (buscador por RUT)
+
+- Campo único de búsqueda (flexible):
+  - Acepta RUT con puntos, sin puntos, con/sin guion, y prefijos numéricos.
+  - Ejemplos válidos: 22.222.222-2, 22222222-2, 22222222, 22
+- Resultados en tabla: RUT, Nombre Paciente, Lugar Operativo (si aplica).
+- Backend normaliza el RUT para coincidencias parciales.
+
+Vista: Ingresar Paciente
+
+- Tarjeta 1 — Datos del paciente
+  - Campos: nombre, rut, dirección, fecha de nacimiento, operativo, etc.
+  - Botón “guardar” estilo viñeta (icono flecha hacia arriba).
+- Tarjeta 2 — Receta (compacta en tabla por ojo)
+  - Columnas: OJO, ESF, CIL, EJE, ADD, DP, ALT (filas OD y OI).
+  - Se habilita automáticamente al completar nombre + rut + dirección (no es obligatorio guardar antes).
+  - Ítems complementarios: DP de cerca (opcional) y Observaciones.
+
+Estilo y accesibilidad
+
+- Panel de fondo tipo “vidrio” y tarjetas alineadas a sus gutters laterales.
+- Tipografía de formularios monoespaciada (números tabulares) para legibilidad.
+- Date picker con icono visible en tema oscuro y placeholders grises.
+
+Pruebas rápidas en H2
+
+1) Abrir http://localhost:8080/h2
+2) Conectar con la misma URL JDBC de src/main/resources/application.properties
+3) Consultas útiles:
+
+```sql
+-- Conteo rápido de pacientes
+SELECT COUNT(*) AS total_pacientes FROM PATIENT;
+
+-- Últimos RUTs (para probar la vista Archivo)
+SELECT RUT, NOMBRES, APELLIDOS
+FROM PATIENT
+WHERE RUT IS NOT NULL AND RUT <> ''
+ORDER BY ID DESC
+LIMIT 20;
+
+-- Búsqueda flexible por prefijo normalizado de RUT (sin puntos/guion/espacios)
+SELECT p.ID, p.RUT, p.NOMBRES, p.APELLIDOS
+FROM PATIENT p
+WHERE LOWER(REPLACE(REPLACE(REPLACE(p.RUT, '.', ''), '-', ''), ' ', '')) LIKE LOWER('%2222%')
+ORDER BY p.ID DESC
+LIMIT 20;
+
+-- Pacientes con su(s) operativos (si existen)
+SELECT p.RUT, p.NOMBRES, p.APELLIDOS, o.LUGAR
+FROM PATIENT p
+LEFT JOIN PATIENT_OPERATIVE po ON po.PATIENT_ID = p.ID
+LEFT JOIN OPERATIVE o         ON o.ID = po.OPERATIVE_ID
+ORDER BY p.ID DESC
+LIMIT 50;
+```
+
+Notas de seguridad (DEV)
+
+- Autenticación por sesión (cookie JSESSIONID).
+- PasswordEncoder delegante: soporta {noop}, {bcrypt}, etc.
+- CORS/CSRF relajados en desarrollo (endurecer en producción).
+- Rutas públicas típicas: /, /index.html, /assets/**, /api/auth/**, /h2/** (DEV).
+
+Tips
+
+- Si la consola H2 en el “Explorador simple” de VS Code no muestra la pestaña de resultados, abrir /h2 en un navegador externo.
+- El encabezado es fijo; las vistas agregan padding superior para que las tarjetas nunca queden bajo el header.
+
 
 ---
 
@@ -117,7 +210,7 @@ SELECT * FROM INVOICE;
 
 ---
 
-## Notas técnicas (rápidas)
+## Notas t�cnicas (r�pidas)
 
 - **SPA**: el login muestra/oculta la aplicación sin recargar la página.
 - **UI**: el botón *Cerrar sesión* solo se ve con sesión activa.
@@ -132,3 +225,4 @@ SELECT * FROM INVOICE;
 ## Contacto / Soporte
 
 Para incidencias o nuevas funcionalidades, indicar: paso a reproducir, navegador, captura y log (si es posible).
+
