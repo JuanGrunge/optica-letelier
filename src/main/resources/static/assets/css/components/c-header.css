@@ -1,0 +1,211 @@
+﻿/* components/c-header.css â€” BEM; consume tokens; nada de colores directos */
+.c-header{
+  height: var(--size-header);
+  display:flex; align-items:center; justify-content:space-between; gap: var(--space-3);
+  padding: 0 var(--space-4);
+  border-bottom: 1px solid var(--color-border);
+  position: relative; z-index: var(--z-header);
+  background: linear-gradient(90deg, var(--brand-1, #1E70B8), var(--brand-2, #0b4fa0));
+  border-bottom-color: rgba(255,255,255,.18);
+}
+
+.c-header__brand{ display:flex; align-items:center; justify-content:center; height: 100%; line-height:0; }
+.c-header__brand img{
+  height: calc(var(--size-header) - 2 * var(--logo-vpad));
+  display:block; object-fit: contain; object-position:center;
+  transform: translateY(var(--logo-y, 0));
+}
+
+.c-header__nav{ display:flex; gap: var(--space-3); }
+.c-header__nav_list{ display:flex; gap: var(--space-2); list-style:none; margin:0; padding:0; }
+.c-header__nav_ic{ width:22px; height:22px; flex:0 0 22px; }
+
+.c-header__btn{
+  display:flex; align-items:center; gap: var(--space-2);
+  background: transparent; /* Header: botones transparentes */
+  color: #fff; /* iconos y texto en blanco para buen contraste con el gradiente */
+  border: 0;
+  border-radius: var(--radius-md);
+  padding: 8px 10px;
+  cursor:pointer;
+  box-shadow: none; /* sin sombra para mantener look liviano */
+}
+.c-header__btn:hover{ background: rgba(255,255,255,.10); }
+.c-header__btn:focus-visible{ outline: none; box-shadow: 0 0 0 2px rgba(255,255,255,.25) inset; }
+
+/* BotÃ³n hamburguesa: siempre a la izquierda visualmente en mÃ³vil */
+.c-header__btn--menu{ display:none; font-size:22px; line-height:1; }
+
+/* Estilo especial del botÃ³n hamburguesa: lÃ­neas blancas, fondo transparente y marco del mismo grosor */
+.c-header__btn.c-header__btn--menu{
+  background: transparent;
+  border: 0;
+  color: #fff;
+  width: 40px; height: 40px;
+  padding: 0;
+  border-radius: 10px;
+  position: relative;
+}
+.c-header__btn.c-header__btn--menu::before{
+  content: "";
+  position: absolute; left:50%; top:50%; transform: translate(-50%, -50%);
+  width: 18px; height: 2px; background: currentColor; border-radius: 1px;
+  box-shadow: 0 -6px 0 currentColor, 0 6px 0 currentColor;
+}
+.c-header__btn.c-header__btn--menu:hover{ background: rgba(255,255,255,.08); }
+
+/* Orden visual en mÃ³vil: menÃº, marca, nav, sesiÃ³n, switch */
+@media (max-width: 768px){
+  .c-header{ gap: var(--space-2); }
+  .c-header__btn--menu{ display:inline-flex; order:0; }
+  /* Centro absoluto del logo en responsive */
+  .c-header__brand{ position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); height:auto; }
+  /* MenÃº mÃ³vil: dropdown vertical bajo el header, alineado a la izquierda */
+  .c-header__nav{ order:2; display:none; position:absolute; left:0; right:0; top:100%; z-index: var(--z-header); }
+  .c-header.is-open .c-header__nav{
+    display:flex; flex-direction: column; padding: 0 var(--space-4) var(--space-2) var(--space-4);
+    background: color-mix(in oklab, var(--color-bg) 35%, transparent);
+    backdrop-filter: blur(10px) saturate(120%);
+    -webkit-backdrop-filter: blur(10px) saturate(120%);
+    border-bottom: 1px solid rgba(255,255,255,.10);
+  }
+  .c-header__nav_list{ flex-direction: column; gap: 0; }
+  .c-header__nav_list > li{ border-top: 1px solid rgba(255,255,255,.08); margin-left: 0; }
+  .c-header__nav_list > li:first-child{ border-top: 0; }
+  .c-header__nav_list > li + li::before{ display:none; }
+  .c-header__nav .c-header__btn{ width:100%; height:48px; border-radius: 0; padding: 0 var(--space-2); justify-content:flex-start; align-items:center; background: transparent; }
+  .c-header__nav .c-header__btn:hover{ background: rgba(255,255,255,.08); }
+  /* Acciones a la derecha: sesiÃ³n pegada al switch */
+  .c-header__session{ order:3; margin-left:auto; display:inline-flex; align-items:center; gap: var(--space-1); }
+  .c-switch{ order:4; margin-left: var(--space-1); }
+  /* Logout: icono solo en responsive */
+  #btnLogout .nav-label{ display:none; }
+}
+
+/* AlineaciÃ³n derecha tambiÃ©n en desktop */
+.c-header__session{ margin-left:auto; display:inline-flex; align-items:center; gap: 0; }
+.c-header__session .c-header__btn{ margin-right: 6px; }
+.c-switch{ margin-left: 0; }
+
+/* Cuando la sesiÃ³n estÃ¡ oculta (pre-login), empuja el switch al extremo derecho */
+.c-header__session[hidden] + .c-switch{ margin-left:auto; }
+
+/* Toggle Tema */
+.c-switch input{ position:absolute; left:-9999px; width:1px; height:1px; opacity:0; pointer-events:none; }
+.c-switch{
+  --w: 40px; --h: 24px; --pad: 3px;
+  position: relative;
+  display:inline-flex; align-items:center; justify-content:center;
+  width: var(--w); 
+  height: var(--h);
+  line-height: 0;
+  font-size: 0;
+  vertical-align: middle;
+  overflow: hidden;
+  
+}
+
+/* Centro el bloque de navegaciÃ³n en desktop */
+@media (min-width: 769px){
+  .c-header{ position: relative; }
+  .c-header__nav{ position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); }
+  /* Efecto final: sin viñeta centrada; el texto aparece a la derecha del icono y se expande */
+  .c-header__btn{ position: relative; overflow: visible; }
+  .c-header__btn .nav-label{
+    position: absolute;
+    left: calc(var(--btn-icon-pad-x) + var(--btn-icon-size) + 8px);
+    top: 50%; transform: translateY(-50%);
+    display:inline-block; white-space:nowrap; pointer-events:none;
+    visibility:hidden; opacity:0; clip-path: inset(0 100% 0 0 round 8px);
+    background: rgba(255,255,255,.16); color:#fff; border-radius:8px; padding:6px 8px;
+    transition: clip-path .2s ease, opacity .2s ease, visibility .2s ease;
+  }
+  .c-header__btn:hover .nav-label,
+  .c-header__btn:focus-visible .nav-label{ visibility:visible; opacity:1; clip-path: inset(0 0 0 0 round 8px); }
+  .c-header__btn::before{ content: none !important; }
+}
+
+
+/* Botones del nav a altura completa con fondo sutil y esquinas discretas */
+.c-header__nav .c-header__btn{
+  height: calc(var(--size-header) - 6px);
+  padding: 0 10px;
+  border-radius: 5px;
+  background: transparent;
+  color: #fff;
+  border: 0;
+}
+.c-header__nav .c-header__btn:hover{ background: rgba(255,255,255,.16); }
+
+/* Divisor minimalista entre botones (solo desktop) */
+@media (min-width: 769px){
+  .c-header{ position: relative; }
+  .c-header__nav{ position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); }
+  /* Efecto final: sin viñeta centrada; el texto aparece a la derecha del icono y se expande */
+  .c-header__btn{ position: relative; overflow: visible; }
+  .c-header__btn .nav-label{
+    position: absolute;
+    left: calc(var(--btn-icon-pad-x) + var(--btn-icon-size) + 8px);
+    top: 50%; transform: translateY(-50%);
+    display:inline-block; white-space:nowrap; pointer-events:none;
+    visibility:hidden; opacity:0; clip-path: inset(0 100% 0 0 round 8px);
+    background: rgba(255,255,255,.16); color:#fff; border-radius:8px; padding:6px 8px;
+    transition: clip-path .2s ease, opacity .2s ease, visibility .2s ease;
+  }
+  .c-header__btn:hover .nav-label,
+  .c-header__btn:focus-visible .nav-label{ visibility:visible; opacity:1; clip-path: inset(0 0 0 0 round 8px); }
+  .c-header__btn::before{ content: none !important; }
+}
+
+
+.c-switch__slider{
+  position:absolute; 
+  inset:0;
+  background: var(--color-border);
+  border-radius: var(--h);
+  transition: background, .2s ease;
+  display:block;
+  
+}
+.c-switch__slider:before{
+  
+  content:"";
+  position:absolute; left: var(--pad); top: var(--pad);
+  width: calc(var(--h) - var(--pad) * 2); height: calc(var(--h) - var(--pad) * 2);
+  background: var(--color-surface);
+  border-radius: 50%;
+  box-shadow: var(--shadow-1);
+  transition: transform .2s ease, background .2s ease;
+}
+/* ON (marcado) con estructura: input + label.c-switch__slider */
+.c-switch input:checked + label.c-switch__slider{ background: var(--color-accent); }
+.c-switch input:checked + label.c-switch__slider:before{ transform: translateX(17px); background: var(--color-on-accent); }
+
+/* ===== Header: inline expand labels + moving divider (desktop) ===== */
+@media (min-width: 769px){
+  /* Micro-ajuste vertical del bloque de navegación para centrar ópticamente */
+  .c-header__nav{ margin-top: 1px; }
+  /* El área de nav ya está centrada; solo ajustamos botones y separadores */
+  .c-header__nav .c-header__btn{ gap: 0; position: relative; overflow: visible; }
+  .c-header__btn .nav-label{
+    position: static;
+    display:inline-block; white-space:nowrap; overflow:hidden;
+    max-width: 0; opacity:0; margin-left: 0; line-height: 22px; /* igual al alto del ícono */
+    background: transparent; padding: 0; clip-path: none;
+    pointer-events:none;
+    transition: max-width .25s ease, opacity .2s ease, margin-left .2s ease, transform .2s ease;
+  }
+  .c-header__btn:hover .nav-label,
+  .c-header__btn:focus-visible .nav-label{ max-width: 220px; opacity:1; margin-left: 8px; padding: 0 4px; transform: translateY(1px); }
+  .c-header__btn::before{ content: none !important; }
+
+  /* Separador entre items que viaja con el <li> */
+  .c-header__nav_list > li{ position: relative; }
+  .c-header__nav_list > li + li::before{
+    content:""; position:absolute; left:-6px; top:50%; transform: translateY(-50%);
+    width:1px; height:24px; background: rgba(255,255,255,.22);
+  }
+}
+
+/* Alineación más precisa del ícono */
+.c-header__nav_ic{ display:block; }
