@@ -22,7 +22,7 @@ export function initRouter() {
   }
 
   // Hamburguesa (mobile)
-  const burger = document.querySelector('.menu-toggle');
+  const burger = document.querySelector('[data-js="menu"]');
   if (burger) {
     burger.addEventListener('click', () => {
       document.body.classList.toggle('nav-open');
@@ -50,9 +50,9 @@ function showSection(name) {
     dirtySnapshot = null;
   }
 
-  document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   const el = document.querySelector(`#${name}`);
-  if (el) el.style.display = '';
+  if (el) el.classList.add('active');
   currentSection = name;
 
   if (name === 'ingresar') {

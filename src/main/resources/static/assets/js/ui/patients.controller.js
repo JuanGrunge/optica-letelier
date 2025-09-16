@@ -58,6 +58,30 @@ export function initPatients(){
   const form = document.getElementById('formIngresar');
   if(!form) return;
 
+  // Inicialmente la receta está deshabilitada hasta guardar paciente
+  try {
+    const recFs = document.getElementById('recetaFieldset');
+    const recBox = document.getElementById('recetaBox');
+    function updateRecetaEnabled(){
+      const nombre = (document.getElementById('nombre')?.value || '').trim();
+      const rut = (document.getElementById('rut')?.value || '').trim();
+      const direccion = (document.getElementById('direccion')?.value || '').trim();
+      const ready = !!(nombre && rut && direccion);
+      if (recFs) recFs.disabled = !ready;
+      if (recBox) recBox.classList.toggle('c-card--disabled', !ready);
+    }
+    if (recFs) recFs.disabled = true;
+    recBox?.classList.add('c-card--disabled');
+    // Habilitar al tener nombre + rut + direccion (no requiere guardar)
+    document.getElementById('nombre')?.addEventListener('input', updateRecetaEnabled);
+    document.getElementById('rut')?.addEventListener('input', updateRecetaEnabled);
+    document.getElementById('direccion')?.addEventListener('input', updateRecetaEnabled);
+    // Por compatibilidad, también habilita al guardar (si ya estaban completos seguirá habilitada)
+    document.addEventListener('pacientes:guardado', () => { updateRecetaEnabled(); });
+    // Estado inicial
+    updateRecetaEnabled();
+  } catch {}
+
   // Mostrar/ocultar DP cerca al cambiar toggle
   document.getElementById('dpCercaToggle')?.addEventListener('change', actualizarEstadoDPCerca);
   actualizarEstadoDPCerca();
@@ -130,6 +154,13 @@ function guardarPaciente(e){
   try { form.reset(); } catch {}
   actualizarEstadoDPCerca();
   limpiarMensajes();
+  // Con el reset, deshabilita nuevamente la receta hasta que se vuelvan a completar los 3 datos
+  try {
+    const recFs = document.getElementById('recetaFieldset');
+    const recBox = document.getElementById('recetaBox');
+    if (recFs) recFs.disabled = true;
+    recBox?.classList.add('c-card--disabled');
+  } catch {}
 
   // Disparar evento para que otros módulos refresquen si lo necesitan
   document.dispatchEvent(new CustomEvent('pacientes:guardado', { detail: { rut: base.rut } }));

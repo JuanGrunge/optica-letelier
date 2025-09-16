@@ -8,7 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 
 /**
- * Cadena de seguridad SOLO para /h2-console/** en desarrollo.
+ * Cadena de seguridad SOLO para /h2/** en desarrollo.
  * Aísla por completo la consola de la cadena principal y relaja headers solo en esa ruta.
  */
 @Configuration
@@ -18,7 +18,7 @@ public class H2ConsoleSecurityDev {
     @Bean
     @Order(0) // máxima prioridad: se evalúa antes que cualquier otra cadena
     public SecurityFilterChain h2ConsoleChain(HttpSecurity http) throws Exception {
-        http.securityMatcher("/h2-console/**")
+        http.securityMatcher("/h2/**")
             .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
             // Desactiva headers por defecto y añade solo lo necesario
             .headers(h -> {
@@ -34,7 +34,8 @@ public class H2ConsoleSecurityDev {
                         "frame-ancestors 'self'"
                 ));
             })
-            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
+            .csrf(csrf -> csrf.ignoringRequestMatchers("/h2/**"));
         return http.build();
     }
 }
+

@@ -1,17 +1,16 @@
-
 package cl.letelier.letelier.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -23,18 +22,15 @@ import java.util.List;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    private final JwtAuthFilter jwtAuthFilter;
-
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
-        this.jwtAuthFilter = jwtAuthFilter;
-    }
+    @Value("${app.dev.allow-iframe:false}")
+    private boolean allowIframe;
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .csrf(csrf -> csrf.disable())
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
             .formLogin(form -> form.disable())
             .httpBasic(basic -> basic.disable())
             .authorizeHttpRequests(auth -> auth
@@ -42,14 +38,19 @@ public class SecurityConfig {
                                  "/health", "/login", "/pacientes", "/archivo").permitAll()
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/api/**").permitAll() // ⇐ cuando quieras proteger: .authenticated()
+                .requestMatchers("/api/**").authenticated()
                 .anyRequest().permitAll()
             )
             .exceptionHandling(ex -> ex
                 .authenticationEntryPoint((req,res,e) -> res.sendError(HttpServletResponse.SC_UNAUTHORIZED))
                 .accessDeniedHandler((req,res,e) -> res.sendError(HttpServletResponse.SC_FORBIDDEN))
-            )
-            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            );
+
+        if (allowIframe) {
+            // En desarrollo, desactiva por completo los headers de seguridad
+            // para permitir ser embebido en el WebView de VS Code.
+            http.headers(h -> h.disable());
+        }
 
         return http.build();
     }
@@ -57,8 +58,6 @@ public class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder() {
         // DelegatingPasswordEncoder: soporta {noop}, {bcrypt}, etc.
-        // Esto permite que tus contraseñas con prefijo {noop} en H2 funcionen en dev
-        // y migrar a {bcrypt} sin cambiar código.
         return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 

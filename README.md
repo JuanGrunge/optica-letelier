@@ -1,81 +1,134 @@
-# Proyecto Óptica Letelier
 
-## Estado actual (Septiembre 2025)
+# LETELIER — Panel clínico (Óptica)
 
-Este prototipo refleja el **refactor completo del sistema**, cuyo objetivo principal fue:
-
-- **Unificación de arquitectura (MPA):**
-  Eliminación de lógicas antiguas de tipo SPA o repositorios locales.  
-  Todo el flujo ahora responde al backend Java/Spring como fuente única de datos.
-
-- **Limpieza de código y imports:**
-  - Se retiraron `storage.js`, validadores de prueba y dependencias obsoletas.  
-  - Se corrigieron imports inválidos (`requireAuth`, `openArchivo`) que impedían la carga del front.  
-  - Los módulos actuales (`auth.js`, `router.js`, `theme.js`, `main.js`) están cohesionados y sin duplicidades.
-
-- **Normalización de estilos y scripts:**
-  - **Tema oscuro**: ahora consistente con `html[data-theme="dark"]` (JS y CSS hablan el mismo lenguaje).  
-  - **Hamburguesa**: un solo controlador en `router.js`, clase `menu-open` para abrir/cerrar en mobile.  
-  - **Header y logout**: en desktop se mantiene completo; en mobile se compacta pero siempre accesible tras login.
+Aplicación web para operativos, recetas y boletas de una óptica popular.
+Este documento resume **lo que ya funciona** y **qué viene a continuación**, pensado para el cliente.
 
 ---
 
-## Flujo actual de la aplicación
+## Estado actual (funcionalidades)
 
-1. **Login**: formulario para personal del staff.  
-2. **Navegación**:  
-   - Vista `Archivo` → listado de pacientes y operativos.  
-   - Vista `Ingresar` → formulario de paciente/receta.  
-3. **Logout**: botón siempre disponible tras login.  
-4. **Tema**: switch claro/oscuro persistente.  
-5. **Responsive**:  
-   - Desktop: navegación visible.  
-   - Mobile: hamburguesa abre/cierra menú sin romper el layout.
+- **Autenticación (login) por sesión**
+  - UI tipo *overlay* (emergente) sobre la misma página (SPA).
+  - Inicio de sesión con usuarios de base de datos H2.
+  - Cierre de sesión limpia el estado y vuelve a mostrar el login.
+  - El botón **Cerrar sesión** solo aparece cuando hay sesión activa.
+  - El encabezado (menú hamburguesa y conmutador de tema) permanece visible, también en móvil.
+  - Endpoints disponibles:
+    - `POST /api/auth/login` – autentica y crea sesión (cookie `JSESSIONID`).
+    - `GET  /api/auth/me` – información del usuario autenticado.
+    - `POST /api/auth/logout` – invalida sesión.
+
+- **Roles y usuarios (DEV)**
+  - Esquema multi‑rol: `APP_USER`, `APP_ROLE`, `APP_USER_ROLE`.
+  - Usuarios de prueba (H2): `admin/admin123`, `optico/optico123`, `receptor/receptor123` (con prefijo `{noop}` en la contraseña).
+  - El sistema acepta `{noop}` (desarrollo) y está listo para migrar a `{bcrypt}` (producción) sin cambios de código.
+
+- **Módulos de dominio (backend)**
+  - Estructura base para: **Pacientes**, **Operativos**, **Recetas**, **Boletas**.
+  - Listados/CRUD expuestos por API (pendiente terminar la UI definitiva de cada módulo).
+
+- **Base de datos H2 (desarrollo)**
+  - Consola en `/h2` (si está habilitada).
+  - *Seed* con datos de prueba (usuarios, pacientes, operativos, recetas, boletas).
+  - Persistencia en archivo local (no volátil entre reinicios).
+
+- **Interfaz**
+  - Diseño oscuro/claro con conmutador de tema.
+  - Menú hamburguesa en el *header*.
+  - Layout preparado para vistas de Operativos / Recetas / Boletas.
 
 ---
 
-## Pruebas con H2 (base de datos en memoria)
+## Cómo ejecutar (DEV)
 
-Para validar el backend en desarrollo, entrar a la consola H2 en  
-`http://localhost:8080/h2-console` y ejecutar:
+1. **Requisitos**: Java 17+, Maven.
+2. **Arranque**:
+   ```bash
+   mvn clean spring-boot:run
+   ```
+3. **Navegador**: abrir `http://localhost:8080/`.
+4. **Login de prueba**: `admin / admin123` (o `optico / optico123`, `receptor / receptor123`).
+
+> Si el login fallara en DEV, revisar que las contraseñas de `APP_USER` incluyan el prefijo `{noop}` (ver sección “Pruebas en H2”).
+
+---
+
+## Pruebas en H2 (verificación rápida)
+
+1. Abrir la consola H2 en `http://localhost:8080/h2`.
+2. Conectar usando la URL que aparece en `application.properties` (JDBC H2).
+3. Consultas útiles:
 
 ```sql
-SELECT * FROM PATIENT ORDER BY ID;
+-- Usuarios y estado
+SELECT username, password, enabled FROM APP_USER ORDER BY username;
+
+-- Roles por usuario
+SELECT u.username, r.name AS role
+FROM APP_USER u
+JOIN APP_USER_ROLE ur ON ur.user_id = u.id
+JOIN APP_ROLE r       ON r.id = ur.role_id
+ORDER BY u.username, r.name;
+
+-- Módulos clínicos (si hay datos seed)
+SELECT * FROM PATIENT;
+SELECT * FROM OPERATIVE;
+SELECT * FROM PRESCRIPTION;
+SELECT * FROM INVOICE;
 ```
 
-Esto devuelve la tabla de pacientes actual.  
-De momento es suficiente para testear inserciones y consultas.
+> **Nota:** para DEV las contraseñas están en claro con `{noop}`. En producción se migrará a `{bcrypt}`.
 
 ---
 
-## Próximos pasos
+## Convenciones de seguridad actuales
 
-- Levantar y poblar más tablas (recetas, boletas, operativos).  
-- Integrar la generación de boletas en la vista correspondiente.  
-- Continuar pruebas de UI con el cliente para pulir detalles visuales y de flujo.  
-
----
-
-## Notas internas (para desarrollo)
-
-- El proyecto se ejecuta desde la raíz (`optica-letelier/`) con `mvn spring-boot:run`.  
-- Módulos front clave:
-  - `auth.js` → login/logout + estado de sesión.  
-  - `router.js` → navegación + hamburguesa.  
-  - `theme.js` → control de tema.  
-  - `main.js` → inicialización general.  
-- CSS relevantes:
-  - `theme-dark.css` → normalizado a `data-theme`.  
-  - `components-header.css` → header unificado, responsive, logout fijo.  
+- **Sesión (JSESSIONID)**; no se usa JWT para autenticar solicitudes en esta fase.
+- `PasswordEncoder`: **Delegating** (acepta `{noop}`, `{bcrypt}`, etc.).
+- CORS y CSRF en configuración *permisiva* para desarrollo (se endurecerán en producción).
+- Rutas públicas: `/`, `/index.html`, `/assets/**`, `/api/auth/**`, `/h2/**` (DEV).
 
 ---
 
-## Para el cliente
+## ¿Qué viene después? (roadmap corto)
 
-En esta etapa el sistema ya está consolidado técnicamente:  
-- Login/Logout operativo.  
-- Gestión de pacientes accesible.  
-- Interfaz responsive y usable tanto en computador como en celular.  
-- Cambio de tema claro/oscuro integrado.  
+1. **Operativos – formulario definitivo**
+   - Campos: *Nombre de operativo*, *Dirección*, *Comuna* (con validaciones).
+   - Asociar recetas/boletas a un operativo.
 
-A partir de esta base estable, avanzaremos hacia funcionalidades finales: recetas, boletas y reportes.
+2. **Pacientes – dirección y comuna**
+   - Separar *Dirección* y *Comuna* (estándar usado en salud y farmacias).
+
+3. **Boletas – flujo mínimo**
+   - Crear boleta desde receta/paciente; totales básicos; estado de anulación.
+
+4. **Administración de usuarios (solo `ROLE_ADMIN`)**
+   - Alta/baja/edición de usuarios y asignación de roles.
+   - Migración de contraseñas a `{bcrypt}`.
+
+5. **Endurecer seguridad (producción)**
+   - CSRF activo (excluir `/api/auth/**`), CORS por dominio, `SameSite=None; Secure` si aplica.
+   - Proteger `/api/**` como autenticado y por rol.
+
+6. **Entrega y despliegue**
+   - README de despliegue productivo y variables de entorno.
+   - Opcional: empaquetado container/Docker.
+
+---
+
+## Notas técnicas (rápidas)
+
+- **SPA**: el login muestra/oculta la aplicación sin recargar la página.
+- **UI**: el botón *Cerrar sesión* solo se ve con sesión activa.
+- **Seeds**: archivo(s) de *seed* bajo `src/main/resources/db/seed/`.
+- **Registro (logs)**: se puede habilitar detalle de seguridad agregando en `application.properties`:
+  ```properties
+  logging.level.org.springframework.security=DEBUG
+  ```
+
+---
+
+## Contacto / Soporte
+
+Para incidencias o nuevas funcionalidades, indicar: paso a reproducir, navegador, captura y log (si es posible).

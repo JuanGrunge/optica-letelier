@@ -4,12 +4,13 @@
   display:flex; align-items:center; justify-content:space-between; gap: var(--space-3);
   padding: 0 var(--space-4);
   border-bottom: 1px solid var(--color-border);
-  position: relative; z-index: var(--z-header);
+  position: fixed; top:0; left:0; right:0; z-index: var(--z-header);
   background: linear-gradient(90deg, var(--brand-1, #1E70B8), var(--brand-2, #0b4fa0));
   border-bottom-color: rgba(255,255,255,.18);
 }
 
 .c-header__brand{ display:flex; align-items:center; justify-content:center; height: 100%; line-height:0; }
+.c-header__brand .brand{ margin:0; padding:0; display:inline-flex; align-items:center; line-height:0; }
 .c-header__brand img{
   height: calc(var(--size-header) - 2 * var(--logo-vpad));
   display:block; object-fit: contain; object-position:center;
@@ -62,13 +63,39 @@
   .c-header__brand{ position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); height:auto; }
   /* MenÃº mÃ³vil: dropdown vertical bajo el header, alineado a la izquierda */
   .c-header__nav{ order:2; display:none; position:absolute; left:0; right:0; top:100%; z-index: var(--z-header); }
-  .c-header.is-open .c-header__nav{
+  .c-header.is-open .c-header__nav,
+  body.nav-open .c-header__nav{
     display:flex; flex-direction: column; padding: 0 var(--space-4) var(--space-2) var(--space-4);
     background: color-mix(in oklab, var(--color-bg) 35%, transparent);
     backdrop-filter: blur(10px) saturate(120%);
     -webkit-backdrop-filter: blur(10px) saturate(120%);
     border-bottom: 1px solid rgba(255,255,255,.10);
   }
+  /* Tema claro: menú móvil legible con texto oscuro y fondo claro */
+  html:not([data-theme="dark"]) .c-header.is-open .c-header__nav,
+  html:not([data-theme="dark"]) body.nav-open .c-header__nav{
+    /* Efecto panel espejo (glass) en claro, más notorio */
+    background: rgba(255,255,255,.88);
+    backdrop-filter: blur(14px) saturate(135%);
+    -webkit-backdrop-filter: blur(14px) saturate(135%);
+    border: 1px solid rgba(0,0,0,.10);
+    box-shadow: 0 16px 40px rgba(0,0,0,.18);
+    border-top-color: transparent; /* se funde con el header */
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
+    position: absolute;
+    overflow: hidden; /* para máscara del brillo */
+  }
+  /* Brillo/halo sutil para enfatizar el "espejo" en modo claro */
+  html:not([data-theme="dark"]) .c-header.is-open .c-header__nav::before,
+  html:not([data-theme="dark"]) body.nav-open .c-header__nav::before{
+    content:""; position:absolute; inset:0; border-radius: inherit; pointer-events:none;
+    background: radial-gradient(120% 60% at 80% 0%, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 60%),
+                linear-gradient(180deg, rgba(255,255,255,.35) 0%, rgba(255,255,255,0) 20%);
+  }
+  html:not([data-theme="dark"]) .c-header__nav_list > li{ border-top-color: rgba(0,0,0,.10); }
+  html:not([data-theme="dark"]) .c-header__nav .c-header__btn{ color: var(--color-text); }
+  html:not([data-theme="dark"]) .c-header__nav .c-header__btn:hover{ background: rgba(0,0,0,.06); }
   .c-header__nav_list{ flex-direction: column; gap: 0; }
   .c-header__nav_list > li{ border-top: 1px solid rgba(255,255,255,.08); margin-left: 0; }
   .c-header__nav_list > li:first-child{ border-top: 0; }
@@ -107,7 +134,7 @@
 
 /* Centro el bloque de navegaciÃ³n en desktop */
 @media (min-width: 769px){
-  .c-header{ position: relative; }
+  .c-header{ position: fixed; top:0; left:0; right:0; }
   .c-header__nav{ position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); }
   /* Efecto final: sin viñeta centrada; el texto aparece a la derecha del icono y se expande */
   .c-header__btn{ position: relative; overflow: visible; }
@@ -139,7 +166,7 @@
 
 /* Divisor minimalista entre botones (solo desktop) */
 @media (min-width: 769px){
-  .c-header{ position: relative; }
+  .c-header{ position: fixed; top:0; left:0; right:0; }
   .c-header__nav{ position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); }
   /* Efecto final: sin viñeta centrada; el texto aparece a la derecha del icono y se expande */
   .c-header__btn{ position: relative; overflow: visible; }

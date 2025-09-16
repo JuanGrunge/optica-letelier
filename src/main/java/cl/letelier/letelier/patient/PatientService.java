@@ -12,8 +12,8 @@ public class PatientService {
 
     public Page<PatientDTO> search(String q, Pageable pageable){
         if(q==null || q.isBlank()) return repo.findAll(pageable).map(PatientMapper::toDTO);
-        return repo.findByActivoTrueAndApellidosContainingIgnoreCaseOrNombresContainingIgnoreCase(q,q,pageable)
-                   .map(PatientMapper::toDTO);
+        String nq = q.replaceAll("[.\\-\\s]", "");
+        return repo.searchByRutOrNameFlexible(q, nq, pageable).map(PatientMapper::toDTO);
     }
     public PatientDTO get(Long id){return repo.findById(id).map(PatientMapper::toDTO).orElseThrow();}
     public PatientDTO create(PatientDTO dto){

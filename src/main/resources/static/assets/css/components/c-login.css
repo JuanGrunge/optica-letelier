@@ -1,0 +1,66 @@
+/* Capa oscura y centrado del overlay */
+.c-login{
+  /* Usa el panel de vidrio global (body::before). Este contenedor es transparente */
+  position: fixed; 
+  left: var(--shell-side); right: var(--shell-side);
+  bottom: 0; top: var(--size-header);
+  display: grid; place-items: center;
+  background: transparent;
+  z-index: var(--z-overlay);
+  padding: var(--space-4);
+  box-sizing: border-box;
+}
+
+/* Tarjeta del login */
+.c-login__card{
+  width: min(320px, 100%);
+  background: var(--color-surface);
+  color: var(--color-text);
+  padding: var(--space-5) var(--space-5) var(--space-4);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-2);
+  display: grid; gap: var(--space-4);
+}
+
+/* Vista con poca altura: despegar desde el header y priorizar contenido */
+@media (max-height: 720px){
+  .c-login{ 
+    place-items: start center;
+    padding-top: var(--space-3);
+    padding-bottom: var(--space-3);
+    box-sizing: border-box;
+  }
+}
+
+/* Pantallas pequeñas: reducir el margen lateral para no comprimir la tarjeta */
+@media (max-width: 1200px){ .c-login{ left:8vw; right:8vw; } }
+@media (max-width: 900px){ .c-login{ left:6vw; right:6vw; } }
+@media (max-width: 640px){ .c-login{ left:3vw; right:3vw; } }
+
+/* Título centrado */
+.c-login__card h2{ text-align:center; margin: 0 0 var(--space-2); }
+
+/* Form layout */
+#loginForm{ display:grid; gap: var(--space-2); }
+#loginForm label{ display:block; margin-top: var(--space-1); }
+
+/* Campos y botón (solo tokens) */
+.c-login__input{
+  width:100%; padding:10px 12px; margin-top: 2px;
+  background: var(--color-field);
+  color: var(--color-text);
+  border:1px solid var(--color-field-border);
+  border-radius: var(--radius-md);
+  outline: none;
+}
+.c-login__input:focus{ border-color: var(--color-accent); }
+.c-login__btn{
+  padding:10px 18px; border:0;
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  cursor:pointer;
+  display:inline-block; justify-self:center; align-self:center; margin-top: var(--space-1);
+}
+details.hint{ text-align:center; margin-top: var(--space-2); }
+.c-login__hint{ color: var(--color-text-muted); font-size: .9rem; }

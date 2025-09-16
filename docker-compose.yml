@@ -1,0 +1,39 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: letelier-db
+    environment:
+      POSTGRES_DB: letelier
+      POSTGRES_USER: letelier
+      POSTGRES_PASSWORD: letelier
+    ports:
+      - "5432:5432" # opcional para conectar desde host
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    container_name: letelier-app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      DB_URL: jdbc:postgresql://db:5432/letelier
+      DB_USER: letelier
+      DB_PASS: letelier
+      # Ajusta CORS si expones públicamente
+      APP_CORS_ORIGINS: http://localhost:8080
+    ports:
+      - "8080:8080"
+
+volumes:
+  db-data:
+

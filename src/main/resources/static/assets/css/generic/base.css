@@ -1,0 +1,57 @@
+/* generic/base.css — estilos globales mínimos */
+
+/* Fondo con mosaico temático (debajo de todo el contenido y overlays) */
+html, body{ min-height:100%; }
+body{
+  margin: 0;
+  font-family: var(--ff-sans);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  position: relative;
+  background-color: var(--color-bg);
+  background-image: var(--bg-pattern);
+  background-repeat: repeat;
+  background-size: var(--bg-pattern-size, 256px 256px);
+  background-attachment: fixed; /* sensación de lienzo */
+  /* Deja espacio al final para que el panel de vidrio no quede oculto
+     detrás de la última tarjeta */
+  padding-bottom: var(--shell-bottom-pad);
+  /* Gutter dinámico que iguala al del panel de vidrio */
+  --shell-gutter: var(--shell-side);
+  /* El header es fijo; evitamos padding-top para no empujarlo. 
+     El overlay (body::before) ya respeta --size-header. */
+}
+
+/* Panel de vidrio global detrás del contenido (excepto header) */
+body::before{
+  content:"";
+  position: absolute;
+  left: var(--shell-side);
+  right: var(--shell-side);
+  top: var(--size-header);
+  bottom: var(--shell-bottom-pad);
+  pointer-events: none;
+  background: var(--shell-tint);
+  backdrop-filter: blur(var(--shell-blur)) saturate(var(--shell-saturate));
+  -webkit-backdrop-filter: blur(var(--shell-blur)) saturate(var(--shell-saturate));
+  border: 1px solid rgba(255,255,255,.05);
+  box-shadow: 0 8px 24px rgba(0,0,0,.08);
+  border-radius: var(--radius-lg);
+  z-index: 200; /* por debajo del contenido y del header */
+}
+
+/* En estado sin sesión, el contenido principal es fijo (login),
+   por lo que el body no crece; fijamos el shell al viewport */
+body.no-session::before{
+  position: fixed;
+  bottom: 0;
+}
+
+/* Asegura que contenido principal pinte sobre el shell (excluye header fijo) */
+.view, .c-login, main, section, nav { position: relative; z-index: 400; }
+
+@media (max-width: 1200px){ body{ --shell-gutter: 8vw; } body::before{ left:8vw; right:8vw; } }
+@media (max-width: 900px){  body{ --shell-gutter: 6vw; } body::before{ left:6vw; right:6vw; } }
+@media (max-width: 640px){  body{ --shell-gutter: 3vw; } body::before{ left:3vw; right:3vw; border-radius: var(--radius-md); } }
+
