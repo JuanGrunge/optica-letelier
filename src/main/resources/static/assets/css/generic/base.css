@@ -1,0 +1,12 @@
+/* generic/base.css — estilos globales mínimos */
+
+/* Fondo con mosaico temático (debajo de todo el contenido y overlays) */
+html, body{ height:100%; }
+body{
+  background-color: var(--color-bg);
+  background-image: var(--bg-pattern);
+  background-repeat: repeat;
+  background-size: var(--bg-pattern-size, 256px 256px);
+  background-attachment: fixed; /* sensación de lienzo */
+}
+

@@ -29,4 +29,8 @@
   /* size y otros */
   --size-header: 72px;
   --opacity-overlay: .45;
+  
+  /* Background mosaic (light por defecto) */
+  --bg-pattern: url("../../img/pattern-light.png");
+  --bg-pattern-size: 256px 256px;
 }
