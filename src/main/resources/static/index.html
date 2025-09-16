@@ -10,9 +10,11 @@
 
   <!-- CSS (rutas RELATIVAS) -->
   <link rel="stylesheet" href="assets/css/settings/tokens.css">
+  <link rel="stylesheet" href="assets/css/settings/theme-light.css">
   <link rel="stylesheet" href="assets/css/settings/theme-dark.css">
   <link rel="stylesheet" href="assets/css/generic/base.css">
   <link rel="stylesheet" href="assets/css/components/c-header.css">
+  <link rel="stylesheet" href="assets/css/components/c-card.css">
   <link rel="stylesheet" href="assets/css/components/c-login.css">
   <link rel="stylesheet" href="assets/css/components/c-form.css">
   <link rel="stylesheet" href="assets/css/components/c-search.css">
@@ -62,6 +64,7 @@
             <span class="nav-label" data-label="Ingresar paciente">Ingresar paciente</span>
           </button>
         </li>
+        
       </ul>
     </nav>
 
@@ -108,32 +111,150 @@
   </section>
 
   <!-- Ingresar -->
-  <section id="ingresar" class="view" aria-hidden="true">
-    <h2>Ingresar Paciente</h2>
+  <section id="ingresar" class="view" aria-hidden="true" data-auth="protected">
+    <form id="formIngresar" class="c-form">
+      <div id="cardPaciente" class="c-card">
+        <h2>Ingresar Paciente</h2>
+        <div class="c-box c-box--compact">
+        <div class="o-grid o-grid__2">
+          <div class="c-form__group">
+            <label class="c-form__label" for="nombre">Nombre completo</label>
+            <input id="nombre" class="c-form__control" type="text" placeholder="Ej: Juan Pérez" required>
+          </div>
+          <div class="c-form__group">
+            <label class="c-form__label" for="rut">RUT</label>
+            <input id="rut" class="c-form__control" type="text" placeholder="12.345.678-K" required>
+            <small id="rutError" class="c-login__hint"></small>
+          </div>
+          <div class="c-form__group">
+            <label class="c-form__label" for="direccion">Dirección</label>
+            <input id="direccion" class="c-form__control" type="text" placeholder="Calle 123, Comuna">
+          </div>
+          <div class="c-form__group">
+            <label class="c-form__label" for="fechaNac">Fecha de nacimiento</label>
+            <input id="fechaNac" class="c-form__control" type="date">
+          </div>
+          <div class="c-form__group">
+            <label class="c-form__label" for="operativo">Lugar Operativo</label>
+            <input id="operativo" class="c-form__control" type="text" placeholder="Plaza Central">
+          </div>
+        </div>
+        <div class="c-form__actions c-form__actions--end">
+          <button type="submit" class="c-btn c-btn--icon c-btn--neo c-btn--save" aria-label="Guardar paciente" title="Guardar paciente">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 4v10"/>
+                <path d="M8 8l4-4l4 4"/>
+                <path d="M5 20h14"/>
+              </g>
+            </svg>
+          </button>
+        </div>
+        </div>
+      </div>
+
+      <div id="cardReceta" class="c-card">
+        <h3>Receta</h3>
+        <div id="recetaBox" class="c-box c-box--compact c-card--disabled">
+        <fieldset id="recetaFieldset" disabled>
+        <div class="c-form__group">
+          <h4>Datos por ojo</h4>
+          <div class="c-table-scroll">
+            <table class="rx-table rx-table--compact">
+              <thead><tr>
+                <th>OJO</th><th>ESF</th><th>CIL</th><th>EJE</th><th>ADD</th><th>DP</th><th>ALT</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td>OD</td>
+                  <td><input id="odEsf" class="c-form__control" type="number" step="0.25"></td>
+                  <td><input id="odCil" class="c-form__control" type="number" step="0.25"></td>
+                  <td><input id="odEje" class="c-form__control" type="number" step="1" min="0" max="180"></td>
+                  <td><input id="odAdd" class="c-form__control" type="number" step="0.25"></td>
+                  <td><input id="odDP" class="c-form__control" type="number" step="1"></td>
+                  <td><input id="odALT" class="c-form__control" type="number" step="1"></td>
+                </tr>
+                <tr>
+                  <td>OI</td>
+                  <td><input id="oiEsf" class="c-form__control" type="number" step="0.25"></td>
+                  <td><input id="oiCil" class="c-form__control" type="number" step="0.25"></td>
+                  <td><input id="oiEje" class="c-form__control" type="number" step="1" min="0" max="180"></td>
+                  <td><input id="oiAdd" class="c-form__control" type="number" step="0.25"></td>
+                  <td><input id="oiDP" class="c-form__control" type="number" step="1"></td>
+                  <td><input id="oiALT" class="c-form__control" type="number" step="1"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="c-form__group">
+          <label class="c-form__label">
+            <input type="checkbox" id="dpCercaToggle"> Ingresar DP de cerca
+          </label>
+          <div id="dpCercaBox" class="hidden">
+            <label class="c-form__label" for="dpCerca">DP Cerca</label>
+            <input id="dpCerca" class="c-form__control" type="number" step="1">
+          </div>
+        </div>
+
+        <div class="c-form__group">
+          <label class="c-form__label" for="obs">Observaciones</label>
+          <textarea id="obs" class="c-form__control" rows="3" placeholder="Notas u observaciones"></textarea>
+        </div>
+        <div class="c-form__actions c-form__actions--end">
+          <button type="submit" class="c-btn c-btn--icon c-btn--neo" aria-label="Guardar receta" title="Guardar receta">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 4v10"/>
+                <path d="M8 8l4-4l4 4"/>
+                <path d="M5 20h14"/>
+              </g>
+            </svg>
+          </button>
+        </div>
+        </fieldset>
+        </div>
+      </div>
+    </form>
   </section>
 
   <!-- Archivo -->
-  <section id="archivo" class="view" aria-hidden="false">
+  <section id="archivo" class="view" aria-hidden="false" data-auth="protected">
+    <div class="c-card">
     <h2>Archivo</h2>
-    <p class="subtle">Busca por <strong>RUT, Nombre o Lugar de Operativo</strong> con un solo campo.</p>
+    <p class="subtle">Busca solo por <strong>RUT</strong>.</p>
     <form id="formBuscar">
       <div class="filters single">
         <div class="c-search">
-          <input id="fQuery" class="c-search__input" type="text" placeholder="Ej: 12.345.678-K · Juan · Plaza Central">
+          <input id="fQuery" class="c-search__input" type="text" placeholder="Ej: 12.345.678-K">
           <button class="c-search__btn" type="submit" aria-label="Buscar" title="Buscar">
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-              <path d="M15.5 14h-.79l-.28-.27a6.5 6.5 0 1 0-.71.71l.27.28v.79L20 21.5 21.5 20l-6-6zM10 15a5 5 0 1 1 0-10 5 5 0 0 1 0 10z" fill="currentColor"/>
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="10" cy="10" r="7"/>
+                <path d="M21 21l-6-6"/>
+              </g>
             </svg>
           </button>
         </div>
       </div>
     </form>
-    <div id="resultados" class="resultados">
+    </div>
+    <div id="resultados" class="resultados c-card">
       <h3>Resultados</h3>
-      <div id="listaResultados" class="lista-resultados"></div>
+      <div class="c-table-scroll">
+        <table class="c-table" id="tablaResultados">
+          <thead>
+            <tr><th>RUT</th><th>Nombre Paciente</th><th>Lugar Operativo</th></tr>
+          </thead>
+          <tbody id="listaResultados"></tbody>
+        </table>
+      </div>
       <p id="msgResultados" class="subtle"></p>
     </div>
   </section>
+
+  
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 

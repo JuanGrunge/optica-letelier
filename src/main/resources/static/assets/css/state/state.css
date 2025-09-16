@@ -4,7 +4,13 @@
 .no-session #app{ display:none !important; }
 .no-session #loginOverlay{ display:grid !important; }
 .no-session [data-auth="protected"]{ display:none !important; }
+/* Oculta totalmente las vistas mientras no hay sesión */
+.no-session .view{ display:none !important; pointer-events: none !important; }
 
 /* Toggle de vistas */
 .view{ display:none; }
 .view.active{ display:block; }
+/* Acomodar las vistas bajo el header fijo y dentro del panel de vidrio */
+.view{ padding-top: calc(var(--size-header) + var(--space-3)); padding-bottom: var(--space-6); }
+/* Utilidad genérica */
+.hidden{ display:none !important; }

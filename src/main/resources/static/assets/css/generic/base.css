@@ -14,6 +14,13 @@ body{
   background-repeat: repeat;
   background-size: var(--bg-pattern-size, 256px 256px);
   background-attachment: fixed; /* sensación de lienzo */
+  /* Deja espacio al final para que el panel de vidrio no quede oculto
+     detrás de la última tarjeta */
+  padding-bottom: var(--shell-bottom-pad);
+  /* Gutter dinámico que iguala al del panel de vidrio */
+  --shell-gutter: var(--shell-side);
+  /* El header es fijo; evitamos padding-top para no empujarlo. 
+     El overlay (body::before) ya respeta --size-header. */
 }
 
 /* Panel de vidrio global detrás del contenido (excepto header) */
@@ -41,10 +48,10 @@ body.no-session::before{
   bottom: 0;
 }
 
-/* Asegura que contenido principal pinte sobre el shell */
-.view, .c-login, main, section, nav, .c-header { position: relative; z-index: 400; }
+/* Asegura que contenido principal pinte sobre el shell (excluye header fijo) */
+.view, .c-login, main, section, nav { position: relative; z-index: 400; }
 
-@media (max-width: 1200px){ body::before{ left:8vw; right:8vw; } }
-@media (max-width: 900px){ body::before{ left:6vw; right:6vw; } }
-@media (max-width: 640px){ body::before{ left:3vw; right:3vw; border-radius: var(--radius-md); } }
+@media (max-width: 1200px){ body{ --shell-gutter: 8vw; } body::before{ left:8vw; right:8vw; } }
+@media (max-width: 900px){  body{ --shell-gutter: 6vw; } body::before{ left:6vw; right:6vw; } }
+@media (max-width: 640px){  body{ --shell-gutter: 3vw; } body::before{ left:3vw; right:3vw; border-radius: var(--radius-md); } }
 

@@ -6,8 +6,8 @@
   --color-text: #0f172a;
   --color-text-muted: #bfc5cc;
   --color-border: #dcdfe4;
-  --color-field: #ffffff;
-  --color-field-border: #d1d5db;
+  --color-field: #f9fafb;           /* menos brillo que blanco puro */
+  --color-field-border: #cfd8e3;    /* borde un poco más definido */
   --color-accent: #0b5bd7;
   --color-on-accent: #ffffff;
   --color-accent-hover:#084bb2;
@@ -48,6 +48,7 @@
   --bg-pattern-size: 256px 256px;
   /* tipografía */
   --ff-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  --ff-form: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
   /* gutter lateral del panel de vidrio */
   --shell-side: clamp(16px, 6vw, 120px);
@@ -56,5 +57,10 @@
   --shell-tint: rgba(0,0,0,.10);
   --shell-blur: 10px;
   --shell-saturate: 125%;
+
+  /* Vidrio/light */
+  --glass-bg: color-mix(in oklab, var(--color-surface) 82%, transparent);
+  --glass-border: rgba(0,0,0,.12);
+  --glass-shadow: 0 14px 44px rgba(0,0,0,.20);
 }
 

@@ -50,9 +50,9 @@ function showSection(name) {
     dirtySnapshot = null;
   }
 
-  document.querySelectorAll('.view').forEach(v => v.style.display = 'none');
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   const el = document.querySelector(`#${name}`);
-  if (el) el.style.display = '';
+  if (el) el.classList.add('active');
   currentSection = name;
 
   if (name === 'ingresar') {

@@ -1,12 +1,13 @@
 /* assets/css/components/c-table.css */
-.c-table{ width:100%; border-collapse: collapse; background: var(--color-surface); }
+.c-table{ width:100%; border-collapse: collapse; background: var(--color-surface); border-radius: var(--radius-md); overflow:hidden; }
 .c-table th, .c-table td{ padding: 10px 12px; border: 1px solid var(--color-border); }
 .c-table th{
   text-align:left; font-weight:600;
-  background: linear-gradient(180deg, color-mix(in oklab, var(--color-surface) 90%, white), var(--color-surface));
+  background: linear-gradient(180deg, color-mix(in oklab, var(--color-surface) 88%, #fff), color-mix(in oklab, var(--color-surface) 96%, #000));
 }
 .c-table tr:nth-child(even){ background: color-mix(in oklab, var(--color-surface) 96%, black 4%); }
-.c-table-scroll{ overflow:auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+.c-table tbody tr:hover{ background: color-mix(in oklab, var(--color-surface) 92%, black 8%); }
+.c-table-scroll{ overflow:auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-1); }
 
 /* ALIAS para compatibilidad con nombres antiguos */
 .rx-table{ width:100%; border-collapse: collapse; background: var(--color-surface); }
@@ -14,3 +15,13 @@
 .rx-table th{ text-align:left; font-weight:600; background: linear-gradient(180deg, color-mix(in oklab, var(--color-surface) 90%, white), var(--color-surface)); }
 .rx-table tr:nth-child(even){ background: color-mix(in oklab, var(--color-surface) 96%, black 4%); }
 .table-scroll{ overflow:auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+/* Compacto para formularios clínicos */
+.rx-table--compact th, .rx-table--compact td{ padding: 6px 8px; }
+.rx-table--compact th:first-child, .rx-table--compact td:first-child{ text-align:center; width:64px; white-space:nowrap; }
+.rx-table--compact input{
+  width: 100%; box-sizing: border-box;
+  background: var(--color-field); color: var(--color-text);
+  border: 1px solid var(--color-field-border);
+  border-radius: var(--radius-sm); padding: 6px 8px;
+}
+.rx-table--compact input:focus{ outline:none; border-color: var(--color-accent); box-shadow: 0 0 0 2px color-mix(in oklab, var(--color-accent) 25%, transparent); }

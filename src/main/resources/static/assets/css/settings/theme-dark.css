@@ -30,4 +30,15 @@ html[data-theme="dark"]{
   --shell-tint: rgba(255,255,255,.07);
   --shell-blur: 12px;
   --shell-saturate: 135%;
+
+  /* Vidrio/dark */
+  --glass-bg: color-mix(in oklab, var(--color-surface) 82%, transparent);
+  --glass-border: rgba(255,255,255,.05);
+  --glass-shadow: 0 16px 48px rgba(0,0,0,.50);
+}
+
+/* Date picker icon visible in dark */
+html[data-theme="dark"] .c-form__control[type="date"]::-webkit-calendar-picker-indicator{
+  filter: invert(1) brightness(1.2);
+  opacity: .9;
 }

@@ -1,0 +1,19 @@
+/* components/c-card.css — contenedor visual (tarjeta) */
+.c-card{
+  /* Fondo translúcido con blur (usa tokens segun tema) */
+  background: var(--glass-bg);
+  color: var(--color-text);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  padding: var(--space-4);
+  /* Márgenes equilibrados y sincronizados con el overlay (usa --shell-gutter) */
+  margin: var(--space-4) calc(var(--shell-gutter) + var(--space-4)) var(--space-4);
+  /* Efecto vidrio consistente con el overlay del login */
+  backdrop-filter: blur(var(--shell-blur)) saturate(var(--shell-saturate));
+  -webkit-backdrop-filter: blur(var(--shell-blur)) saturate(var(--shell-saturate));
+  border: 1px solid var(--glass-border);
+}
+
+/* Estado visual para tarjetas deshabilitadas */
+.c-card--disabled{ opacity: .6; filter: grayscale(.08); }
+.c-card h2{ margin-top: 0; }

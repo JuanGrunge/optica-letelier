@@ -1,0 +1,40 @@
+/* settings/theme-light.css — overrides explícitos para modo claro */
+html[data-theme="light"]{
+  /* Campos menos brillantes y bordes un poco más definidos */
+  --color-field: #f9fafb;
+  --color-field-border: #cfd8e3;
+
+  /* Vidrio: un poco más contrastado que la superficie */
+  --glass-bg: color-mix(in oklab, var(--color-surface) 82%, transparent);
+  --glass-border: rgba(0,0,0,.12);
+  --glass-shadow: 0 14px 44px rgba(0,0,0,.20);
+}
+
+/* Menú móvil con efecto espejo en modo claro */
+@media (max-width: 768px){
+  html[data-theme="light"] .c-header.is-open .c-header__nav,
+  html[data-theme="light"] body.nav-open .c-header__nav{
+    background: rgba(255,255,255,.88);
+    backdrop-filter: blur(14px) saturate(135%);
+    -webkit-backdrop-filter: blur(14px) saturate(135%);
+    border: 1px solid rgba(0,0,0,.10);
+    box-shadow: 0 16px 40px rgba(0,0,0,.18);
+    border-top-color: transparent;
+    border-bottom-left-radius: var(--radius-lg);
+    border-bottom-right-radius: var(--radius-lg);
+    color: var(--color-text);
+  }
+  html[data-theme="light"] .c-header__nav_list > li{ border-top-color: rgba(0,0,0,.10); }
+  html[data-theme="light"] .c-header__nav .c-header__btn{ color: var(--color-text); }
+  html[data-theme="light"] .c-header__nav .c-header__btn:hover{ background: rgba(0,0,0,.06); }
+}
+
+/* Tablas: encabezado más oscuro para contraste en light */
+html[data-theme="light"] .c-table th,
+html[data-theme="light"] .rx-table th{
+  background: linear-gradient(180deg,
+    color-mix(in oklab, var(--color-surface) 92%, #000),
+    color-mix(in oklab, var(--color-surface) 82%, #000)
+  );
+  border-bottom: 1px solid color-mix(in oklab, var(--color-border) 85%, #000);
+}

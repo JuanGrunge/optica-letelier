@@ -10,8 +10,11 @@
   border:1px solid var(--color-field-border);
   border-radius: var(--radius-md);
   outline: none;
-  transition: box-shadow .15s ease, border-color .15s ease;
+  transition: box-shadow .15s ease, border-color .15s ease, background-color .15s ease;
   box-sizing: border-box;
+  /* Números alineados (como en fecha) y tipografía consistente */
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
 }
 .c-form__control::placeholder,
 .c-login__input::placeholder{ color: var(--color-text-muted); }
@@ -20,9 +23,16 @@
 .c-login__input:focus{
   border-color: var(--color-accent);
   box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 25%, transparent);
+  background: color-mix(in oklab, var(--color-field) 92%, var(--color-accent) 8%);
 }
 
+/* Date input: placeholder/segment color y control del ícono */
+.c-form__control[type="date"]::-webkit-datetime-edit{ color: var(--color-text-muted); }
+.c-form__control[type="date"]:focus::-webkit-datetime-edit{ color: var(--color-text); }
+.c-form__control[type="date"]::-webkit-calendar-picker-indicator{ cursor:pointer; }
+
 .c-form__actions{ display:flex; gap: var(--space-3); align-items:center; }
+.c-form__actions--end{ justify-content:flex-end; }
 
 .c-btn,
 .c-login__btn{
@@ -36,10 +46,54 @@
 }
 .c-btn:hover,
 .c-login__btn:hover{ background: var(--btn-bg-hover, var(--btn-bg)); filter: brightness(1.03); box-shadow: var(--shadow-2); }
+.c-btn:focus-visible,
+.c-login__btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 28%, transparent), var(--shadow-2); }
 .c-btn:active,
 .c-login__btn:active{ transform: translateY(1px); }
 
-.c-btn--ghost{
-  background: transparent; color: var(--color-text);
-  border: 1px solid var(--color-border);
+/* Botón icono (viñeta) */
+.c-btn--icon{
+  width: 48px; height: 48px; padding:0; border-radius: var(--radius-md);
+  display:inline-flex; align-items:center; justify-content:center;
 }
+
+/* Estilo "neumórfico" suave, alineado a la estética del sitio */
+.c-btn--neo{
+  background: var(--color-field);
+  color: var(--color-text);
+  border: 1px solid var(--color-field-border);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.6), var(--shadow-1);
+}
+.c-btn--neo:hover{ filter:none; background: color-mix(in oklab, var(--color-field) 92%, var(--color-accent) 8%); box-shadow: var(--shadow-2); }
+.c-btn--neo:active{ transform: translateY(1px); box-shadow: var(--shadow-1); }
+
+/* Ajustes para modo oscuro: más contraste, menos brillo interno */
+html[data-theme="dark"] .c-btn--neo{
+  background: color-mix(in oklab, var(--color-surface) 92%, black);
+  border-color: var(--color-field-border);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04), var(--shadow-1);
+}
+html[data-theme="dark"] .c-btn--neo:hover{
+  background: color-mix(in oklab, var(--color-surface) 90%, var(--color-accent) 10%);
+}
+
+.c-btn--ghost{
+  background: color-mix(in oklab, var(--color-field) 88%, transparent);
+  color: var(--color-text);
+  border: 1px solid var(--color-field-border);
+}
+.c-btn--ghost:hover{ background: color-mix(in oklab, var(--color-field) 80%, var(--color-accent) 4%); }
+.c-btn--ghost:focus-visible{ outline:none; box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 22%, transparent); }
+
+/* Recuadro compacto para agrupar campos (similar a receta) */
+.c-box{
+  border: 1px solid var(--color-field-border);
+  border-radius: var(--radius-md);
+  background: color-mix(in oklab, var(--color-surface) 96%, transparent);
+  padding: var(--space-3);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.05), var(--shadow-1);
+}
+.c-box--compact .c-form__group{ margin-bottom: var(--space-3); }
+
+/* Normaliza fieldset dentro de formularios para evitar marcos nativos */
+.c-form fieldset{ border:0; margin:0; padding:0; min-inline-size: 0; }
