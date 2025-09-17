@@ -162,7 +162,7 @@
           <div class="c-table-scroll">
             <table class="rx-table rx-table--compact">
               <thead><tr>
-                <th>OJO</th><th>ESF</th><th>CIL</th><th>EJE</th><th>ADD</th><th>DP</th><th>ALT</th>
+                <th>OJO</th><th>ESF</th><th>CIL</th><th>EJE</th>
               </tr></thead>
               <tbody>
                 <tr>
@@ -170,18 +170,12 @@
                   <td><input id="odEsf" class="c-form__control" type="number" step="0.25"></td>
                   <td><input id="odCil" class="c-form__control" type="number" step="0.25"></td>
                   <td><input id="odEje" class="c-form__control" type="number" step="1" min="0" max="180"></td>
-                  <td><input id="odAdd" class="c-form__control" type="number" step="0.25"></td>
-                  <td><input id="odDP" class="c-form__control" type="number" step="1"></td>
-                  <td><input id="odALT" class="c-form__control" type="number" step="1"></td>
                 </tr>
                 <tr>
                   <td>OI</td>
                   <td><input id="oiEsf" class="c-form__control" type="number" step="0.25"></td>
                   <td><input id="oiCil" class="c-form__control" type="number" step="0.25"></td>
                   <td><input id="oiEje" class="c-form__control" type="number" step="1" min="0" max="180"></td>
-                  <td><input id="oiAdd" class="c-form__control" type="number" step="0.25"></td>
-                  <td><input id="oiDP" class="c-form__control" type="number" step="1"></td>
-                  <td><input id="oiALT" class="c-form__control" type="number" step="1"></td>
                 </tr>
               </tbody>
             </table>
@@ -189,12 +183,51 @@
         </div>
 
         <div class="c-form__group">
-          <label class="c-form__label">
-            <input type="checkbox" id="dpCercaToggle"> Ingresar DP de cerca
-          </label>
-          <div id="dpCercaBox" class="hidden">
-            <label class="c-form__label" for="dpCerca">DP Cerca</label>
-            <input id="dpCerca" class="c-form__control" type="number" step="1">
+          <h4>Metadatos (opcional)</h4>
+          <div class="o-grid o-grid__2">
+            <div class="c-form__group">
+              <label class="c-form__label" for="pdFar">DP Lejos (mm)</label>
+              <input id="pdFar" class="c-form__control" type="number" step="0.1" placeholder="p.ej. 63.0">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="pdNear">DP Cerca (mm)</label>
+              <input id="pdNear" class="c-form__control" type="number" step="0.1" placeholder="p.ej. 61.0">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="dprFar">DP Derecha (mm)</label>
+              <input id="dprFar" class="c-form__control" type="number" step="0.1" placeholder="p.ej. 31.0">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="dplFar">DP Izquierda (mm)</label>
+              <input id="dplFar" class="c-form__control" type="number" step="0.1" placeholder="p.ej. 32.0">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="vd">VD (distancia vértice, mm)</label>
+              <input id="vd" class="c-form__control" type="number" step="0.1" placeholder="p.ej. 12.0">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="pupR">Pupila OD (mm)</label>
+              <input id="pupR" class="c-form__control" type="number" step="0.01" placeholder="p.ej. 4.93">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="pupL">Pupila OI (mm)</label>
+              <input id="pupL" class="c-form__control" type="number" step="0.01" placeholder="p.ej. 4.49">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="cylForm">Cyl Form</label>
+              <select id="cylForm" class="c-form__control">
+                <option value="-" selected>-</option>
+                <option value="+">+</option>
+              </select>
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="addMeta">ADD (opcional)</label>
+              <input id="addMeta" class="c-form__control" type="number" step="0.25" placeholder="p.ej. 2.25">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="altMeta">ALT (opcional)</label>
+              <input id="altMeta" class="c-form__control" type="number" step="1" placeholder="mm">
+            </div>
           </div>
         </div>
 
@@ -203,6 +236,15 @@
           <textarea id="obs" class="c-form__control" rows="3" placeholder="Notas u observaciones"></textarea>
         </div>
         <div class="c-form__actions c-form__actions--end">
+          <button type="button" class="c-btn c-btn--icon c-btn--neo" aria-label="Importar receta (próximamente)" title="Importar receta (próximamente)" disabled>
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20V10"/>
+                <path d="M16 16l-4 4l-4-4"/>
+                <path d="M5 4h14"/>
+              </g>
+            </svg>
+          </button>
           <button type="submit" class="c-btn c-btn--icon c-btn--neo" aria-label="Guardar receta" title="Guardar receta">
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
               <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

@@ -23,5 +23,9 @@
   background: var(--color-field); color: var(--color-text);
   border: 1px solid var(--color-field-border);
   border-radius: var(--radius-sm); padding: 6px 8px;
+  /* Usar la misma fuente de formularios para todos los campos */
+  font-family: var(--ff-form);
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1;
 }
 .rx-table--compact input:focus{ outline:none; border-color: var(--color-accent); box-shadow: 0 0 0 2px color-mix(in oklab, var(--color-accent) 25%, transparent); }

@@ -12,6 +12,8 @@
   outline: none;
   transition: box-shadow .15s ease, border-color .15s ease, background-color .15s ease;
   box-sizing: border-box;
+  /* Fuente consistente para ingreso de datos */
+  font-family: var(--ff-form);
   /* Números alineados (como en fecha) y tipografía consistente */
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
@@ -26,8 +28,9 @@
   background: color-mix(in oklab, var(--color-field) 92%, var(--color-accent) 8%);
 }
 
-/* Date input: placeholder/segment color y control del ícono */
-.c-form__control[type="date"]::-webkit-datetime-edit{ color: var(--color-text-muted); }
+/* Date input: aplicar fuente y ajustar color de segmentos/placeholder */
+.c-form__control[type="date"]{ font-family: var(--ff-form); }
+.c-form__control[type="date"]::-webkit-datetime-edit{ color: var(--color-text-muted); font-family: var(--ff-form); }
 .c-form__control[type="date"]:focus::-webkit-datetime-edit{ color: var(--color-text); }
 .c-form__control[type="date"]::-webkit-calendar-picker-indicator{ cursor:pointer; }
 
@@ -50,6 +53,14 @@
 .c-login__btn:focus-visible{ outline: none; box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 28%, transparent), var(--shadow-2); }
 .c-btn:active,
 .c-login__btn:active{ transform: translateY(1px); }
+
+/* Estado deshabilitado para botones (p. ej., Importar receta) */
+.c-btn:disabled{
+  opacity: .55;
+  cursor: not-allowed;
+  filter: grayscale(.1);
+  box-shadow: var(--shadow-1);
+}
 
 /* Botón icono (viñeta) */
 .c-btn--icon{

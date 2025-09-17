@@ -15,6 +15,12 @@ function numOrNull(id){
   const n = Number(v);
   return Number.isFinite(n) ? n : null;
 }
+function strOrNull(id){
+  const el = document.getElementById(id);
+  if(!el) return null;
+  const v = (el.value ?? '').toString().trim();
+  return v ? v : null;
+}
 function readAxisFor(id, cylVal){
   let n = numOrNull(id);
   if(n==null) return null;
@@ -23,9 +29,25 @@ function readAxisFor(id, cylVal){
 }
 function val(v){ return (v??'').toString().trim(); }
 
-function actualizarEstadoDPCerca(){
-  const on = document.getElementById('dpCercaToggle')?.checked;
-  document.getElementById('dpCercaBox')?.classList.toggle('hidden', !on);
+// Normaliza una tripleta a cilindro negativo y rangos válidos
+function normalizeMinusTriple(esf, cil, eje){
+  let E = esf, C = cil, A = eje;
+  if (C == null || Math.abs(C) === 0){
+    return { esf: roundQ(E), cil: 0, eje: null };
+  }
+  if (C > 0){
+    E = E + C; // trasladar a negativo
+    C = -C;
+    if (A != null) A = (parseInt(A,10) + 90);
+  }
+  // Ajustes finales
+  E = roundQ(E);
+  C = roundQ(C);
+  if (A != null){
+    // llevar a 0-180 entero
+    A = clampIntInRange(A, 0, 180);
+  }
+  return { esf: E, cil: C, eje: A };
 }
 
 function limpiarMensajes(){
@@ -82,9 +104,7 @@ export function initPatients(){
     updateRecetaEnabled();
   } catch {}
 
-  // Mostrar/ocultar DP cerca al cambiar toggle
-  document.getElementById('dpCercaToggle')?.addEventListener('change', actualizarEstadoDPCerca);
-  actualizarEstadoDPCerca();
+  // (DP cerca fue removido del formulario en el modelo DEV)
 
   // Formateo/validación RUT en blur
   document.getElementById('rut')?.addEventListener('blur', validarYFormatearRut);
@@ -110,16 +130,34 @@ function guardarPaciente(e){
   const esfOD = parseDec(document.getElementById('odEsf').value);
   const cilOD = formatCylRaw(parseDec(document.getElementById('odCil').value));
   const ejeOD = readAxisFor('odEje', cilOD);
-  const addOD = formatAddRaw(parseDec(document.getElementById('odAdd').value));
 
   const esfOI = parseDec(document.getElementById('oiEsf').value);
   const cilOI = formatCylRaw(parseDec(document.getElementById('oiCil').value));
   const ejeOI = readAxisFor('oiEje', cilOI);
-  const addOI = formatAddRaw(parseDec(document.getElementById('oiAdd').value));
+
+  // Normalizar a cilindro negativo (modelo clínico estándar)
+  const odN = normalizeMinusTriple(esfOD, cilOD, ejeOD);
+  const oiN = normalizeMinusTriple(esfOI, cilOI, ejeOI);
 
   const pacientes = leerPacientes();
   const idx = pacientes.findIndex(p => normalizarRut(p.rut||'') === rutVal);
-  const dpCercaOn = !!document.getElementById('dpCercaToggle')?.checked;
+  
+  // Generar Observaciones a partir de metadatos estructurados
+  const meta = [];
+  meta.push('obsSchema=ark-v1');
+  meta.push('source=DEV-manual');
+  const cylForm = strOrNull('cylForm'); if (cylForm) meta.push(`cylForm=${cylForm}`);
+  const pdFar = numOrNull('pdFar'); if (pdFar!=null) meta.push(`pd_far=${pdFar}`);
+  const pdNear = numOrNull('pdNear'); if (pdNear!=null) meta.push(`pd_near=${pdNear}`);
+  const dprFar = numOrNull('dprFar'); if (dprFar!=null) meta.push(`dpr=${dprFar}`);
+  const dplFar = numOrNull('dplFar'); if (dplFar!=null) meta.push(`dpl=${dplFar}`);
+  const vd = numOrNull('vd'); if (vd!=null) meta.push(`vd=${vd}`);
+  const pupR = numOrNull('pupR'); if (pupR!=null) meta.push(`pupR=${pupR}`);
+  const pupL = numOrNull('pupL'); if (pupL!=null) meta.push(`pupL=${pupL}`);
+  const addMeta = numOrNull('addMeta'); if (addMeta!=null) meta.push(`add=${addMeta}`);
+  const altMeta = numOrNull('altMeta'); if (altMeta!=null) meta.push(`alt=${altMeta}`);
+  const obsFree = val(document.getElementById('obs').value);
+  const obsFinal = (meta.length? meta.join('; ') : '') + (obsFree? (meta.length? ' | ' : '') + obsFree : '');
 
   const base = {
     nombre: val(document.getElementById('nombre').value),
@@ -128,11 +166,10 @@ function guardarPaciente(e){
     fechaNac: val(document.getElementById('fechaNac').value),
     operativo: val(document.getElementById('operativo').value),
     receta: {
-      od: { esf: esfOD==null?null:roundQ(esfOD), cil: cilOD==null?null:roundQ(cilOD), eje: ejeOD==null?null:clampIntInRange(ejeOD,0,180), add: addOD==null?null:roundQ(addOD), dp: numOrNull('odDP'), alt: numOrNull('odALT') },
-      oi: { esf: esfOI==null?null:roundQ(esfOI), cil: cilOI==null?null:roundQ(cilOI), eje: ejeOI==null?null:clampIntInRange(ejeOI,0,180), add: addOI==null?null:roundQ(addOI), dp: numOrNull('oiDP'), alt: numOrNull('oiALT') },
-      dpCerca: dpCercaOn ? numOrNull('dpCerca') : null
+      od: { esf: odN.esf, cil: odN.cil, eje: odN.eje },
+      oi: { esf: oiN.esf, cil: oiN.cil, eje: oiN.eje }
     },
-    obs: val(document.getElementById('obs').value),
+    obs: obsFinal,
     actualizadoEn: new Date().toISOString()
   };
 
@@ -152,7 +189,6 @@ function guardarPaciente(e){
   showToast('Paciente guardado');
 
   try { form.reset(); } catch {}
-  actualizarEstadoDPCerca();
   limpiarMensajes();
   // Con el reset, deshabilita nuevamente la receta hasta que se vuelvan a completar los 3 datos
   try {
