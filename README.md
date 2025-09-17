@@ -1,4 +1,4 @@
-
+﻿
 # LETELIER — Panel clínico (Óptica)
 
 Aplicación web para operativos, recetas y boletas de una óptica popular.
@@ -38,6 +38,13 @@ Este documento resume **lo que ya funciona** y **qué viene a continuación**, p
   - Menú hamburguesa en el *header*.
   - Layout preparado para vistas de Operativos / Recetas / Boletas.
 
+### Archivo: resultados + ficha (actualizado)
+- Búsqueda por RUT flexible (con/sin puntos/guion o prefijo numérico).
+- Lista paginada (10 por página) con total y navegación Anterior/Siguiente.
+- Click en una fila reemplaza la tarjeta de resultados por la “Ficha del paciente”,
+  mostrando datos básicos y listados recientes de recetas y boletas.
+- Botón “Volver a resultados” retorna a la lista en la misma vista.
+
 ---
 
 ## Cómo ejecutar (DEV)
@@ -50,11 +57,22 @@ Este documento resume **lo que ya funciona** y **qué viene a continuación**, p
 3. **Navegador**: abrir `http://localhost:8080/`.
 4. **Login de prueba**: `admin / admin123` (o `optico / optico123`, `receptor / receptor123`).
 
+Si trabajas con Docker Compose (PostgreSQL + app):
+- Tras cambiar archivos en `src/main/resources` (SQL, HTML, JS, CSS) o Java, reconstruye solo la app:
+  - `docker compose build app && docker compose up -d app`
+  - Para forzar caché limpia: `docker compose build --no-cache app && docker compose up -d --force-recreate app`
+
 > Si el login fallara en DEV, revisar que las contraseñas de `APP_USER` incluyan el prefijo `{noop}` (ver sección “Pruebas en H2”).
 
 ---
 
-## Pruebas en H2 (verificación rápida)
+## Pruebas y datos de ejemplo
+
+PostgreSQL (Docker) usa migraciones Flyway:
+- `V1__baseline.sql`: crea el esquema inicial.
+- `V2__seed_demo_data.sql`: inserta datos demo mínimos (pacientes, operativo, receta, boleta).
+
+H2 (DEV puro) — verificación rápida:
 
 1. Abrir la consola H2 en `http://localhost:8080/h2`.
 2. Conectar usando la URL que aparece en `application.properties` (JDBC H2).
@@ -225,4 +243,5 @@ Tips
 ## Contacto / Soporte
 
 Para incidencias o nuevas funcionalidades, indicar: paso a reproducir, navegador, captura y log (si es posible).
+
 

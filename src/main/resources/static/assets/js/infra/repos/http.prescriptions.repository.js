@@ -14,7 +14,7 @@
     if (pacienteId != null) q.set('pacienteId', pacienteId);
     q.set('page', page);
     q.set('size', size);
-    const res = await fetch(`${BASE}?${q.toString()}`, { headers: withAuthHeaders() });
+    const res = await fetch(`${BASE}?${q.toString()}`, { headers: withAuthHeaders(), credentials: 'include' });
     if (!res.ok) throw new Error('Error al listar recetas');
     return res.json();
   }

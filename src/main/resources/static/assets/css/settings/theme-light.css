@@ -1,8 +1,9 @@
-/* settings/theme-light.css — overrides explícitos para modo claro */
+﻿/* settings/theme-light.css — overrides explícitos para modo claro */
 html[data-theme="light"]{
   /* Campos menos brillantes y bordes un poco más definidos */
   --color-field: #f9fafb;
   --color-field-border: #cfd8e3;
+  --color-text-muted: #6b7280;
 
   /* Vidrio: un poco más contrastado que la superficie */
   /* Capa oscura sutil + base translúcida para conservar el blur */

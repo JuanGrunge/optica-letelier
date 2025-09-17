@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8"/>
@@ -283,7 +283,9 @@
     </form>
     </div>
     <div id="resultados" class="resultados c-card">
-      <h3>Resultados</h3>
+      <div class="results-header">
+        <h3 style="display:inline-block;margin-right:12px;">Resultados</h3>
+      </div>
       <div class="c-table-scroll">
         <table class="c-table" id="tablaResultados">
           <thead>
@@ -292,7 +294,16 @@
           <tbody id="listaResultados"></tbody>
         </table>
       </div>
+      <div id="paginacionResultados" class="pagination"></div>
       <p id="msgResultados" class="subtle"></p>
+    </div>
+
+    <div id="fichaPacienteCard" class="c-card" style="display:none;">
+      <div class="results-header">
+        <h3 style="display:inline-block;margin-right:12px;">Ficha del Paciente</h3>
+        <button id="btnVolverResultados" class="c-btn" type="button">Volver a resultados</button>
+      </div>
+      <div id="detallePaciente" class="paciente-detalle"></div>
     </div>
   </section>
 
@@ -306,8 +317,12 @@
   <!-- JS principal como módulo -->
   <script type="module" src="assets/js/main.js"></script>
 
-  <!-- Repos opcionales que use index -->
+  <!-- Repos infra (disponibles antes del main) -->
   <script defer src="assets/js/infra/config.api.js"></script>
   <script defer src="assets/js/infra/repos/http.patients.repository.js"></script>
+  <script defer src="assets/js/infra/repos/http.prescriptions.repository.js"></script>
+  <script defer src="assets/js/infra/repos/http.invoices.repository.js"></script>
 </body>
 </html>
+
+

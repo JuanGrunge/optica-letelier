@@ -1,5 +1,3 @@
-version: "3.8"
-
 services:
   db:
     image: postgres:16-alpine
@@ -25,10 +23,10 @@ services:
       db:
         condition: service_healthy
     environment:
-      SPRING_PROFILES_ACTIVE: prod
       DB_URL: jdbc:postgresql://db:5432/letelier
       DB_USER: letelier
       DB_PASS: letelier
+      # Ajusta CORS si expones públicamente
       # Ajusta CORS si expones públicamente
       APP_CORS_ORIGINS: http://localhost:8080
     ports:

@@ -33,5 +33,11 @@
       method:'DELETE', credentials:'include'
     }));
   }
-  global.PatientsRepo = Object.freeze({ list, getById, create, update, remove });
+  async function count(){
+    const res = await fetch(`${baseUrl}/count`, { credentials:'include' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json().catch(()=>null);
+    return (data && typeof data.total==='number') ? data.total : null;
+  }
+  global.PatientsRepo = Object.freeze({ list, getById, create, update, remove, count });
 })(window);

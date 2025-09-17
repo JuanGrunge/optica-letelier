@@ -10,7 +10,17 @@
   }
 
   async function list({ page = 0, size = 10 } = {}) {
-    const res = await fetch(`${BASE}?page=${page}&size=${size}`, { headers: withAuthHeaders() });
+    const res = await fetch(`${BASE}?page=${page}&size=${size}`, { headers: withAuthHeaders(), credentials: 'include' });
+    if (!res.ok) throw new Error('Error al listar boletas');
+    return res.json();
+  }
+
+  async function listByPaciente({ pacienteId, page = 0, size = 10 } = {}) {
+    const q = new URLSearchParams();
+    if (pacienteId != null) q.set('pacienteId', pacienteId);
+    q.set('page', page);
+    q.set('size', size);
+    const res = await fetch(`${BASE}?${q.toString()}`, { headers: withAuthHeaders(), credentials: 'include' });
     if (!res.ok) throw new Error('Error al listar boletas');
     return res.json();
   }
@@ -25,5 +35,5 @@
     return res.json();
   }
 
-  window.InvoicesRepository = { list, create };
+  window.InvoicesRepository = { list, listByPaciente, create };
 })();

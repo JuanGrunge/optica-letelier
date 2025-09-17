@@ -11,6 +11,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,13 +33,18 @@ public class AuthController {
     public record LoginReq(String username, String password) {}
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginReq req, HttpServletRequest request) {
+    public ResponseEntity<?> login(@RequestBody LoginReq req, HttpServletRequest request, HttpServletResponse response) {
         try {
             Authentication auth = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(req.username(), req.password())
             );
-            SecurityContextHolder.getContext().setAuthentication(auth);
-            request.getSession(true); // crea cookie JSESSIONID
+            var context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(auth);
+            SecurityContextHolder.setContext(context);
+
+            // Crea y persiste el SecurityContext en la sesión (JSESSIONID)
+            request.getSession(true);
+            new HttpSessionSecurityContextRepository().saveContext(context, request, response);
             Set<String> roles = auth.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)
                 .collect(Collectors.toSet());

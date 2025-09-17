@@ -21,4 +21,8 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
                     ")",
             nativeQuery = true)
     Page<Patient> searchByRutOrNameFlexible(@Param("q") String q, @Param("nq") String nq, Pageable pageable);
+
+    long countByActivoTrue();
+
+    Page<Patient> findByActivoTrue(Pageable pageable);
 }

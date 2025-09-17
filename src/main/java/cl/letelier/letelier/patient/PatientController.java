@@ -4,6 +4,7 @@ import cl.letelier.letelier.common.PageResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
+import java.util.Map;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,4 +39,10 @@ public class PatientController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id){service.softDelete(id);return ResponseEntity.noContent().build();}
+
+    @GetMapping("/count")
+    @PreAuthorize("hasAnyRole('ADMIN','OPTICO','RECEPTOR')")
+    public Map<String, Long> count(){
+        return Map.of("total", service.countActive());
+    }
 }

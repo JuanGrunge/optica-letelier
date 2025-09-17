@@ -1,4 +1,4 @@
--- V1__baseline.sql
+﻿-- V1__baseline.sql
 -- Esquema inicial basado en las entidades actuales (compat H2 2.x y PostgreSQL)
 
 -- =====================
@@ -50,9 +50,9 @@ CREATE TABLE IF NOT EXISTS patient_operative (
 );
 
 -- FKs para patient_operative
-DO $$
+DO $do$
 BEGIN
-  -- Postgres-compatible ADD CONSTRAINTs si no existen (H2 ignora DO $$)
+  -- Postgres-compatible ADD CONSTRAINTs si no existen (H2 ignora DO $)
   BEGIN
     ALTER TABLE patient_operative
       ADD CONSTRAINT fk_patient_operative_patient
@@ -66,7 +66,7 @@ BEGIN
       FOREIGN KEY (operative_id) REFERENCES operative(id);
   EXCEPTION WHEN others THEN NULL;
   END;
-END$$;
+END; $do$;
 
 -- =====================
 -- Tabla: prescription
@@ -87,7 +87,7 @@ CREATE TABLE IF NOT EXISTS prescription (
 );
 
 -- FK prescription -> patient (pgsql safe)
-DO $$
+DO $do$
 BEGIN
   BEGIN
     ALTER TABLE prescription
@@ -95,7 +95,7 @@ BEGIN
       FOREIGN KEY (paciente_id) REFERENCES patient(id);
   EXCEPTION WHEN others THEN NULL;
   END;
-END$$;
+END; $do$;
 
 -- =====================
 -- Tabla: invoice
@@ -111,7 +111,7 @@ CREATE TABLE IF NOT EXISTS invoice (
 );
 
 -- FKs invoice -> patient, prescription
-DO $$
+DO $do$
 BEGIN
   BEGIN
     ALTER TABLE invoice
@@ -126,7 +126,7 @@ BEGIN
       FOREIGN KEY (prescription_id) REFERENCES prescription(id);
   EXCEPTION WHEN others THEN NULL;
   END;
-END$$;
+END; $do$;
 
 -- =====================
 -- Tabla: audit_log
@@ -140,4 +140,5 @@ CREATE TABLE IF NOT EXISTS audit_log (
   detalle VARCHAR(500),
   fecha TIMESTAMP
 );
+
 

@@ -11,7 +11,7 @@ public class PatientService {
     public PatientService(PatientRepository repo){this.repo=repo;}
 
     public Page<PatientDTO> search(String q, Pageable pageable){
-        if(q==null || q.isBlank()) return repo.findAll(pageable).map(PatientMapper::toDTO);
+        if(q==null || q.isBlank()) return repo.findByActivoTrue(pageable).map(PatientMapper::toDTO);
         String nq = q.replaceAll("[.\\-\\s]", "");
         return repo.searchByRutOrNameFlexible(q, nq, pageable).map(PatientMapper::toDTO);
     }
@@ -29,5 +29,9 @@ public class PatientService {
     public void softDelete(Long id){
         Patient p = repo.findById(id).orElseThrow();
         p.setActivo(false); repo.save(p);
+    }
+
+    public long countActive(){
+        return repo.countByActivoTrue();
     }
 }
