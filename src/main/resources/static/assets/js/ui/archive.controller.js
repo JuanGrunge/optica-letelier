@@ -17,7 +17,7 @@ export function initArchive(){
   function clearTable(){ if (tbody) tbody.innerHTML = ''; }
 
   let totalPacientes = null;
-  const pageSize = 10;
+  const pageSize = 5;
   let currentPage = 0;
   let currentQuery = null; // { q, nq } o null
 
@@ -42,7 +42,7 @@ export function initArchive(){
       const rut = p?.rut || '';
       const nombre = [p?.nombres||'', p?.apellidos||''].join(' ').trim();
       const pid = p?.id != null ? Number(p.id) : '';
-      return `<tr class="row-paciente" data-id="${pid}" tabindex="0" role="button" aria-label="Ver ficha de ${nombre}"><td>${rut}</td><td>${nombre}</td><td>-</td></tr>`;
+      return `<tr class="row-paciente" data-id="${pid}" tabindex="0" role="button" aria-label="Ver ficha de ${nombre}"><td>${rut}</td><td>${nombre}</td></tr>`;
     }).join('');
     tbody.innerHTML = rows || '';
     tbody.querySelectorAll('tr.row-paciente').forEach(tr => {
@@ -84,19 +84,19 @@ export function initArchive(){
       const email = paciente?.email || '';
       const dir = paciente?.direccion || '';
       const fnac = paciente?.fechaNac || '';
-      const activo = paciente?.activo ? 'Si' : 'No';
+      // Determinar lugar de operativo asociado (si existe)
+      const opLugar = paciente?.operativoLugar || '-';
 
       const rxItems = rxPage && Array.isArray(rxPage.content) ? rxPage.content : [];
       const invItems = invPage && Array.isArray(invPage.content) ? invPage.content : [];
 
       detailBox.innerHTML = `
-        <div class="c-card">
           <div class="grid-2">
             <div>
               <p><strong>Nombre:</strong> ${nombre || '-'}</p>
               <p><strong>RUT:</strong> ${rut || '-'}</p>
               <p><strong>Fecha Nac.:</strong> ${fnac || '-'}</p>
-              <p><strong>Activo:</strong> ${activo}</p>
+              <p><strong>Lugar Operativo:</strong> ${opLugar || '-'}</p>
             </div>
             <div>
               <p><strong>Telefono:</strong> ${tel || '-'}</p>
@@ -108,9 +108,25 @@ export function initArchive(){
             <h5>Recetas recientes</h5>
             ${rxItems.length ? '<ul class="list-tiles">' + rxItems.map(r => `
               <li class="tile">
-                <div class="tile__title">${r.fecha || ''}</div>
-                <div class="tile__row"><span class="tile__label">OD</span><span class="tile__value">${fmtEye(r.odEsfera, r.odCilindro, r.odEje)}</span></div>
-                <div class="tile__row"><span class="tile__label">OI</span><span class="tile__value">${fmtEye(r.oiEsfera, r.oiCilindro, r.oiEje)}</span></div>
+                <div class="tile__title tile__title--right">${r.fecha || ''}</div>
+                <div class="tile__eyes">
+                  <div class="tile__eye">
+                    <div class="eye__label">OD</div>
+                    <div class="eye__specs">
+                      <div>ESF ${r.odEsfera != null ? r.odEsfera : '-'}</div>
+                      <div>CIL ${r.odCilindro != null ? r.odCilindro : '-'}</div>
+                      <div>EJE ${r.odEje != null ? r.odEje : '-'}</div>
+                    </div>
+                  </div>
+                  <div class="tile__eye">
+                    <div class="eye__label">OI</div>
+                    <div class="eye__specs">
+                      <div>ESF ${r.oiEsfera != null ? r.oiEsfera : '-'}</div>
+                      <div>CIL ${r.oiCilindro != null ? r.oiCilindro : '-'}</div>
+                      <div>EJE ${r.oiEje != null ? r.oiEje : '-'}</div>
+                    </div>
+                  </div>
+                </div>
                 ${r?.addPower!=null?`<div class="tile__row"><span class="tile__label">ADD</span><span class="tile__value">${r.addPower}</span></div>`:''}
                 ${r?.observaciones?`<div class="tile__obs">${r.observaciones}</div>`:''}
               </li>`).join('') + '</ul>' : '<p class="subtle">Sin recetas</p>'}
@@ -119,12 +135,11 @@ export function initArchive(){
             <h5>Boletas recientes</h5>
             ${invItems.length ? '<ul class="list-tiles">' + invItems.map(i => `
               <li class="tile">
-                <div class="tile__title">${i.fecha || ''} ${i.anulado?'<span class="badge badge--warn">Anulado</span>':''}</div>
+                <div class="tile__title tile__title--right">${i.fecha || ''} ${i.anulado?'<span class="badge badge--warn">Anulado</span>':''}</div>
                 <div class="tile__row"><span class="tile__label">Total</span><span class="tile__value">$${i.total || 0}</span></div>
                 ${i?.detalle?`<div class="tile__row"><span class="tile__label">Detalle</span><span class="tile__value">${i.detalle}</span></div>`:''}
               </li>`).join('') + '</ul>' : '<p class="subtle">Sin boletas</p>'}
-          </div>
-        </div>`;
+          </div>`;
     } catch (e){
       detailBox.innerHTML = `<p class="error">No se pudo cargar la ficha.</p>`;
       console.warn('Detalle paciente', e);
@@ -142,7 +157,11 @@ export function initArchive(){
     e.preventDefault();
     clearTable(); setMessage('');
     const raw = (input.value || '').trim();
-    if (!raw){ setMessage('Ingresa un RUT para buscar.'); return; }
+    if (!raw){
+      // Sin término de búsqueda: cargar vista por defecto (conteo + primera página)
+      try { await loadDefault(); } catch {}
+      return;
+    }
     const maybeFmt = esRutValido(raw) ? formatearRut(raw) : raw;
     const nq = normalizarRut(raw);
     try {
@@ -204,4 +223,3 @@ export function initArchive(){
     renderPage(page);
   }
 }
-

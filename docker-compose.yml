@@ -6,8 +6,10 @@ services:
       POSTGRES_DB: letelier
       POSTGRES_USER: letelier
       POSTGRES_PASSWORD: letelier
-    ports:
-      - "5432:5432" # opcional para conectar desde host
+    # Mantener Postgres solo en la red interna de Docker (no publicar al host)
+    # Si realmente necesitas conectarte desde el host, publica 5432 temporalmente.
+    expose:
+      - "5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
       interval: 5s
@@ -29,6 +31,14 @@ services:
       # Ajusta CORS si expones públicamente
       # Ajusta CORS si expones públicamente
       APP_CORS_ORIGINS: http://localhost:8080
+      # Confiar en headers del proxy y fijar cookies seguras detrás de Cloudflare/HTTPS
+      SERVER_FORWARD_HEADERS_STRATEGY: framework
+      SERVER_SERVLET_SESSION_COOKIE_SECURE: "true"
+      # Si frontend y API están en el mismo host, Lax está bien. Para cross-site, usa None.
+      SERVER_SERVLET_SESSION_COOKIE_SAME_SITE: ${SESSION_SAME_SITE:-Lax}
+      # Permite fijar orígenes CORS vía system property sin tocar código.
+      # Establece PUBLIC_ORIGIN en tu entorno (p.ej. https://tu-dominio) o deja * por ahora.
+      JAVA_TOOL_OPTIONS: "-Dapp.cors.allowed-origins=${PUBLIC_ORIGIN:-*} -Dserver.forward-headers-strategy=framework"
     ports:
       - "8080:8080"
 

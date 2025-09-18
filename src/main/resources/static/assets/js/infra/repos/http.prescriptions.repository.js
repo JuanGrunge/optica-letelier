@@ -3,9 +3,8 @@
   const BASE = '/api/prescriptions';
 
   function withAuthHeaders() {
+    // Conservado por compatibilidad; no se usa con ApiConfig
     const headers = { 'Content-Type': 'application/json' };
-    // const token = localStorage.getItem('token');
-    // if (token) headers['Authorization'] = `Bearer ${token}`;
     return headers;
   }
 
@@ -14,19 +13,14 @@
     if (pacienteId != null) q.set('pacienteId', pacienteId);
     q.set('page', page);
     q.set('size', size);
-    const res = await fetch(`${BASE}?${q.toString()}`, { headers: withAuthHeaders(), credentials: 'include' });
-    if (!res.ok) throw new Error('Error al listar recetas');
-    return res.json();
+    return await window.ApiConfig.apiFetch(`${BASE}?${q.toString()}`);
   }
 
   async function create(data) {
-    const res = await fetch(`${BASE}`, {
+    return await window.ApiConfig.apiFetch(`${BASE}`, {
       method: 'POST',
-      headers: withAuthHeaders(),
       body: JSON.stringify(data)
     });
-    if (!res.ok) throw new Error('Error al crear receta');
-    return res.json();
   }
 
   window.PrescriptionsRepository = { listByPaciente, create };

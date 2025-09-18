@@ -164,6 +164,15 @@
 }
 .c-header__nav .c-header__btn:hover{ background: rgba(255,255,255,.16); }
 
+/* Botones específicos sin fondo ni sombra al hover */
+#navArchivo.c-header__btn:hover,
+#navIngresar.c-header__btn:hover,
+#btnLogout.c-header__btn:hover{
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
 /* Divisor minimalista entre botones (solo desktop) */
 @media (min-width: 769px){
   .c-header{ position: fixed; top:0; left:0; right:0; }

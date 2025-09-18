@@ -2,9 +2,24 @@ package cl.letelier.letelier.patient;
 
 public class PatientMapper {
     public static PatientDTO toDTO(Patient p){
+        String opLugar = null;
+        try {
+            var ops = p.getOperatives();
+            if (ops != null && !ops.isEmpty()) {
+                cl.letelier.letelier.operative.Operative latest = null;
+                for (cl.letelier.letelier.operative.Operative o : ops) {
+                    if (latest == null) { latest = o; continue; }
+                    var lf = latest.getFecha(); var of = o.getFecha();
+                    if (lf == null && of != null) { latest = o; }
+                    else if (lf != null && of != null && of.isAfter(lf)) { latest = o; }
+                }
+                if (latest != null) opLugar = latest.getLugar() != null && !latest.getLugar().isBlank() ? latest.getLugar() : latest.getNombre();
+            }
+        } catch (Exception ignored) {}
         return new PatientDTO(
             p.getId(), p.getNombres(), p.getApellidos(), p.getRut(),
-            p.getFechaNac(), p.getTelefono(), p.getEmail(), p.getDireccion(), p.isActivo()
+            p.getFechaNac(), p.getTelefono(), p.getEmail(), p.getDireccion(), p.isActivo(),
+            opLugar
         );
     }
     public static void updateEntity(Patient p, PatientDTO d){

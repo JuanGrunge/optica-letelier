@@ -136,7 +136,9 @@
           </div>
           <div class="c-form__group">
             <label class="c-form__label" for="operativo">Lugar Operativo</label>
-            <input id="operativo" class="c-form__control" type="text" placeholder="Plaza Central">
+            <select id="operativo" class="c-form__control" required>
+              <option value="Casa Matriz" selected>Casa Matriz</option>
+            </select>
           </div>
         </div>
         <div class="c-form__actions c-form__actions--end">
@@ -289,7 +291,7 @@
       <div class="c-table-scroll">
         <table class="c-table" id="tablaResultados">
           <thead>
-            <tr><th>RUT</th><th>Nombre Paciente</th><th>Lugar Operativo</th></tr>
+            <tr><th>RUT</th><th>Nombre Paciente</th></tr>
           </thead>
           <tbody id="listaResultados"></tbody>
         </table>
@@ -301,7 +303,14 @@
     <div id="fichaPacienteCard" class="c-card" style="display:none;">
       <div class="results-header">
         <h3 style="display:inline-block;margin-right:12px;">Ficha del Paciente</h3>
-        <button id="btnVolverResultados" class="c-btn" type="button">Volver a resultados</button>
+        <button id="btnVolverResultados" class="c-btn c-btn--icon c-btn--back c-btn--no-anim c-card__action--tr" type="button" aria-label="Volver a resultados" title="Volver a resultados">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"/>
+              <path d="M13 6l6 6l-6 6"/>
+            </g>
+          </svg>
+        </button>
       </div>
       <div id="detallePaciente" class="paciente-detalle"></div>
     </div>
@@ -322,6 +331,7 @@
   <script defer src="assets/js/infra/repos/http.patients.repository.js"></script>
   <script defer src="assets/js/infra/repos/http.prescriptions.repository.js"></script>
   <script defer src="assets/js/infra/repos/http.invoices.repository.js"></script>
+  <script defer src="assets/js/infra/repos/http.operatives.repository.js"></script>
 </body>
 </html>
 

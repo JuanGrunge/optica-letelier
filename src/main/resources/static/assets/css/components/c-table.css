@@ -3,11 +3,25 @@
 .c-table th, .c-table td{ padding: 10px 12px; border: 1px solid var(--color-border); }
 .c-table th{
   text-align:left; font-weight:600;
-  background: linear-gradient(180deg, color-mix(in oklab, var(--color-surface) 88%, #fff), color-mix(in oklab, var(--color-surface) 96%, #000));
+  /* Fallback seguro para iOS antiguos (sin color-mix) */
+  background-color: rgba(0,0,0,.06);
 }
-.c-table tr:nth-child(even){ background: color-mix(in oklab, var(--color-surface) 96%, black 4%); }
-.c-table tbody tr:hover{ background: color-mix(in oklab, var(--color-surface) 92%, black 8%); }
-.c-table-scroll{ overflow:auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-1); }
+/* Fallback de zebra/hover para navegadores sin color-mix */
+.c-table tr:nth-child(even){ background-color: rgba(0,0,0,.03); }
+.c-table tbody tr:hover{ background-color: rgba(0,0,0,.06); }
+.c-table-scroll{ overflow:auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); box-shadow: var(--shadow-1); -webkit-overflow-scrolling: touch; }
+
+/* Mejora visual cuando hay soporte de color-mix */
+@supports (background: color-mix(in oklab, white 50%, black)){
+  .c-table th{
+    background: linear-gradient(180deg,
+      color-mix(in oklab, var(--color-surface) 88%, #fff),
+      color-mix(in oklab, var(--color-surface) 96%, #000)
+    );
+  }
+  .c-table tr:nth-child(even){ background: color-mix(in oklab, var(--color-surface) 96%, black 4%); }
+  .c-table tbody tr:hover{ background: color-mix(in oklab, var(--color-surface) 92%, black 8%); }
+}
 
 /* ALIAS para compatibilidad con nombres antiguos */
 .rx-table{ width:100%; border-collapse: collapse; background: var(--color-surface); }

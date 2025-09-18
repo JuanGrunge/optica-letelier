@@ -28,6 +28,14 @@
   background: color-mix(in oklab, var(--color-field) 92%, var(--color-accent) 8%);
 }
 
+/* Evitar zoom al enfocar inputs en iOS/Chrome iPhone (<16px fuerza zoom) */
+@media (max-width: 640px){
+  .c-form__control,
+  .c-login__input{
+    font-size: 16px;
+  }
+}
+
 /* Date input: aplicar fuente y ajustar color de segmentos/placeholder */
 .c-form__control[type="date"]{ font-family: var(--ff-form); }
 .c-form__control[type="date"]::-webkit-datetime-edit{ color: var(--color-text-muted); font-family: var(--ff-form); }
@@ -95,6 +103,28 @@ html[data-theme="dark"] .c-btn--neo:hover{
 }
 .c-btn--ghost:hover{ background: color-mix(in oklab, var(--color-field) 80%, var(--color-accent) 4%); }
 .c-btn--ghost:focus-visible{ outline:none; box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 22%, transparent); }
+
+/* Botón icono "back" sin animaciones (estética móvil) */
+.c-btn--no-anim{ transition: none !important; }
+.c-btn--no-anim:hover,
+.c-btn--no-anim:active{
+  transform: none !important;
+  filter: none !important;
+  background: inherit !important;
+}
+.c-btn--no-anim:focus-visible{
+  /* Mantener indicador de enfoque accesible, sin animar */
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-accent) 22%, transparent);
+}
+
+/* Variante minimalista para back: sin fondo sólido, borde suave opcional */
+.c-btn--back{
+  background: transparent;
+  border: 0;
+  color: var(--color-text);
+  box-shadow: none; /* sin sombra, apariencia de solo icono */
+}
+html[data-theme="dark"] .c-btn--back{ color: var(--color-text); }
 
 /* Recuadro compacto para agrupar campos (similar a receta) */
 .c-box{

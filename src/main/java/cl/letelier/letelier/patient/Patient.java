@@ -3,6 +3,7 @@ package cl.letelier.letelier.patient;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -19,6 +20,7 @@ public class Patient {
     @Email @Size(max=180) private String email;
     @Size(max=240) private String direccion;
     private boolean activo = true;
+    private LocalDateTime createdAt;
 
     @ManyToMany
     @JoinTable(name="patient_operative",
@@ -43,6 +45,11 @@ public class Patient {
     public void setDireccion(String v){this.direccion=v;}
     public boolean isActivo(){return activo;}
     public void setActivo(boolean v){this.activo=v;}
+    public LocalDateTime getCreatedAt(){return createdAt;}
+    public void setCreatedAt(LocalDateTime v){this.createdAt=v;}
     public Set<cl.letelier.letelier.operative.Operative> getOperatives(){return operatives;}
     public void setOperatives(Set<cl.letelier.letelier.operative.Operative> v){this.operatives=v;}
+
+    @PrePersist
+    public void prePersist(){ if (this.createdAt == null) this.createdAt = LocalDateTime.now(); }
 }

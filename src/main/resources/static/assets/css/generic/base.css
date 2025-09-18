@@ -71,10 +71,18 @@ body.no-session::before{
   box-shadow: var(--shadow-1);
 }
 .tile__title{ font-weight: 600; margin-bottom: 6px; display:flex; align-items:center; gap:8px; }
+.tile__title--right{ justify-content: flex-end; }
 .tile__row{ display: grid; grid-template-columns: 56px 1fr; gap: 8px; align-items: start; margin: 4px 0; }
 .tile__label{ font-weight: 600; color: var(--color-text-muted); }
 .tile__value{ font-variant-numeric: tabular-nums; font-feature-settings: "tnum" 1; }
 .tile__obs{ margin-top: 6px; font-size: .92em; color: var(--color-text-muted); }
+.tile__eyes{ display: grid; gap: 8px; margin: 6px 0; }
+.tile__eye{ display: grid; grid-template-columns: 56px 1fr; gap: 8px; align-items: start; }
+.tile__eye .eye__label{ font-weight: 600; color: var(--color-text-muted); }
+.tile__eye .eye__specs{ display: grid; gap: 2px; }
+@media (min-width: 768px){
+  .tile__eyes{ grid-template-columns: 1fr 1fr; }
+}
 .badge{ display:inline-block; padding:2px 6px; border-radius: 10px; font-size: .82em; line-height: 1.4; }
 .badge--warn{ background: color-mix(in oklab, var(--color-accent) 22%, #000); color: #fff; }
 

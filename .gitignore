@@ -31,3 +31,10 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Local DB artifacts (H2, etc.)
+data/*.db
+data/**/*.db
+
+# Local environment files
+.env

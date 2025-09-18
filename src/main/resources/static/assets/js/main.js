@@ -13,7 +13,11 @@ function start(){
   try { initArchive(); } catch(e){ console.warn('initArchive:', e); }
   try { initPatients(); } catch(e){ console.warn('initPatients:', e); }
   try { initModal(); } catch(e){ console.warn('initModal:', e); }
-  document.body && document.body.classList.remove('preboot');
+  // Retirar preboot inmediatamente; el control de visibilidad lo maneja auth.js
+  try {
+    document.body && document.body.classList.remove('preboot');
+    const boot = document.getElementById('bootScreen'); if (boot) boot.remove();
+  } catch {}
 }
 
 if (document.readyState === 'loading'){

@@ -1,4 +1,4 @@
-;(() => {
+﻿;(() => {
   const meta = document.querySelector('meta[name="api-base"]');
   const META_BASE = meta?.content || '';
   const WIN_BASE = window.API_BASE || '';
@@ -22,12 +22,9 @@
       headers: withAuthHeaders(options.headers || {})
     });
     if (!res.ok) {
-      if (res.status === 401) {
-        try { document.dispatchEvent(new CustomEvent('auth:expired')); } catch {}
-      }
       let detail = '';
       try { detail = await res.text(); } catch {}
-      throw new Error(`HTTP ${res.status} ${url}${detail ? ' — ' + detail.slice(0, 200) : ''}`);
+      throw new Error(`HTTP ${res.status} ${url}${detail ? ' â€” ' + detail.slice(0, 200) : ''}`);
     }
     const ct = res.headers.get('content-type') || '';
     return ct.includes('application/json') ? res.json() : res.text();
@@ -35,3 +32,4 @@
 
   window.ApiConfig = { API_BASE, apiFetch, setToken, getToken, withAuthHeaders };
 })();
+

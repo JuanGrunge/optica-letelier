@@ -24,4 +24,8 @@ public class OperativeController{
     public OperativeDTO update(@PathVariable Long id,@RequestBody OperativeDTO dto){return service.update(id,dto);}
     @DeleteMapping("/{id}") @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> delete(@PathVariable Long id){service.softDelete(id); return ResponseEntity.noContent().build();}
+
+    @GetMapping("/places")
+    @PreAuthorize("hasAnyRole('ADMIN','OPTICO','RECEPTOR')")
+    public java.util.List<String> places(){ return service.distinctPlaces(); }
 }

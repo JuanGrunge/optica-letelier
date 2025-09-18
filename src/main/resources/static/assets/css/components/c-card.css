@@ -12,8 +12,17 @@
   backdrop-filter: blur(var(--shell-blur)) saturate(var(--shell-saturate));
   -webkit-backdrop-filter: blur(var(--shell-blur)) saturate(var(--shell-saturate));
   border: 1px solid var(--glass-border);
+  position: relative; /* permite ubicar acciones absolutas dentro de la tarjeta */
 }
 
 /* Estado visual para tarjetas deshabilitadas */
 .c-card--disabled{ opacity: .6; filter: grayscale(.08); }
 .c-card h2{ margin-top: 0; }
+
+/* Acción en esquina superior derecha de la tarjeta */
+.c-card__action--tr{
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-4);
+  z-index: 2;
+}

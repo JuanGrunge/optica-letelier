@@ -80,6 +80,47 @@ export function initPatients(){
   const form = document.getElementById('formIngresar');
   if(!form) return;
 
+  // Poblar selector de operativos (con fallback a "Casa Matriz")
+  try {
+    const sel = document.getElementById('operativo');
+    if (sel) {
+      const ensureDefault = () => {
+        if (![...sel.options].some(o => (o.value||'') === 'Casa Matriz')) {
+          const opt = document.createElement('option');
+          opt.value = 'Casa Matriz'; opt.textContent = 'Casa Matriz';
+          sel.appendChild(opt);
+        }
+        if (!sel.value) sel.value = 'Casa Matriz';
+      };
+      ensureDefault();
+
+      async function populateOperatives() {
+        try {
+          const places = await (window.OperativesRepository?.places?.() || Promise.resolve([]));
+          (Array.isArray(places) ? places : []).forEach(name => {
+            const v = (name || '').toString().trim();
+            if (!v) return;
+            if (![...sel.options].some(o => (o.value||'') === v)){
+              const opt = document.createElement('option'); opt.value = v; opt.textContent = v; sel.appendChild(opt);
+            }
+          });
+          if (!sel.value) sel.value = 'Casa Matriz';
+        } catch {
+          // Mantener opción por defecto si hay error (p. ej., 401 antes de login)
+          ensureDefault();
+        }
+      }
+
+      // Poblar inmediatamente (endpoint público) y reintentar si el usuario enfoca el control
+      try { setTimeout(populateOperatives, 0); } catch {}
+
+      // Robustez: si el usuario enfoca el select y aún no se pobló, intenta poblar
+      sel.addEventListener('focus', () => {
+        if (sel.options.length <= 1) populateOperatives();
+      });
+    }
+  } catch {}
+
   // Inicialmente la receta está deshabilitada hasta guardar paciente
   try {
     const recFs = document.getElementById('recetaFieldset');

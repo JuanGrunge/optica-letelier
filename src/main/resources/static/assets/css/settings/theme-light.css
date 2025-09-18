@@ -34,6 +34,8 @@ html[data-theme="light"]{
 /* Tablas: encabezado más oscuro para contraste en light */
 html[data-theme="light"] .c-table th,
 html[data-theme="light"] .rx-table th{
+  /* Fallback para iOS antiguos (sin color-mix): fondo neutro y borde definido */
+  background-color: rgba(0,0,0,.06);
   background: linear-gradient(180deg,
     color-mix(in oklab, var(--color-surface) 92%, #000),
     color-mix(in oklab, var(--color-surface) 82%, #000)
