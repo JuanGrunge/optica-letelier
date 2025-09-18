@@ -34,7 +34,7 @@
     <span class="c-header__btn c-header__btn--menu" data-js="menu" aria-label="Abrir menú" data-auth="protected"></span>
 
     <div class="c-header__brand">
-      <h2 class="brand"><img src="assets/img/logo.png" alt="Óptica Letelier" class="logo"></h2>
+      <h2 class="brand"><img id="navInicio" src="assets/img/logo.png" alt="Óptica Letelier" class="logo" role="button" tabindex="0" aria-label="Ir a Inicio"></h2>
     </div>
 
     <nav class="c-header__nav" data-auth="protected">
@@ -107,6 +107,21 @@
           <small>Admin: <strong>admin</strong> / <strong>admin123</strong></small>
         </details>
       </form>
+    </div>
+  </section>
+
+  <!-- Inicio -->
+  <section id="inicio" class="view" aria-hidden="false" data-auth="protected">
+    <div class="c-card">
+      <h2>Bienvenido/a</h2>
+      <p>Bienvenido al sistema de Óptica Letelier.</p>
+      <div class="c-box c-box--compact">
+        <h3>¿Por dónde empezar?</h3>
+        <ul>
+          <li><strong>Archivo</strong>: busca pacientes por RUT y revisa su ficha.</li>
+          <li><strong>Ingresar paciente</strong>: crea un paciente nuevo y registra su receta.</li>
+        </ul>
+      </div>
     </div>
   </section>
 
@@ -264,7 +279,7 @@
   </section>
 
   <!-- Archivo -->
-  <section id="archivo" class="view" aria-hidden="false" data-auth="protected">
+  <section id="archivo" class="view" aria-hidden="true" data-auth="protected">
     <div class="c-card">
     <h2>Archivo</h2>
     <p class="subtle">Busca solo por <strong>RUT</strong>.</p>

@@ -15,6 +15,14 @@
   position: relative; /* permite ubicar acciones absolutas dentro de la tarjeta */
 }
 
+/* En pantallas grandes, no estirar la tarjeta a todo el ancho del panel */
+@media (min-width: 1200px){
+  .c-card{
+    max-width: 960px;
+    margin: var(--space-4) auto; /* centrar dentro del panel de vidrio */
+  }
+}
+
 /* Estado visual para tarjetas deshabilitadas */
 .c-card--disabled{ opacity: .6; filter: grayscale(.08); }
 .c-card h2{ margin-top: 0; }

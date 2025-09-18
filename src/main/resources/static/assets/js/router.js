@@ -5,9 +5,23 @@ let currentSection = null;
 let dirtySnapshot = null;
 
 export function initRouter() {
+  const navInicio  = document.querySelector('#navInicio');
   const navArchivo  = document.querySelector('#navArchivo');
   const navIngresar = document.querySelector('#navIngresar');
 
+  if (navInicio) {
+    const goInicio = (e) => {
+      e.preventDefault();
+      // Proteger cuando no hay sesión
+      if (document.body.classList.contains('no-session')) return;
+      showSection('inicio');
+      document.body.classList.remove('nav-open');
+    };
+    navInicio.addEventListener('click', goInicio);
+    navInicio.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') goInicio(e);
+    });
+  }
   if (navArchivo) {
     navArchivo.addEventListener('click', (e) => {
       e.preventDefault();
@@ -30,7 +44,7 @@ export function initRouter() {
   }
   document.addEventListener('click', (ev) => {
     const t = ev.target;
-    if (t.closest && (t.closest('#navArchivo') || t.closest('#navIngresar'))) {
+    if (t.closest && (t.closest('#navInicio') || t.closest('#navArchivo') || t.closest('#navIngresar'))) {
       document.body.classList.remove('nav-open');
     }
   });
@@ -39,7 +53,7 @@ export function initRouter() {
   });
 
   // Sección inicial visible
-  showSection('archivo');
+  showSection('inicio');
 }
 
 function showSection(name) {
