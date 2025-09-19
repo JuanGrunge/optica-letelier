@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Óptica Letelier - Plataforma</title>
+    <meta name="api-base" content="" />
+    <script>
+      (function(){
+        try {
+          document.documentElement.classList.add('js');
+          var key='theme';
+          var saved=null; try { saved = localStorage.getItem(key); } catch(e){}
+          var prefers = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var dark = saved ? (saved === 'dark') : !!prefers;
+          document.documentElement.setAttribute('data-theme', dark?'dark':'light');
+          document.addEventListener('DOMContentLoaded', function(){ document.body && document.body.classList.toggle('dark', dark); });
+        } catch(e){}
+      })();
+    </script>
+    <!-- Conserva tu stack de estilos existente -->
+    <link rel="stylesheet" href="/assets/css/settings/tokens.css">
+    <link rel="stylesheet" href="/assets/css/settings/theme-light.css">
+    <link rel="stylesheet" href="/assets/css/settings/theme-dark.css">
+    <link rel="stylesheet" href="/assets/css/generic/base.css">
+    <link rel="stylesheet" href="/assets/css/components/c-header.css">
+    <link rel="stylesheet" href="/assets/css/components/c-card.css">
+    <link rel="stylesheet" href="/assets/css/components/c-login.css">
+    <link rel="stylesheet" href="/assets/css/components/c-form.css">
+    <link rel="stylesheet" href="/assets/css/components/c-search.css">
+    <link rel="stylesheet" href="/assets/css/components/c-modal.css">
+    <link rel="stylesheet" href="/assets/css/components/c-table.css">
+    <link rel="stylesheet" href="/assets/css/objects/o-grid.css">
+    <link rel="stylesheet" href="/assets/css/state/state.css">
+    <link rel="icon" type="image/x-icon" href="/assets/img/favicon.ico">
+  </head>
+  <body class="no-session">
+    <div id="root"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+  </html>

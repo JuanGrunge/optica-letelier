@@ -1,0 +1,353 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Óptica Letelier - Sistema</title>
+
+  <!-- API base (sin prefijo) -->
+  <meta name="api-base" content=""/>
+
+  <!-- CSS (rutas RELATIVAS) -->
+  <link rel="stylesheet" href="assets/css/settings/tokens.css">
+  <link rel="stylesheet" href="assets/css/settings/theme-light.css">
+  <link rel="stylesheet" href="assets/css/settings/theme-dark.css">
+  <link rel="stylesheet" href="assets/css/generic/base.css">
+  <link rel="stylesheet" href="assets/css/components/c-header.css">
+  <link rel="stylesheet" href="assets/css/components/c-card.css">
+  <link rel="stylesheet" href="assets/css/components/c-login.css">
+  <link rel="stylesheet" href="assets/css/components/c-form.css">
+  <link rel="stylesheet" href="assets/css/components/c-search.css">
+  <link rel="stylesheet" href="assets/css/components/c-modal.css">
+  <link rel="stylesheet" href="assets/css/components/c-table.css">
+  <link rel="stylesheet" href="assets/css/objects/o-grid.css">
+  <link rel="stylesheet" href="assets/css/state/state.css">
+
+  <meta name="description" content="Sistema de gestión para Óptica Letelier: ingreso y búsqueda de pacientes, recetas y órdenes.">
+  <link rel="icon" type="image/x-icon" href="assets/img/favicon.ico">
+</head>
+<body class="no-session">
+  <!-- Early boot aquí para evitar body null -->
+  <script src="assets/js/early-boot.js"></script>
+
+  <header class="c-header">
+    <span class="c-header__btn c-header__btn--menu" data-js="menu" aria-label="Abrir menú" data-auth="protected"></span>
+
+    <div class="c-header__brand">
+      <h2 class="brand"><img id="navInicio" src="assets/img/logo.png" alt="Óptica Letelier" class="logo" role="button" tabindex="0" aria-label="Ir a Inicio"></h2>
+    </div>
+
+    <nav class="c-header__nav" data-auth="protected">
+      <ul class="c-header__nav_list">
+        <li>
+          <button type="button" id="navArchivo" class="c-header__btn" aria-label="Archivo" data-label="Archivo">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="c-header__nav_ic">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 19a9 9 0 0 1 9 -9h9"/>
+                <path d="M3 6h18"/>
+                <path d="M3 6v13a2 2 0 0 0 2 2h13"/>
+              </g>
+            </svg>
+            <span class="nav-label" data-label="Archivo">Archivo</span>
+          </button>
+        </li>
+        <li>
+          <button type="button" id="navIngresar" class="c-header__btn" aria-label="Ingresar paciente" data-label="Ingresar paciente">
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="c-header__nav_ic">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/>
+                <path d="M6 21v-2a4 4 0 0 1 4 -4h4"/>
+                <path d="M16 19h6"/>
+                <path d="M19 16v6"/>
+              </g>
+            </svg>
+            <span class="nav-label" data-label="Ingresar paciente">Ingresar paciente</span>
+          </button>
+        </li>
+        
+      </ul>
+    </nav>
+
+    <div class="c-header__session" data-auth="protected">
+      <span id="userBadge" class="user-badge" aria-live="polite" hidden></span>
+      <button id="btnLogout" class="c-header__btn" type="button" hidden aria-label="Cerrar sesión" data-label="Cerrar sesión">
+        <svg viewBox="0 0 24 24" aria-hidden="true" class="c-header__nav_ic">
+          <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <path d="M7 12h11"/>
+            <path d="M10 9l-3 3l3 3"/>
+          </g>
+        </svg>
+        <span class="nav-label" data-label="Cerrar sesión">Cerrar sesión</span>
+      </button>
+    </div>
+
+    <div class="c-switch menu-toggle">
+      <input type="checkbox" id="darkModeToggle" aria-label="Modo oscuro" />
+      <label class="c-switch__slider" for="darkModeToggle" title="Modo oscuro"></label>
+    </div>
+  </header>
+
+  <!-- Login -->
+  <section id="loginOverlay" class="c-login" aria-label="Inicio de sesión">
+    <div class="c-login__card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
+      <h2 id="loginTitle">Iniciar sesión</h2>
+      <form id="loginForm">
+        <label for="loginUser">Usuario</label>
+        <input class="c-login__input" id="loginUser" autocomplete="username" type="text" placeholder="Ej: admin" required>
+
+        <label for="loginPass">Contraseña</label>
+        <input class="c-login__input" id="loginPass" autocomplete="current-password" type="password" placeholder="••••••••" required>
+
+        <button type="submit" class="c-login__btn">Entrar</button>
+        <p id="loginMsg" class="login-msg" aria-live="polite"></p>
+
+        <details class="hint">
+          <summary>¿Primera vez?</summary>
+          <small>Admin: <strong>admin</strong> / <strong>admin123</strong></small>
+        </details>
+      </form>
+    </div>
+  </section>
+
+  <!-- Inicio -->
+  <section id="inicio" class="view" aria-hidden="false" data-auth="protected">
+    <div class="c-card">
+      <h2>Bienvenido/a</h2>
+      <p>Bienvenido al sistema de Óptica Letelier.</p>
+      <div class="c-box c-box--compact">
+        <h3>¿Por dónde empezar?</h3>
+        <ul>
+          <li><strong>Archivo</strong>: busca pacientes por RUT y revisa su ficha.</li>
+          <li><strong>Ingresar paciente</strong>: crea un paciente nuevo y registra su receta.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Ingresar -->
+  <section id="ingresar" class="view" aria-hidden="true" data-auth="protected">
+    <form id="formIngresar" class="c-form">
+      <div id="cardPaciente" class="c-card">
+        <h2>Ingresar Paciente</h2>
+        <div class="c-box c-box--compact">
+        <div class="o-grid o-grid__2">
+          <div class="c-form__group">
+            <label class="c-form__label" for="nombre">Nombre completo</label>
+            <input id="nombre" class="c-form__control" type="text" placeholder="Ej: Juan Pérez" required>
+          </div>
+          <div class="c-form__group">
+            <label class="c-form__label" for="rut">RUT</label>
+            <input id="rut" class="c-form__control" type="text" placeholder="12.345.678-K" required>
+            <small id="rutError" class="c-login__hint"></small>
+          </div>
+          <div class="c-form__group">
+            <label class="c-form__label" for="direccion">Dirección</label>
+            <input id="direccion" class="c-form__control" type="text" placeholder="Calle 123, Comuna">
+          </div>
+          <div class="c-form__group">
+            <label class="c-form__label" for="fechaNac">Fecha de nacimiento</label>
+            <input id="fechaNac" class="c-form__control" type="date">
+          </div>
+          <div class="c-form__group">
+            <label class="c-form__label" for="operativo">Lugar Operativo</label>
+            <select id="operativo" class="c-form__control" required>
+              <option value="Casa Matriz" selected>Casa Matriz</option>
+            </select>
+          </div>
+        </div>
+        <div class="c-form__actions c-form__actions--end">
+          <button type="submit" class="c-btn c-btn--icon c-btn--neo c-btn--save" aria-label="Guardar paciente" title="Guardar paciente">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 4v10"/>
+                <path d="M8 8l4-4l4 4"/>
+                <path d="M5 20h14"/>
+              </g>
+            </svg>
+          </button>
+        </div>
+        </div>
+      </div>
+
+      <div id="cardReceta" class="c-card">
+        <h3>Receta</h3>
+        <div id="recetaBox" class="c-box c-box--compact c-card--disabled">
+        <fieldset id="recetaFieldset" disabled>
+        <div class="c-form__group">
+          <h4>Datos por ojo</h4>
+          <div class="c-table-scroll">
+            <table class="rx-table rx-table--compact">
+              <thead><tr>
+                <th>OJO</th><th>ESF</th><th>CIL</th><th>EJE</th>
+              </tr></thead>
+              <tbody>
+                <tr>
+                  <td>OD</td>
+                  <td><input id="odEsf" class="c-form__control" type="number" step="0.25"></td>
+                  <td><input id="odCil" class="c-form__control" type="number" step="0.25"></td>
+                  <td><input id="odEje" class="c-form__control" type="number" step="1" min="0" max="180"></td>
+                </tr>
+                <tr>
+                  <td>OI</td>
+                  <td><input id="oiEsf" class="c-form__control" type="number" step="0.25"></td>
+                  <td><input id="oiCil" class="c-form__control" type="number" step="0.25"></td>
+                  <td><input id="oiEje" class="c-form__control" type="number" step="1" min="0" max="180"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="c-form__group">
+          <h4>Metadatos (opcional)</h4>
+          <div class="o-grid o-grid__2">
+            <div class="c-form__group">
+              <label class="c-form__label" for="pdFar">DP Lejos (mm)</label>
+              <input id="pdFar" class="c-form__control" type="number" step="0.1" placeholder="p.ej. 63.0">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="pdNear">DP Cerca (mm)</label>
+              <input id="pdNear" class="c-form__control" type="number" step="0.1" placeholder="p.ej. 61.0">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="dprFar">DP Derecha (mm)</label>
+              <input id="dprFar" class="c-form__control" type="number" step="0.1" placeholder="p.ej. 31.0">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="dplFar">DP Izquierda (mm)</label>
+              <input id="dplFar" class="c-form__control" type="number" step="0.1" placeholder="p.ej. 32.0">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="vd">VD (distancia vértice, mm)</label>
+              <input id="vd" class="c-form__control" type="number" step="0.1" placeholder="p.ej. 12.0">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="pupR">Pupila OD (mm)</label>
+              <input id="pupR" class="c-form__control" type="number" step="0.01" placeholder="p.ej. 4.93">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="pupL">Pupila OI (mm)</label>
+              <input id="pupL" class="c-form__control" type="number" step="0.01" placeholder="p.ej. 4.49">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="cylForm">Cyl Form</label>
+              <select id="cylForm" class="c-form__control">
+                <option value="-" selected>-</option>
+                <option value="+">+</option>
+              </select>
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="addMeta">ADD (opcional)</label>
+              <input id="addMeta" class="c-form__control" type="number" step="0.25" placeholder="p.ej. 2.25">
+            </div>
+            <div class="c-form__group">
+              <label class="c-form__label" for="altMeta">ALT (opcional)</label>
+              <input id="altMeta" class="c-form__control" type="number" step="1" placeholder="mm">
+            </div>
+          </div>
+        </div>
+
+        <div class="c-form__group">
+          <label class="c-form__label" for="obs">Observaciones</label>
+          <textarea id="obs" class="c-form__control" rows="3" placeholder="Notas u observaciones"></textarea>
+        </div>
+        <div class="c-form__actions c-form__actions--end">
+          <button type="button" class="c-btn c-btn--icon c-btn--neo" aria-label="Importar receta (próximamente)" title="Importar receta (próximamente)" disabled>
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20V10"/>
+                <path d="M16 16l-4 4l-4-4"/>
+                <path d="M5 4h14"/>
+              </g>
+            </svg>
+          </button>
+          <button type="submit" class="c-btn c-btn--icon c-btn--neo" aria-label="Guardar receta" title="Guardar receta">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 4v10"/>
+                <path d="M8 8l4-4l4 4"/>
+                <path d="M5 20h14"/>
+              </g>
+            </svg>
+          </button>
+        </div>
+        </fieldset>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <!-- Archivo -->
+  <section id="archivo" class="view" aria-hidden="true" data-auth="protected">
+    <div class="c-card">
+    <h2>Archivo</h2>
+    <p class="subtle">Busca solo por <strong>RUT</strong>.</p>
+    <form id="formBuscar">
+      <div class="filters single">
+        <div class="c-search">
+          <input id="fQuery" class="c-search__input" type="text" placeholder="Ej: 12.345.678-K">
+          <button class="c-search__btn" type="submit" aria-label="Buscar" title="Buscar">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="10" cy="10" r="7"/>
+                <path d="M21 21l-6-6"/>
+              </g>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </form>
+    </div>
+    <div id="resultados" class="resultados c-card">
+      <div class="results-header">
+        <h3 style="display:inline-block;margin-right:12px;">Resultados</h3>
+      </div>
+      <div class="c-table-scroll">
+        <table class="c-table" id="tablaResultados">
+          <thead>
+            <tr><th>RUT</th><th>Nombre Paciente</th></tr>
+          </thead>
+          <tbody id="listaResultados"></tbody>
+        </table>
+      </div>
+      <div id="paginacionResultados" class="pagination"></div>
+      <p id="msgResultados" class="subtle"></p>
+    </div>
+
+    <div id="fichaPacienteCard" class="c-card" style="display:none;">
+      <div class="results-header">
+        <h3 style="display:inline-block;margin-right:12px;">Ficha del Paciente</h3>
+        <button id="btnVolverResultados" class="c-btn c-btn--icon c-btn--back c-btn--no-anim c-card__action--tr" type="button" aria-label="Volver a resultados" title="Volver a resultados">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"/>
+              <path d="M13 6l6 6l-6 6"/>
+            </g>
+          </svg>
+        </button>
+      </div>
+      <div id="detallePaciente" class="paciente-detalle"></div>
+    </div>
+  </section>
+
+  
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Comportamiento de header (hamburguesa + tema) -->
+  <script defer src="assets/js/ui/header.behavior.js"></script>
+
+  <!-- JS principal como módulo -->
+  <script type="module" src="assets/js/main.js"></script>
+
+  <!-- Repos infra (disponibles antes del main) -->
+  <script defer src="assets/js/infra/config.api.js"></script>
+  <script defer src="assets/js/infra/repos/http.patients.repository.js"></script>
+  <script defer src="assets/js/infra/repos/http.prescriptions.repository.js"></script>
+  <script defer src="assets/js/infra/repos/http.invoices.repository.js"></script>
+  <script defer src="assets/js/infra/repos/http.operatives.repository.js"></script>
+</body>
+</html>
+
+
