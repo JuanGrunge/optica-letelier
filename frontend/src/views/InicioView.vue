@@ -1,7 +1,8 @@
 <template>
   <section class="view active" id="inicio">
-    <div class="c-card">
-      <h2>Bienvenido</h2>
+    <transition name="card-fade" mode="out-in">
+    <div class="c-card" key="home-card">
+      <h2>{{ greeting }}</h2>
       <p class="subtle">¿A dónde quieres navegar?</p>
 
       <div class="app-actions">
@@ -43,11 +44,21 @@
         </RouterLink>
       </div>
     </div>
+    </transition>
   </section>
   
 </template>
 
 <script setup>
+import { computed } from 'vue';
+import { useAuthStore } from '@/stores/auth.js';
+const auth = useAuthStore();
+const user = computed(() => auth.user?.username || '');
+const greeting = computed(() => {
+  const h = new Date().getHours();
+  const base = h < 12 ? 'Buenos días' : (h < 19 ? 'Buenas tardes' : 'Buenas noches');
+  return user.value ? `${base}, ${user.value}` : base;
+});
 </script>
 
 <style scoped>

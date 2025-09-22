@@ -1,5 +1,5 @@
 <template>
-  <section v-if="!isAuth" id="loginOverlay" class="c-login" aria-label="Inicio de sesión">
+  <section v-if="ready && !isAuth" id="loginOverlay" class="c-login" aria-label="Inicio de sesión">
     <div class="c-login__card" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
       <h2 id="loginTitle">Iniciar sesión</h2>
       <form id="loginForm" @submit.prevent="onSubmit">
@@ -11,7 +11,11 @@
         <p id="loginMsg" class="login-msg" aria-live="polite">{{ error }}</p>
         <details class="hint">
           <summary>¿Primera vez?</summary>
-          <small>Admin: <strong>admin</strong> / <strong>admin123</strong></small>
+          <small>
+            Admin: <strong>admin</strong> / <strong>admin123</strong><br/>
+            Óptico: <strong>optico</strong> / <strong>optico123</strong><br/>
+            Receptor: <strong>receptor</strong> / <strong>receptor123</strong>
+          </small>
         </details>
       </form>
     </div>
@@ -31,6 +35,7 @@ const password = ref('');
 const loading = computed(() => auth.loading);
 const error = computed(() => auth.error);
 const isAuth = computed(() => auth.isAuthenticated);
+const ready = computed(() => auth.hydrated);
 
 async function onSubmit(){
   try {

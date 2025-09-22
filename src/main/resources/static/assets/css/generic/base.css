@@ -62,7 +62,7 @@ body.no-session::before{
 .paciente-detalle ul{ margin: 6px 0 0; padding-left: 18px; }
 
 /* Tiles para listas compactas (recetas, boletas) */
-.list-tiles{ list-style: none; padding: 0; margin: 8px 0 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.list-tiles{ list-style: none; padding: 0; margin: 8px 0 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap: var(--space-4); }
 .list-tiles .tile{
   background: color-mix(in oklab, var(--color-surface) 94%, #000);
   border: 1px solid var(--color-border);
@@ -80,11 +80,23 @@ body.no-session::before{
 .tile__eye{ display: grid; grid-template-columns: 56px 1fr; gap: 8px; align-items: start; }
 .tile__eye .eye__label{ font-weight: 600; color: var(--color-text-muted); }
 .tile__eye .eye__specs{ display: grid; gap: 2px; }
-@media (min-width: 768px){
-  .tile__eyes{ grid-template-columns: 1fr 1fr; }
+@media (min-width: 480px){
+  .list-tiles{ grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
 }
-.badge{ display:inline-block; padding:2px 6px; border-radius: 10px; font-size: .82em; line-height: 1.4; }
+@media (min-width: 1024px){
+  .list-tiles{ grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+}
+.badge{ display:inline-block; padding:2px 6px; border-radius: 10px; font-size: .82em; line-height: 1.4; color: inherit; }
 .badge--warn{ background: color-mix(in oklab, var(--color-accent) 22%, #000); color: #fff; }
+.badge--pill{ border-radius: 9999px; padding: 2px 10px; font-weight: 600; }
+/* Badge por rol */
+/* Colores institucionales por rol */
+/* ADMIN: rojo carmesí #DC143C */
+.badge--role-admin{ background: rgba(220,20,60,.20); border: 1px solid rgba(220,20,60,.35); }
+/* RECEPTOR: amarillo rey #FADA5E */
+.badge--role-receptor{ background: rgba(250,218,94,.24); border: 1px solid rgba(250,218,94,.38); }
+/* OPTICO: azul zafiro #0F52BA */
+.badge--role-optico{ background: rgba(15,82,186,.20); border: 1px solid rgba(15,82,186,.35); }
 
 /* Paginación */
 .pagination{ display:flex; align-items:center; gap: 10px; margin: 10px 0; }
@@ -106,3 +118,35 @@ body.no-session::before{
 /* (no forzar color aquí para no romper claro/oscuro) */
 
 
+
+/* ===== Transiciones base (globales) ===== */
+.fade-fast-enter-active, .fade-fast-leave-active { transition: opacity .30s ease; }
+.fade-fast-enter-from, .fade-fast-leave-to { opacity: 0; }
+
+.card-fade-enter-active, .card-fade-leave-active { transition: opacity .40s ease, transform .40s ease; }
+.card-fade-enter-from, .card-fade-leave-to { opacity: 0; transform: translateY(4px); }
+
+.list-fade-enter-active, .list-fade-leave-active { transition: opacity .50s ease, transform .50s ease; }
+.list-fade-enter-from, .list-fade-leave-to { opacity: 0; transform: translateY(3px); }
+
+@media (prefers-reduced-motion: reduce){
+  .fade-fast-enter-active, .fade-fast-leave-active,
+  .card-fade-enter-active, .card-fade-leave-active,
+  .list-fade-enter-active, .list-fade-leave-active{ transition-duration: .001ms !important; }
+  .card-fade-enter-from, .card-fade-leave-to,
+  .list-fade-enter-from, .list-fade-leave-to{ transform: none !important; }
+}
+
+/* ===== Splash / loader mínimo ===== */
+.app-splash{
+  min-height: calc(100vh - var(--size-header));
+  display:flex; align-items:center; justify-content:center;
+}
+.spinner{
+  width: 28px; height: 28px; border-radius: 50%;
+  border: 3px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  animation: spin .9s linear infinite;
+  opacity: .9;
+}
+@keyframes spin{ to { transform: rotate(360deg); } }

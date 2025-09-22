@@ -8,6 +8,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.lang.NonNull;
 
 import java.io.IOException;
 
@@ -15,7 +16,7 @@ import java.io.IOException;
 @Order(Ordered.LOWEST_PRECEDENCE)
 public class SpaForwardFilter extends OncePerRequestFilter {
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain)
             throws ServletException, IOException {
         // Sólo para GET navegacionales
         if (!"GET".equalsIgnoreCase(request.getMethod())) {
@@ -35,4 +36,3 @@ public class SpaForwardFilter extends OncePerRequestFilter {
         request.getRequestDispatcher("/index.html").forward(request, response);
     }
 }
-

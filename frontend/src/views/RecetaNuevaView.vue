@@ -1,8 +1,17 @@
 <template>
   <section id="receta-nueva" class="view active">
-    <div class="c-card">
-      <h2>Ingresar receta</h2>
-      <p class="subtle" v-if="pacienteNombre">Paciente: <strong>{{ pacienteNombre }}</strong></p>
+    <transition name="card-fade" mode="out-in">
+    <div class="c-card" key="receta-card">
+      <h2 class="h2-row"><span>Nueva receta</span><span class="h2-meta" v-if="pacienteNombre">{{ pacienteNombre }}</span></h2>
+      <button class="c-btn c-btn--icon c-btn--back c-btn--no-anim c-card__action--tr" type="button" @click="goBack" title="Volver" aria-label="Volver">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/>
+            <path d="M13 6l6 6l-6 6"/>
+          </g>
+        </svg>
+      </button>
+      
       <fieldset :disabled="savingRx" id="recetaFieldset">
         <div class="c-table-scroll">
           <table class="rx-table rx-table--compact">
@@ -36,14 +45,6 @@
           </div>
         </div>
         <div class="c-form__actions c-form__actions--end">
-          <RouterLink class="c-btn c-btn--icon c-btn--neo" :to="{ name: 'archivo-detalle', params: { id: pacienteId } }" aria-label="Volver a ficha" title="Volver a ficha">
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 12h14"/>
-                <path d="M13 6l-6 6l6 6"/>
-              </g>
-            </svg>
-          </RouterLink>
           <button type="button" class="c-btn c-btn--icon c-btn--neo" aria-label="Importar .csv (próximamente)" title="Importar .csv (próximamente)" disabled>
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
               <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -66,6 +67,7 @@
         </div>
       </fieldset>
     </div>
+    </transition>
   </section>
 </template>
 
@@ -79,6 +81,8 @@ import { normalizeRxPayload } from '@/composables/rx.js';
 import { setupUnsavedGuard } from '@/composables/unsaved.js';
 
 const route = useRoute();
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const pacienteId = computed(() => route.params.id);
 const paciente = ref(null);
 const pacienteNombre = computed(() => paciente.value ? `${paciente.value.nombres||''} ${paciente.value.apellidos||''}`.trim() : '');
@@ -122,9 +126,16 @@ onMounted(async () => {
 
 const isDirty = computed(() => JSON.stringify(rx) !== initialSnap.value);
 setupUnsavedGuard(isDirty);
+
+function goBack(){
+  try { router.push({ name: 'archivo-detalle', params: { id: pacienteId.value } }); }
+  catch { router.push({ name: 'archivo' }); }
+}
 </script>
 
 <style scoped>
 #recetaFieldset{ border: 0; padding: 0; margin: 0; }
 .c-table-scroll{ margin-top: var(--space-2); }
+.h2-row{ display:flex; align-items:center; justify-content:space-between; margin-right: 48px; }
+.h2-meta{ font-weight:600; font-size:.95rem; color: var(--color-text-muted); max-width: 60%; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>

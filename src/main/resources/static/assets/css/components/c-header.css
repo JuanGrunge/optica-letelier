@@ -61,6 +61,13 @@
   .c-header__btn--menu{ display:inline-flex; order:0; }
   /* Centro absoluto del logo en responsive */
   .c-header__brand{ position:absolute; left:50%; top:50%; transform: translate(-50%, -50%); height:auto; }
+  /* Mostrar solo icono en el botón de cerrar sesión */
+  .c-header__session .c-header__btn .nav-label{ display:none !important; }
+  /* Ubicar badge de usuario pegado a la derecha del ícono hamburguesa */
+  .c-header .user-badge{
+    position: absolute; left: calc(var(--space-4) + 40px + 6px); top: 50%; transform: translateY(-50%);
+    z-index: var(--z-header);
+  }
   /* MenÃº mÃ³vil: dropdown vertical bajo el header, alineado a la izquierda */
   .c-header__nav{ order:2; display:none; position:absolute; left:0; right:0; top:100%; z-index: var(--z-header); }
   .c-header.is-open .c-header__nav,
@@ -235,13 +242,36 @@
   .c-header__btn:focus-visible .nav-label{ max-width: 220px; opacity:1; margin-left: 8px; padding: 0 4px; transform: translateY(1px); }
   .c-header__btn::before{ content: none !important; }
 
-  /* Separador entre items que viaja con el <li> */
+  /* Separadores desactivados para evitar barras al ocultar items */
   .c-header__nav_list > li{ position: relative; }
-  .c-header__nav_list > li + li::before{
-    content:""; position:absolute; left:-6px; top:50%; transform: translateY(-50%);
-    width:1px; height:24px; background: rgba(255,255,255,.22);
-  }
+  .c-header__nav_list > li + li::before{ content: none; display: none; }
 }
 
 /* Alineación más precisa del ícono */
 .c-header__nav_ic{ display:block; }
+
+/* Visibilidad helpers */
+.mobile-only{ display:none; }
+.desktop-only{ display:inline-block; }
+
+/* Overrides móviles para cuenta/badge */
+@media (max-width: 768px){
+  .c-header .user-badge{ display:none !important; }
+  .mobile-only{ display:block !important; }
+  .desktop-only{ display:none !important; }
+  .nav-account .badge{ margin-left:auto; }
+}
+
+/* Desktop: asegurar color de texto del badge (no estilo de enlace) */
+.c-header .user-badge{ color: inherit; text-decoration:none; }
+.c-header .user-badge:visited{ color: inherit; }
+.c-header .user-badge:hover{ text-decoration:none; filter:none; }
+.c-header .user-badge .badge{ color: inherit; }
+@media (min-width: 769px){
+  /* En desktop, el texto del badge va blanco para mejor contraste con el header */
+  .c-header .user-badge .badge{ color: #fff; }
+}
+/* Subtle hover/focus for user badge */
+.c-header .user-badge:hover{ color: inherit; text-decoration: none; }
+.c-header .user-badge:hover .badge{ filter: brightness(1.05); }
+.c-header .user-badge:focus-visible .badge{ box-shadow: 0 0 0 2px rgba(255,255,255,.25) inset; }

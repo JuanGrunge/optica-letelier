@@ -12,7 +12,8 @@ public class AppUserService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return repo.findByUsername(username)
+        return repo.findByUsernameIgnoreCase(username)
+                .or(() -> repo.findByUsername(username))
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 }

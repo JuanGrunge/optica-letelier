@@ -1,7 +1,16 @@
 <template>
   <section id="editar-paciente" class="view active">
-    <div class="c-card">
-      <h2>Editar paciente</h2>
+    <transition name="card-fade" mode="out-in">
+    <div class="c-card" key="editar-card">
+      <h2 class="h2-row"><span>Editar paciente</span><span class="h2-meta">{{ (form.nombres||'') + ' ' + (form.apellidos||'') }}</span></h2>
+      <button class="c-btn c-btn--icon c-btn--back c-btn--no-anim c-card__action--tr" type="button" @click="goBack" title="Volver" aria-label="Volver">
+        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+          <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12h14"/>
+            <path d="M13 6l6 6l-6 6"/>
+          </g>
+        </svg>
+      </button>
       <form @submit.prevent="onSave" class="c-form">
         <div class="o-grid o-grid__2">
           <div class="c-form__group">
@@ -47,18 +56,21 @@
         </div>
       </form>
     </div>
+    </transition>
   </section>
 </template>
 
 <script setup>
 import { reactive, ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
+import { useRouter } from 'vue-router';
 import * as Patients from '@/services/patients.js';
 import { useUiStore } from '@/stores/ui.js';
 import { esRutValido, formatearRut } from '@/composables/validators.js';
 import { setupUnsavedGuard } from '@/composables/unsaved.js';
 
 const route = useRoute();
+const router = useRouter();
 const id = computed(() => route.params.id);
 const ui = useUiStore();
 const saving = ref(false);
@@ -114,7 +126,14 @@ async function onSave(){
     console.warn(e);
   } finally { saving.value=false; }
 }
+
+function goBack(){
+  try { router.push({ name: 'archivo-detalle', params: { id: id.value } }); }
+  catch { router.push({ name: 'archivo' }); }
+}
 </script>
 
 <style scoped>
+.h2-row{ display:flex; align-items:center; justify-content:space-between; margin-right: 48px; }
+.h2-meta{ font-weight:600; font-size:.95rem; color: var(--color-text-muted); max-width: 60%; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>

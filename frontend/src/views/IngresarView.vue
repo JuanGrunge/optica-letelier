@@ -1,6 +1,7 @@
 <template>
   <section id="ingresar" class="view active">
-    <div class="c-card">
+    <transition name="card-fade" mode="out-in">
+    <div class="c-card" key="ingresar-card">
       <h2>Ingresar paciente</h2>
       <form @submit.prevent="onSave" class="c-form">
         <div class="o-grid o-grid__2">
@@ -47,6 +48,7 @@
         </div>
       </form>
     </div>
+    </transition>
   </section>
 </template>
 

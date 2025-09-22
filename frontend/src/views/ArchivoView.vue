@@ -20,7 +20,7 @@
       </form>
     </div>
 
-    <transition name="fade">
+    <transition name="card-fade" mode="out-in">
     <div v-if="!showDetail" class="c-card" key="list">
       <div class="results-header">
         <h3 style="display:inline-block;margin-right:12px;">Resultados</h3>
@@ -30,14 +30,14 @@
           <thead>
             <tr><th>RUT</th><th>Nombre Paciente</th></tr>
           </thead>
-          <tbody>
+          <transition-group name="list-fade" tag="tbody">
             <tr v-for="p in items" :key="p.id" class="row-paciente" role="button" tabindex="0"
                 @click="openDetail(p.id)" @keydown.enter.prevent="openDetail(p.id)" @keydown.space.prevent="openDetail(p.id)">
               <td>{{ p.rut }}</td>
               <td>{{ (p.nombres||'') + ' ' + (p.apellidos||'') }}</td>
             </tr>
             <tr v-if="!loading && items.length===0"><td colspan="2" class="subtle">Sin resultados</td></tr>
-          </tbody>
+          </transition-group>
         </table>
       </div>
       <div class="pagination" v-if="total!=null">
@@ -60,26 +60,6 @@
         </button>
       </div>
       <div class="paciente-detalle" v-if="detail">
-        <!-- Acciones cercanas a la data (a la derecha) -->
-        <div class="detail-actions-right">
-          <RouterLink class="c-btn c-btn--icon c-btn--neo" :to="{ name: 'receta-nueva', params: { id: detail?.id } }" aria-label="Ingresar receta" title="Ingresar receta">
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 5v14"/>
-                <path d="M5 12h14"/>
-              </g>
-            </svg>
-          </RouterLink>
-          <RouterLink class="c-btn c-btn--icon c-btn--neo" :to="{ name: 'paciente-editar', params: { id: detail?.id } }" aria-label="Editar paciente" title="Editar paciente">
-            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
-              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="3" y="3" width="18" height="18" rx="3"/>
-                <path d="M8 20l1-4l7-7l3 3l-7 7z"/>
-                <path d="M14 6l4 4"/>
-              </g>
-            </svg>
-          </RouterLink>
-        </div>
         <div class="grid-2">
           <div>
             <p><strong>Nombre:</strong> {{ fullName }}</p>
@@ -93,10 +73,25 @@
             <p><strong>Direccion:</strong> {{ detail.direccion || '-' }}</p>
           </div>
         </div>
+        <!-- Botón Editar paciente: debajo de la ficha, a la derecha -->
+        <div class="actions-right">
+          <RouterLink class="c-btn c-btn--icon c-btn--neo" :to="{ name: 'paciente-editar', params: { id: detail?.id }, query: { from: route.fullPath } }" aria-label="Editar paciente" title="Editar paciente">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <!-- línea base -->
+                <path d="M4 20H20"/>
+                <!-- lápiz -->
+                <path d="M7 19l-4 1 1-4L16.5 3.5a2.121 2.121 0 0 1 3 3Z"/>
+                <!-- unión goma/cuerpo sin sobresalir -->
+                <path d="M15 5l3 3" stroke-linecap="butt"/>
+              </g>
+            </svg>
+          </RouterLink>
+        </div>
         <div class="subseccion">
           <h5>Receta reciente</h5>
           <template v-if="rxItems.length">
-            <ul class="list-tiles">
+            <transition-group name="list-fade" tag="ul" class="list-tiles">
               <li class="tile" v-for="r in rxItems" :key="r.id">
                 <div class="tile__title tile__title--right">{{ r.fecha || '' }}</div>
                 <div class="tile__eyes">
@@ -120,20 +115,31 @@
                 <div v-if="r.addPower!=null" class="tile__row"><span class="tile__label">ADD</span><span class="tile__value">{{ r.addPower }}</span></div>
                 <div v-if="r.observaciones" class="tile__obs">{{ r.observaciones }}</div>
               </li>
-            </ul>
+            </transition-group>
           </template>
           <p v-else class="subtle">Sin recetas</p>
+        </div>
+        <!-- Botón Agregar receta: debajo de receta, a la derecha -->
+        <div class="actions-right">
+          <RouterLink class="c-btn c-btn--icon c-btn--neo" :to="{ name: 'receta-nueva', params: { id: detail?.id }, query: { from: route.fullPath } }" aria-label="Nueva receta" title="Nueva receta">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14"/>
+                <path d="M5 12h14"/>
+              </g>
+            </svg>
+          </RouterLink>
         </div>
         <div class="subseccion">
           <h5>Boletas recientes</h5>
           <template v-if="invItems.length">
-            <ul class="list-tiles">
+            <transition-group name="list-fade" tag="ul" class="list-tiles">
               <li class="tile" v-for="i in invItems" :key="i.id">
                 <div class="tile__title tile__title--right">{{ i.fecha || '' }} <span v-if="i.anulado" class="badge badge--warn">Anulado</span></div>
                 <div class="tile__row"><span class="tile__label">Total</span><span class="tile__value">${{ i.total || 0 }}</span></div>
                 <div v-if="i.detalle" class="tile__row"><span class="tile__label">Detalle</span><span class="tile__value">{{ i.detalle }}</span></div>
               </li>
-            </ul>
+            </transition-group>
           </template>
           <p v-else class="subtle">Sin boletas</p>
         </div>
@@ -152,20 +158,22 @@ import * as Prescriptions from '@/services/prescriptions.js';
 import * as Invoices from '@/services/invoices.js';
 import { useAuthStore } from '@/stores/auth.js';
 import { useUiStore } from '@/stores/ui.js';
+import { useArchiveStore } from '@/stores/archive.js';
 
 const auth = useAuthStore();
 const route = useRoute();
 const router = useRouter();
 const ui = useUiStore();
+const archive = useArchiveStore();
 
-const query = ref('');
-const items = ref([]);
-const total = ref(null);
-const page = ref(0);
-const pages = ref(0);
-const size = 5;
+const query = ref(archive.q || '');
+const items = ref(archive.items || []);
+const total = ref(archive.total ?? null);
+const page = ref(archive.page || 0);
+const pages = ref(archive.pages || 0);
+const size = archive.size || 5;
 const loading = ref(false);
-const message = ref('');
+const message = ref(archive.message || '');
 
 const showDetail = ref(false);
 const detail = ref(null);
@@ -176,10 +184,16 @@ const fullName = computed(() => [detail.value?.nombres||'', detail.value?.apelli
 async function loadDefault(){
   try {
     loading.value = true; message.value = '';
-    total.value = await Patients.count();
-    page.value = 0;
-    const pageData = await Patients.list({ page: 0, size });
-    applyPage(pageData);
+    if (archive.hasCache){
+      query.value = archive.q; items.value = archive.items; total.value = archive.total;
+      page.value = archive.page; pages.value = archive.pages; message.value = archive.message;
+    } else {
+      total.value = await Patients.count();
+      page.value = 0;
+      const pageData = await Patients.list({ page: 0, size });
+      applyPage(pageData);
+      try { archive.setFromPage(pageData, { q: '', page: 0, size }); } catch {}
+    }
   } catch {
     message.value = '';
   } finally { loading.value = false; }
@@ -204,6 +218,7 @@ async function onSearch(){
     if (!raw){ await loadDefault(); return; }
     const q = raw;
     const pageData = await Patients.list({ q, page: 0, size });
+    try { archive.setQuery(q); } catch {}
     applyPage(pageData);
   } catch (e) {
     message.value = 'Error al buscar';
@@ -215,7 +230,7 @@ async function loadPage(n){
   if (n<0) return; page.value = n;
   const raw = (query.value||'').trim();
   const params = raw ? { q: raw, page: n, size } : { page: n, size };
-  try { loading.value = true; const pageData = await Patients.list(params); applyPage(pageData); } finally { loading.value = false; }
+  try { loading.value = true; const pageData = await Patients.list(params); applyPage(pageData); try { archive.setFromPage(pageData, { q: raw, page: n, size }); } catch {} } finally { loading.value = false; }
 }
 
 async function openDetail(id){
@@ -254,5 +269,7 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.detail-actions-right{ display:flex; justify-content:flex-end; gap: 8px; margin-bottom: 8px; }
+.actions-right{ display:flex; justify-content:flex-end; gap: 8px; margin: 8px 0; }
 </style>
+
+
