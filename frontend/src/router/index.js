@@ -18,6 +18,7 @@ const router = createRouter({
     { path: '/pacientes/:id/recetas/nueva', name: 'receta-nueva', component: RecetaNuevaView, meta: { requiresAuth: true } },
     { path: '/pacientes/:id/editar', name: 'paciente-editar', component: EditarPacienteView, meta: { requiresAuth: true } },
     { path: '/cuenta', name: 'cuenta', component: CuentaView, meta: { requiresAuth: true } },
+    { path: '/:pathMatch(.*)*', redirect: { name: 'inicio' } },
   ]
 });
 
@@ -39,6 +40,19 @@ router.beforeEach((to, from) => {
     const isFromArchive = isArchive(from);
     const isToArchive = isArchive(to);
     if (isFromArchive && !isToArchive) archive.clear();
+  } catch {}
+});
+
+// Robust fallback for failed dynamic imports or bad navigations after refresh
+router.onError((error) => {
+  try {
+    const msg = String(error?.message || '');
+    if (/Loading chunk|dynamically imported|import\(|fetch/i.test(msg)) {
+      window.location.href = '/';
+    } else {
+      console.error('Router error:', error);
+      try { router.replace({ name: 'inicio' }); } catch {}
+    }
   } catch {}
 });
 

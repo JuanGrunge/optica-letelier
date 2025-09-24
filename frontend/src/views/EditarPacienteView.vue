@@ -2,7 +2,7 @@
   <section id="editar-paciente" class="view active">
     <transition name="card-fade" mode="out-in">
     <div class="c-card" key="editar-card">
-      <h2 class="h2-row"><span>Editar paciente</span><span class="h2-meta">{{ (form.nombres||'') + ' ' + (form.apellidos||'') }}</span></h2>
+      <h2 class="h2-row"><span>Editar paciente</span><span class="h2-meta">Paciente: {{ (form.nombres||'') + ' ' + (form.apellidos||'') }}</span></h2>
       <button class="c-btn c-btn--icon c-btn--back c-btn--no-anim c-card__action--tr" type="button" @click="goBack" title="Volver" aria-label="Volver">
         <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
           <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -134,6 +134,6 @@ function goBack(){
 </script>
 
 <style scoped>
-.h2-row{ display:flex; align-items:center; justify-content:space-between; margin-right: 48px; }
-.h2-meta{ font-weight:600; font-size:.95rem; color: var(--color-text-muted); max-width: 60%; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
+.h2-row{ display:flex; align-items:flex-start; justify-content:flex-start; margin-right: 48px; flex-wrap: wrap; row-gap: .25rem; }
+.h2-meta{ order: 2; flex: 1 0 100%; font-weight:600; font-size:.95rem; color: var(--color-text-muted); max-width: 100%; overflow:hidden; text-overflow: ellipsis; white-space: nowrap; }
 </style>

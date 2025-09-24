@@ -150,3 +150,14 @@ body.no-session::before{
   opacity: .9;
 }
 @keyframes spin{ to { transform: rotate(360deg); } }
+
+/* Evitar zoom al enfocar inputs en móviles (iOS/Chrome iPhone)
+   Safari/Chrome fuerzan zoom si la fuente < 16px. Establecemos 16px
+   para todos los campos editables, sin afectar sliders/checkbox/radio. */
+@media (max-width: 640px){
+  input:not([type="range"]):not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea{
+    font-size: 16px;
+  }
+}

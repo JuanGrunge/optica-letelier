@@ -42,6 +42,22 @@
             <div class="app-action__desc">Registra un nuevo paciente y opcionalmente agrega su receta.</div>
           </div>
         </RouterLink>
+
+        <!-- Acción: Cuenta -->
+        <RouterLink class="app-action" :to="{ name: 'cuenta' }" role="button" aria-label="Ir a Cuenta">
+          <div class="app-action__icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4z"/>
+                <path d="M4 21a8 8 0 0 1 16 0"/>
+              </g>
+            </svg>
+          </div>
+          <div class="app-action__content">
+            <div class="app-action__title">Cuenta</div>
+            <div class="app-action__desc">Accede a la información de tu sesión y rol.</div>
+          </div>
+        </RouterLink>
       </div>
     </div>
     </transition>

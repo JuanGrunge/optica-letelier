@@ -43,4 +43,43 @@ watchEffect(() => {
 .c-header .c-header__nav a { text-decoration: none; }
 /* Quitar subrayado de textos de botones en general */
 a.c-btn, a.c-btn:visited, a.c-btn:hover { text-decoration: none; }
+
+/* Global theme-aligned controls for dark/light */
+.c-form__control, textarea.c-form__control, input.c-form__control {
+  background: var(--color-bg-elev, #fff);
+  color: var(--color-text, #111);
+  border-color: var(--color-border, #ccc);
+}
+.dark .c-form__control, .dark textarea.c-form__control, .dark input.c-form__control {
+  background: var(--color-bg-elev, #1f1f1f);
+  color: var(--color-text, #eee);
+  border-color: var(--color-border, #3a3a3a);
+}
+.c-form__control::placeholder { color: var(--color-text-muted, #666); opacity: .9; }
+.c-form__control:-ms-input-placeholder { color: var(--color-text-muted, #666); }
+.c-form__control::-ms-input-placeholder { color: var(--color-text-muted, #666); }
+.c-form__control:focus { outline: none; box-shadow: 0 0 0 3px var(--color-focus-ring, rgba(100,150,220,.35)); border-color: var(--color-accent, #4a7); }
+
+.c-btn.c-btn--neo {
+  background: var(--color-bg-elev, #fff);
+  color: var(--color-text, #111);
+  border-color: var(--color-border, #ccc);
+}
+.dark .c-btn.c-btn--neo {
+  background: var(--color-bg-elev, #1f1f1f);
+  color: var(--color-text, #eee);
+  border-color: var(--color-border, #3a3a3a);
+}
+.dark .c-btn.c-btn--icon.c-btn--neo,
+.dark .c-form__actions .c-btn.c-btn--icon.c-btn--neo {
+  background: var(--color-bg-elev, #1f1f1f) !important;
+  color: var(--color-text, #eee) !important;
+  border-color: var(--color-border, #3a3a3a) !important;
+}
+.c-btn.c-btn--icon {
+  color: var(--color-text, #111);
+}
+.c-table th, .c-table td {
+  border-color: var(--color-border, #ccc);
+}
 </style>
