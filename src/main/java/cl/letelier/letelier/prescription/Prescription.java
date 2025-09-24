@@ -3,6 +3,7 @@ package cl.letelier.letelier.prescription;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
+import cl.letelier.letelier.common.TextNormalizer;
 
 @Entity @Table(name="prescription")
 public class Prescription {
@@ -27,4 +28,10 @@ public class Prescription {
     public String getObservaciones(){return observaciones;} public void setObservaciones(String v){this.observaciones=v;}
     public LocalDate getFecha(){return fecha;} public void setFecha(LocalDate v){this.fecha=v;}
     public boolean isActivo(){return activo;} public void setActivo(boolean v){this.activo=v;}
+
+    @PrePersist
+    @PreUpdate
+    public void normalize(){
+        this.observaciones = TextNormalizer.upperEs(TextNormalizer.collapseSpaces(this.observaciones));
+    }
 }

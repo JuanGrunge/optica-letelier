@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+import cl.letelier.letelier.common.TextNormalizer;
 
 @Entity
 @Table(name = "patient")
@@ -19,6 +20,7 @@ public class Patient {
     @Size(max=30) private String telefono;
     @Email @Size(max=180) private String email;
     @Size(max=240) private String direccion;
+    @Size(max=120) private String comuna;
     private boolean activo = true;
     private LocalDateTime createdAt;
 
@@ -43,6 +45,8 @@ public class Patient {
     public void setEmail(String v){this.email=v;}
     public String getDireccion(){return direccion;}
     public void setDireccion(String v){this.direccion=v;}
+    public String getComuna(){return comuna;}
+    public void setComuna(String v){this.comuna=v;}
     public boolean isActivo(){return activo;}
     public void setActivo(boolean v){this.activo=v;}
     public LocalDateTime getCreatedAt(){return createdAt;}
@@ -51,5 +55,20 @@ public class Patient {
     public void setOperatives(Set<cl.letelier.letelier.operative.Operative> v){this.operatives=v;}
 
     @PrePersist
-    public void prePersist(){ if (this.createdAt == null) this.createdAt = LocalDateTime.now(); }
+    public void prePersist(){
+        // Normaliza y fija createdAt al crear
+        normalize();
+        if (this.createdAt == null) this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void normalize(){
+        this.nombres = TextNormalizer.upperEs(TextNormalizer.nfc(this.nombres));
+        this.apellidos = TextNormalizer.upperEs(TextNormalizer.nfc(this.apellidos));
+        this.direccion = TextNormalizer.addressCase(TextNormalizer.nfc(this.direccion));
+        this.comuna = TextNormalizer.upperEs(TextNormalizer.nfc(this.comuna));
+        this.telefono = TextNormalizer.collapseSpaces(this.telefono);
+        if (this.email != null) this.email = this.email.trim();
+        if (this.rut != null) this.rut = this.rut.trim();
+    }
 }

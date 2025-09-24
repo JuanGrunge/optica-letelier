@@ -1,80 +1,82 @@
-# LETELIER - Panel clínico (Óptica)
+# LETELIER – Panel Clínico (Óptica)
 
-Aplicación web (SPA) para operativos, recetas y boletas de una óptica popular.
-
----
-
-## Estado actual
-
-- Autenticación por sesión (cookie `JSESSIONID`)
-  - Login en overlay dentro de la SPA; logout limpia estado y vuelve a login.
-  - Endpoints: `POST /api/auth/login`, `GET /api/auth/me`, `POST /api/auth/logout`.
-
-- Selector de “Lugar Operativo”
-  - Se alimenta desde `GET /api/operatives/places` (público) con lugares únicos (incluye Casa Matriz).
-  - En alta, si no se elige, se usa “Casa Matriz”.
-
-- Archivo (búsqueda) y ficha
-  - Búsqueda por RUT flexible; si se envía vacío, carga lista por defecto (primera página + total).
-  - Paginación: 5 por página. Tabla con RUT y Nombre.
-  - Ficha muestra “Lugar Operativo”; recetas con OD/OI vertical en móvil y horizontal en desktop; fechas a la derecha.
-
-- Interfaz
-  - Conmutador de tema claro/oscuro (persistencia localStorage).
-  - Tablas con fallbacks para iOS antiguos.
+Aplicación web para gestionar pacientes, recetas y boletas en una óptica. La interfaz prioriza rapidez y claridad: todos los textos se muestran en MAYÚSCULAS para mejor legibilidad y consistencia.
 
 ---
 
-## Cómo ejecutar (DEV)
+## ¿Qué puedes hacer?
 
-Requisitos: Java 17+, Maven (y Docker opcional).
-
-Opción 1 – Spring Boot local
-```
-mvn clean spring-boot:run
-```
-Abrir http://localhost:8080/ y usar `admin/admin123` (o `optico/optico123`, `receptor/receptor123`).
-
-Opción 2 – Docker Compose (PostgreSQL + app)
-```
-docker compose up -d db app
-# Tras cambios en Java o recursos estáticos
-docker compose build app && docker compose up -d app
-# Caché limpia
-docker compose build --no-cache app && docker compose up -d --force-recreate app
-```
-
-Verificación rápida
-- `GET /health` → 200 OK
-- Login responde 200 y devuelve `Set-Cookie: JSESSIONID=...`
-- `GET /api/auth/me` → 200 tras login
+- Buscar pacientes por RUT desde “Archivo”.
+- Ver la ficha del paciente con datos, última receta y boletas recientes.
+- Editar datos del paciente (incluye DIRECCIÓN y COMUNA) y crear nuevas recetas.
+- Abrir direcciones en tu app de mapas con un solo clic.
 
 ---
 
-## Migraciones y seeds (Flyway)
+## Inicio de sesión
 
-- `V1__baseline.sql` – esquema inicial
-- `V2__seed_demo_data.sql` – demo mínima
-- `V3__seed_more_demo_data.sql` – +8 pacientes (cada uno con 1 receta) y boletas; vínculos a operativos
-- `V4__ensure_three_operatives_and_assign_all_patients.sql` – asegura 3 operativos (Centro/Norte/Sur) y asigna a todos los pacientes
-- `V5__ensure_casa_matriz_operative.sql` – asegura “Operativo Casa Matriz”
-- `V6__seed.sql` – placeholder (convención futura V{n}__seed.sql)
-- `V7__seed.sql` – agrega `patient.created_at` e inicializa
-
-Convención: futuras seeds usarán nombres cortos `V{n}__seed.sql`.
+- Ingresa con tu usuario y contraseña.
+- Si la sesión caduca, podrás reingresar rápidamente sin perder el contexto.
 
 ---
 
-## Notas técnicas
+## Archivo y búsqueda
 
-- SPA con control de visibilidad por clase `no-session` en `body`.
-- PasswordEncoder delegante ({noop}/{bcrypt}).
-- CORS/CSRF relajados en DEV (endurecer en PROD).
-- Rutas públicas: `/`, `/index.html`, `/assets/**`, `/api/auth/**`, `/api/operatives/places`.
+- Escribe el RUT y presiona buscar.
+- Si no ingresas RUT, verás una lista por defecto con paginación.
+- Selecciona un registro para abrir la ficha del paciente.
 
 ---
 
-## Soporte
+## Ficha del paciente
 
-Para incidencias o nuevas funcionalidades: detalla pasos, navegador y captura/log si es posible.
+- Datos visibles: NOMBRE, RUT, FECHA DE NACIMIENTO, TELÉFONO, EMAIL.
+- DIRECCIÓN DEL PACIENTE: aparece junto a un botón de mapa.
+- LUGAR OPERATIVO: muestra NOMBRE — DIRECCIÓN, y un botón de mapa si hay dirección asociada.
+- Secciones rápidas:
+  - RECETA RECIENTE: valores OD/OI y observaciones.
+  - BOLETAS RECIENTES: fecha, total y detalle (muestra si está ANULADO).
+- Acciones:
+  - EDITAR PACIENTE.
+  - NUEVA RECETA.
+
+---
+
+## Mapas (1 clic)
+
+- El botón de mapa se muestra al lado de cada dirección sin desordenar la vista.
+- Android: se abre el selector del sistema para elegir tu app favorita.
+- iOS: abre directamente la app de mapas nativa (Apple Maps) con un clic.
+- Computador: abre Google Maps en el navegador.
+- Si no hay dirección, el botón aparece deshabilitado.
+
+---
+
+## Edición de paciente
+
+- Campos: NOMBRES, APELLIDOS, RUT, FECHA NAC., TELÉFONO, EMAIL, DIRECCIÓN y COMUNA.
+- COMUNA: selector agrupado por región (Región Metropolitana, Valparaíso y O’Higgins), orden alfabético.
+- Botón de mapa en línea con el campo DIRECCIÓN para probar la ubicación.
+- Protección de cambios: si sales con cambios sin guardar, la app te avisa.
+
+---
+
+## Consistencia de datos
+
+- Todo se guarda y se muestra en MAYÚSCULAS automáticamente, con tildes y Ñ correctas.
+- Las direcciones de los “Lugares Operativos” son fijas; al agregar nuevos lugares, su dirección queda asociada y se muestra junto al nombre.
+
+---
+
+## Consejos rápidos
+
+- Revisa el formato del RUT (incluye dígito verificador) para encontrar pacientes.
+- Para abrir mapas, asegúrate de tener DIRECCIÓN y COMUNA.
+- Si notas caracteres extraños, recarga: la app trabaja en UTF‑8 y preserva tildes/Ñ.
+
+---
+
+## Ayuda
+
+¿Problemas o ideas? Describe lo que hiciste, el resultado esperado y, si puedes, comparte una captura o el mensaje que viste.
 

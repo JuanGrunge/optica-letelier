@@ -2,6 +2,7 @@ package cl.letelier.letelier.audit;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import cl.letelier.letelier.common.TextNormalizer;
 
 @Entity @Table(name="audit_log")
 public class AuditLog {
@@ -16,4 +17,13 @@ public class AuditLog {
     public Long getEntidadId(){return entidadId;} public void setEntidadId(Long v){this.entidadId=v;}
     public String getDetalle(){return detalle;} public void setDetalle(String v){this.detalle=v;}
     public LocalDateTime getFecha(){return fecha;} public void setFecha(LocalDateTime v){this.fecha=v;}
+
+    @PrePersist
+    @PreUpdate
+    public void normalize(){
+        this.usuario = TextNormalizer.upperEs(TextNormalizer.collapseSpaces(this.usuario));
+        this.accion = TextNormalizer.upperEs(TextNormalizer.collapseSpaces(this.accion));
+        this.entidad = TextNormalizer.upperEs(TextNormalizer.collapseSpaces(this.entidad));
+        this.detalle = TextNormalizer.upperEs(TextNormalizer.collapseSpaces(this.detalle));
+    }
 }

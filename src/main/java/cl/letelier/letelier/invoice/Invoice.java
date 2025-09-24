@@ -3,6 +3,7 @@ package cl.letelier.letelier.invoice;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
+import cl.letelier.letelier.common.TextNormalizer;
 
 @Entity @Table(name="invoice")
 public class Invoice {
@@ -21,4 +22,10 @@ public class Invoice {
     public Integer getTotal(){return total;} public void setTotal(Integer v){this.total=v;}
     public String getDetalle(){return detalle;} public void setDetalle(String v){this.detalle=v;}
     public boolean isAnulado(){return anulado;} public void setAnulado(boolean v){this.anulado=v;}
+
+    @PrePersist
+    @PreUpdate
+    public void normalize(){
+        this.detalle = TextNormalizer.upperEs(TextNormalizer.collapseSpaces(this.detalle));
+    }
 }

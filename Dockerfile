@@ -1,4 +1,4 @@
-# syntax=docker/dockerfile:1
+# Note: Avoid external Dockerfile frontend to prevent registry fetch issues.
 
 # --- Build stage ---
 FROM node:18.20-alpine AS web
@@ -16,12 +16,12 @@ FROM maven:3.9.9-eclipse-temurin-21 AS build
 WORKDIR /workspace
 
 COPY pom.xml .
-RUN --mount=type=cache,target=/root/.m2 mvn -q -e -DskipTests dependency:go-offline
+RUN mvn -q -e -DskipTests dependency:go-offline
 
 COPY src ./src
 # Copy prebuilt frontend assets into Spring static directory
 COPY --from=web /web/dist/ ./src/main/resources/static/
-RUN --mount=type=cache,target=/root/.m2 mvn -q -e -Dskip-frontend=true -DskipTests package
+RUN mvn -q -e -Dskip-frontend=true -DskipTests package
 
 # --- Run stage ---
 FROM eclipse-temurin:21-jre AS run

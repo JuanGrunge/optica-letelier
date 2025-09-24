@@ -7,6 +7,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import cl.letelier.letelier.common.TextNormalizer;
 
 @Entity
 @Table(name = "app_user")
@@ -47,4 +48,14 @@ public class AppUser implements UserDetails {
     @Override public boolean isAccountNonLocked() { return true; }
     @Override public boolean isCredentialsNonExpired() { return true; }
     @Override public boolean isEnabled() { return enabled; }
+
+    @PrePersist
+    @PreUpdate
+    public void normalize(){
+        // Username y role en mayúsculas; password se mantiene tal cual (hash)
+        this.username = TextNormalizer.upperEs(TextNormalizer.collapseSpaces(this.username));
+        if (this.role != null) {
+            try { this.role = Role.valueOf(this.role.name().toUpperCase()); } catch (Exception ignored) {}
+        }
+    }
 }

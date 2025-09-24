@@ -65,12 +65,43 @@
             <p><strong>Nombre:</strong> {{ fullName }}</p>
             <p><strong>RUT:</strong> {{ detail.rut || '-' }}</p>
             <p><strong>Fecha Nac.:</strong> {{ detail.fechaNac || '-' }}</p>
-            <p><strong>Lugar Operativo:</strong> {{ detail.operativoLugar || '-' }}</p>
+            <p class="inline-row">
+              <strong>Lugar Operativo:</strong>
+              <span class="value">
+                {{ detail.operativoLugar || '-' }}
+                <template v-if="detail?.operativoDireccion"> — {{ detail.operativoDireccion }}<template v-if="detail?.operativoComuna">, {{ detail.operativoComuna }}</template></template>
+              </span>
+              <template v-if="detail?.operativoDireccion">
+                <a v-if="isAndroid()" class="c-btn c-btn--icon btn-inline" :href="linkForAndroid(detail.operativoDireccion, detail.operativoComuna)" aria-label="Abrir lugar operativo en mapas" title="Abrir en mapas">
+                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
+                </a>
+                <a v-else-if="!isIOS()" class="c-btn c-btn--icon btn-inline" :href="linkForDesktop(detail.operativoDireccion, detail.operativoComuna)" target="_blank" rel="noopener" aria-label="Abrir en Google Maps" title="Abrir en Google Maps">
+                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
+                </a>
+                <a v-else class="c-btn c-btn--icon btn-inline" :href="linkForIOS(detail.operativoDireccion, detail.operativoComuna)" aria-label="Abrir en mapas" title="Abrir en mapas">
+                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
+                </a>
+              </template>
+            </p>
           </div>
           <div>
             <p><strong>Telefono:</strong> {{ detail.telefono || '-' }}</p>
             <p><strong>Email:</strong> {{ detail.email || '-' }}</p>
-            <p><strong>Direccion:</strong> {{ detail.direccion || '-' }}</p>
+            <p class="inline-row">
+              <strong>Dirección:</strong>
+              <span class="value">{{ detail.direccion || '-' }}<template v-if="detail?.comuna">, {{ detail.comuna }}</template></span>
+              <template v-if="detail?.direccion">
+                <a v-if="isAndroid()" class="c-btn c-btn--icon btn-inline" :href="linkForAndroid(detail.direccion, detail.comuna)" aria-label="Abrir dirección del paciente en mapas" title="Abrir en mapas">
+                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
+                </a>
+                <a v-else-if="!isIOS()" class="c-btn c-btn--icon btn-inline" :href="linkForDesktop(detail.direccion, detail.comuna)" target="_blank" rel="noopener" aria-label="Abrir en Google Maps" title="Abrir en Google Maps">
+                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
+                </a>
+                <a v-else class="c-btn c-btn--icon btn-inline" :href="linkForIOS(detail.direccion, detail.comuna)" aria-label="Abrir en mapas" title="Abrir en mapas">
+                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
+                </a>
+              </template>
+            </p>
           </div>
         </div>
         <!-- Botón Editar paciente: debajo de la ficha, a la derecha -->
@@ -159,6 +190,7 @@ import * as Invoices from '@/services/invoices.js';
 import { useAuthStore } from '@/stores/auth.js';
 import { useUiStore } from '@/stores/ui.js';
 import { useArchiveStore } from '@/stores/archive.js';
+import { isAndroid, isIOS, linkForAndroid, linkForDesktop, linkForIOS } from '@/composables/maps.js';
 
 const auth = useAuthStore();
 const route = useRoute();
@@ -270,6 +302,9 @@ onMounted(async () => {
 
 <style scoped>
 .actions-right{ display:flex; justify-content:flex-end; gap: 8px; margin: 8px 0; }
+.inline-row{ display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.btn-inline{ width:1.8em; height:1.8em; padding:0; line-height:1; display:inline-flex; align-items:center; justify-content:center; }
+.map-menu{ position:absolute; top:100%; right:0; background: var(--color-surface, #fff); border:1px solid var(--color-border, #ddd); border-radius:6px; padding:6px; display:flex; flex-direction:column; gap:4px; z-index:10; min-width:160px; }
 </style>
 
 
