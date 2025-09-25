@@ -1,5 +1,22 @@
 -- Normalización de datos demo: nombres con tildes/Ñ, direcciones y comunas (RM), textos sin mojibake
 
+-- Separar dirección y comuna si vienen combinadas como "Dirección, Comuna"
+-- Pacientes
+UPDATE patient
+SET
+  comuna = COALESCE(NULLIF(TRIM(SUBSTRING(direccion FROM POSITION(',' IN direccion)+1)), ''), comuna),
+  direccion = TRIM(SUBSTRING(direccion FROM 1 FOR POSITION(',' IN direccion)-1))
+WHERE direccion LIKE '%,%'
+  AND (comuna IS NULL OR comuna='');
+
+-- Operativos
+UPDATE operative
+SET
+  comuna = COALESCE(NULLIF(TRIM(SUBSTRING(direccion FROM POSITION(',' IN direccion)+1)), ''), comuna),
+  direccion = TRIM(SUBSTRING(direccion FROM 1 FOR POSITION(',' IN direccion)-1))
+WHERE direccion LIKE '%,%'
+  AND (comuna IS NULL OR comuna='');
+
 -- Pacientes (10 demo por RUT)
 UPDATE patient SET nombres='JUAN', apellidos='PÉREZ', direccion='AV. SIEMPRE VIVA 123', comuna='SANTIAGO' WHERE rut='11.111.111-1';
 UPDATE patient SET nombres='MARÍA', apellidos='GONZÁLEZ', direccion='CALLE FALSA 456', comuna='ÑUÑOA' WHERE rut='22.222.222-2';
@@ -32,3 +49,4 @@ UPDATE prescription SET observaciones=UPPER(observaciones);
 UPDATE invoice SET detalle=UPPER(detalle);
 UPDATE app_user SET username=UPPER(username), role=UPPER(role);
 UPDATE audit_log SET usuario=UPPER(usuario), accion=UPPER(accion), entidad=UPPER(entidad), detalle=UPPER(detalle);
+

@@ -50,7 +50,7 @@
             <label class="c-form__label" for="direccion">Dirección</label>
             <div class="inline-row">
               <input id="direccion" class="c-form__control" v-model.trim="form.direccion" placeholder="Calle 123" required />
-              <template v-if="form.direccion">
+              <template v-if="false">
                 <a v-if="isAndroid()" class="c-btn c-btn--icon btn-inline" :href="linkForAndroid(form.direccion, form.comuna)" aria-label="Abrir en mapas" title="Abrir en mapas">
                   <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
                     <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -76,6 +76,8 @@
                   </svg>
                 </a>
               </template>
+              <!-- Map buttons disabled -->
+              <template v-if="false">
               <button v-else class="c-btn c-btn--icon btn-inline" type="button" disabled title="Sin dirección" aria-label="Sin dirección">
                 <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
                   <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -84,6 +86,7 @@
                   </g>
                 </svg>
               </button>
+              </template>
             </div>
           </div>
         </div>
@@ -113,7 +116,6 @@ import * as Patients from '@/services/patients.js';
 import { useUiStore } from '@/stores/ui.js';
 import { esRutValido, formatearRut } from '@/composables/validators.js';
 import { setupUnsavedGuard } from '@/composables/unsaved.js';
-import { isAndroid, isIOS, linkForAndroid, linkForDesktop, linkForIOS } from '@/composables/maps.js';
 import { REGIONS_COMUNAS } from '@/data/regions-comunas.js';
 
 const route = useRoute();

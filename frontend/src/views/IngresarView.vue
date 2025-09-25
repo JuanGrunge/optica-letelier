@@ -10,6 +10,15 @@
             <input id="nombres" class="c-form__control" v-model.trim="form.nombres" placeholder="Ej: Juan" required />
           </div>
           <div class="c-form__group">
+            <label class="c-form__label" for="comuna">Comuna</label>
+            <select id="comuna" class="c-form__control" v-model="form.comuna" required>
+              <option value="" disabled>Seleccione comuna</option>
+              <optgroup v-for="r in REGIONS_COMUNAS" :key="r.name" :label="r.name">
+                <option v-for="c in r.comunas" :key="r.name + ':' + c" :value="c">{{ c }}</option>
+              </optgroup>
+            </select>
+          </div>
+          <div class="c-form__group">
             <label class="c-form__label" for="apellidos">Apellidos</label>
             <input id="apellidos" class="c-form__control" v-model.trim="form.apellidos" placeholder="Ej: Pérez" required />
           </div>
@@ -58,9 +67,10 @@ import * as Patients from '@/services/patients.js';
 import { useUiStore } from '@/stores/ui.js';
 import { esRutValido, formatearRut } from '@/composables/validators.js';
 import { setupUnsavedGuard } from '@/composables/unsaved.js';
+import { REGIONS_COMUNAS } from '@/data/regions-comunas.js';
 
 const form = reactive({
-  nombres: '', apellidos: '', rut: '', fechaNac: '', telefono: '', email: '', direccion: '', activo: true
+  nombres: '', apellidos: '', rut: '', fechaNac: '', telefono: '', email: '', direccion: '', comuna: '', activo: true
 });
 const saving = ref(false);
 const msg = ref('');
@@ -72,7 +82,7 @@ const isDirty = computed(() => JSON.stringify(form) !== initialSnap.value);
 setupUnsavedGuard(isDirty);
 
 function clear(){
-  form.nombres=''; form.apellidos=''; form.rut=''; form.fechaNac=''; form.telefono=''; form.email=''; form.direccion=''; form.activo=true;
+  form.nombres=''; form.apellidos=''; form.rut=''; form.fechaNac=''; form.telefono=''; form.email=''; form.direccion=''; form.comuna=''; form.activo=true;
   msg.value='';
 }
 
