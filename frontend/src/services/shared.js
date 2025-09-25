@@ -9,3 +9,28 @@ export async function apiFetch(url, options={}){
   return ct.includes('application/json') ? resp.json() : resp.text();
 }
 
+// Same as apiFetch, but if backend returns 401 we redirect to /login preserving intent.
+export async function apiFetchAuth(url, options={}){
+  try {
+    return await apiFetch(url, options);
+  } catch (e) {
+    if (e && Number(e.status) === 401) {
+      const here = window.location.pathname + window.location.search + window.location.hash;
+      const target = '/login?redirect=' + encodeURIComponent(here);
+      // Prefer SPA navigation if router is available, otherwise hard redirect.
+      try {
+        // Lazy import to avoid hard coupling/cycles if possible.
+        const mod = await import('@/router/index.js');
+        const router = mod.default;
+        if (router?.currentRoute?.value?.name !== 'login') {
+          router.push(target);
+        }
+      } catch {
+        if (!window.location.pathname.startsWith('/login')) {
+          window.location.assign(target);
+        }
+      }
+    }
+    throw e;
+  }
+}

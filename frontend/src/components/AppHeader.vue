@@ -34,7 +34,7 @@
         </router-link>
       </li>
       <li>
-        <router-link class="c-header__btn" :to="{ name: 'ingresar' }" @click="closeMenu" aria-label="Ingresar paciente">
+        <router-link class="c-header__btn" :to="{ name: 'paciente-nuevo' }" @click="closeMenu" aria-label="Nuevo Paciente">
           <svg viewBox="0 0 24 24" aria-hidden="true" class="c-header__nav_ic">
             <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M8 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/>
@@ -43,7 +43,7 @@
               <path d="M19 16v6"/>
             </g>
           </svg>
-          <span class="nav-label" data-label="Ingresar paciente">Ingresar paciente</span>
+          <span class="nav-label" data-label="Nuevo Paciente">Nuevo Paciente</span>
         </router-link>
       </li>
     </ul>

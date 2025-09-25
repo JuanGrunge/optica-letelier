@@ -24,8 +24,8 @@
           </div>
         </RouterLink>
 
-        <!-- Acción: Ingresar Paciente (mismo ícono que header, más grande) -->
-        <RouterLink class="app-action" :to="{ name: 'ingresar' }" role="button" aria-label="Ir a Ingresar Paciente">
+        <!-- Acción: Nuevo Paciente (mismo ícono que header, más grande) -->
+        <RouterLink class="app-action" :to="{ name: 'paciente-nuevo' }" role="button" aria-label="Ir a Nuevo Paciente">
           <div class="app-action__icon" aria-hidden="true">
             <!-- Copiado del header -->
             <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
@@ -38,7 +38,7 @@
             </svg>
           </div>
           <div class="app-action__content">
-            <div class="app-action__title">Ingresar paciente</div>
+            <div class="app-action__title">Nuevo Paciente</div>
             <div class="app-action__desc">Registra un nuevo paciente y opcionalmente agrega su receta.</div>
           </div>
         </RouterLink>

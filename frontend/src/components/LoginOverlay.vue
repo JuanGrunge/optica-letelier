@@ -25,10 +25,11 @@
 <script setup>
 import { ref, computed, watchEffect } from 'vue';
 import { useAuthStore } from '@/stores/auth.js';
-import { useRouter } from 'vue-router';
+import { useRouter, useRoute } from 'vue-router';
 
 const auth = useAuthStore();
 const router = useRouter();
+const route = useRoute();
 
 const username = ref('');
 const password = ref('');
@@ -40,9 +41,10 @@ const ready = computed(() => auth.hydrated);
 async function onSubmit(){
   try {
     await auth.login(username.value, password.value);
-    const to = auth.intentAfterLogin || { name: 'inicio' };
+    const redirect = (typeof route.query.redirect === 'string' && route.query.redirect) ? route.query.redirect : null;
+    const to = redirect || auth.intentAfterLogin || { name: 'inicio' };
     auth.intentAfterLogin = null;
-    router.push(to);
+    router.replace(to);
   } catch {}
 }
 

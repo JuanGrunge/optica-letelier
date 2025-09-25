@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
   const outDir = envOut && envOut.trim() ? envOut : path.resolve(__dirname, '../src/main/resources/static');
   return {
     plugins: [vue()],
-    base: '',
+    base: '/',
     build: {
       outDir,
       assetsDir: 'assets/app',

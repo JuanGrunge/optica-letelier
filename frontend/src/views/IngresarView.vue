@@ -1,8 +1,8 @@
 <template>
-  <section id="ingresar" class="view active">
+  <section id="paciente-nuevo" class="view active">
     <transition name="card-fade" mode="out-in">
-    <div class="c-card" key="ingresar-card">
-      <h2>Ingresar paciente</h2>
+    <div class="c-card" key="paciente-nuevo-card">
+      <h2>Nuevo Paciente</h2>
       <form @submit.prevent="onSave" class="c-form">
         <div class="o-grid o-grid__2">
           <div class="c-form__group">
@@ -31,7 +31,7 @@
             <input id="email" type="email" class="c-form__control" v-model.trim="form.email" placeholder="usuario@dominio.cl" />
           </div>
           <div class="c-form__group">
-            <label class="c-form__label" for="direccion">Direcci�n</label>
+            <label class="c-form__label" for="direccion">Dirección</label>
             <input id="direccion" class="c-form__control" v-model.trim="form.direccion" placeholder="Calle 123" required />
           </div>
           <div class="c-form__group">
@@ -57,6 +57,17 @@
           <span class="subtle">{{ msg }}</span>
         </div>
       </form>
+      <!-- Next steps after creating patient -->
+      <Modal v-model="nextOpen">
+        <template #header>
+          <h3 style="margin:0">Paciente guardado</h3>
+        </template>
+        <p>¿Qué deseas hacer a continuación?</p>
+        <template #actions>
+          <RouterLink class="c-btn c-btn--neo" :to="{ name: 'archivo-detalle', params: { id: createdId } }" @click="nextOpen=false">Ficha paciente</RouterLink>
+          <RouterLink class="c-btn" :to="{ name: 'receta-nueva', params: { id: createdId } }" @click="nextOpen=false">Nueva receta</RouterLink>
+        </template>
+      </Modal>
     </div>
     </transition>
   </section>
@@ -67,6 +78,7 @@ import { reactive, ref, computed, onMounted } from 'vue';
 import * as Patients from '@/services/patients.js';
 import { useUiStore } from '@/stores/ui.js';
 import { esRutValido, formatearRut } from '@/composables/validators.js';
+import Modal from '@/components/Modal.vue';
 import { setupUnsavedGuard } from '@/composables/unsaved.js';
 import { REGIONS_COMUNAS } from '@/data/regions-comunas.js';
 
@@ -77,6 +89,8 @@ const saving = ref(false);
 const msg = ref('');
 const ui = useUiStore();
 const initialSnap = ref('');
+const nextOpen = ref(false);
+const createdId = ref(null);
 
 onMounted(() => { initialSnap.value = JSON.stringify(form); });
 const isDirty = computed(() => JSON.stringify(form) !== initialSnap.value);
@@ -96,9 +110,11 @@ async function onSave(){
       dto.rut = formatearRut(dto.rut);
     }
     Object.keys(dto).forEach(k => { if (dto[k] === '') dto[k] = null; });
-    await Patients.create(dto);
+    const saved = await Patients.create(dto);
+    createdId.value = saved?.id ?? null;
     msg.value = 'Paciente guardado correctamente.';
     ui.showToast('Paciente guardado');
+    nextOpen.value = !!createdId.value;
     clear();
     initialSnap.value = JSON.stringify(form);
   } catch (e) {
@@ -117,4 +133,3 @@ function onRutBlur(){
 
 <style scoped>
 </style>
-

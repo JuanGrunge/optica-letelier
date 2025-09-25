@@ -2,16 +2,22 @@ package cl.letelier.letelier.prescription;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
+
+import cl.letelier.letelier.patient.PatientRepository;
 
 @Service
 @Transactional
 public class PrescriptionService {
     private final PrescriptionRepository repo;
+    private final PatientRepository patientRepo;
 
-    public PrescriptionService(PrescriptionRepository repo){
+    public PrescriptionService(PrescriptionRepository repo, PatientRepository patientRepo){
         this.repo = repo;
+        this.patientRepo = patientRepo;
     }
 
     public Page<PrescriptionDTO> list(Long pacienteId, int page, int size){
@@ -27,6 +33,9 @@ public class PrescriptionService {
     }
 
     public PrescriptionDTO create(PrescriptionDTO dto){
+        if (dto.pacienteId() == null || !patientRepo.existsById(dto.pacienteId())) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Paciente no existe");
+        }
         Prescription e = new Prescription();
         PrescriptionMapper.updateEntity(e, dto);
         return PrescriptionMapper.toDTO(repo.save(e));

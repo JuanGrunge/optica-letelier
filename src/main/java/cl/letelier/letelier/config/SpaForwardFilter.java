@@ -33,6 +33,11 @@ public class SpaForwardFilter extends OncePerRequestFilter {
         }
 
         // Forward a index.html para rutas SPA (sin extensión) cuando no coinciden recursos
+        // Asegurar que index.html no quede cacheado por el navegador
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
         request.getRequestDispatcher("/index.html").forward(request, response);
     }
 }
+

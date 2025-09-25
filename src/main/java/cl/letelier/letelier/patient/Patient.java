@@ -20,7 +20,7 @@ public class Patient {
     @Size(max=30) private String telefono;
     @Email @Size(max=180) private String email;
     @Size(max=240) private String direccion;
-    @Size(max=120) private String comuna;
+    @NotBlank @Size(max=120) private String comuna;
     private boolean activo = true;
     private LocalDateTime createdAt;
 

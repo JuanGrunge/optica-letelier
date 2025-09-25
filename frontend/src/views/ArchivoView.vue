@@ -311,6 +311,16 @@ onMounted(async () => {
 .inline-row{ display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap; }
 .btn-inline{ width:1.8em; height:1.8em; padding:0; line-height:1; display:inline-flex; align-items:center; justify-content:center; }
 .map-menu{ position:absolute; top:100%; right:0; background: var(--color-surface, #fff); border:1px solid var(--color-border, #ddd); border-radius:6px; padding:6px; display:flex; flex-direction:column; gap:4px; z-index:10; min-width:160px; }
+
+/* Receta reciente: ojos horizontal en desktop, specs verticales por ojo */
+.tile__eyes{ display: grid; grid-template-columns: 1fr; gap: 8px; align-items: flex-start; }
+.tile__eye{ display:flex; align-items:flex-start; gap: 8px; }
+.eye__label{ font-weight: 700; min-width: 2.2em; }
+.eye__specs{ display:flex; flex-direction: column; gap: 2px; }
+@media (min-width: 768px){
+  .tile__eyes{ display:flex; flex-direction: row; gap: 16px; }
+  .tile__eye{ flex: 1 1 0; }
+}
 </style>
 
 
