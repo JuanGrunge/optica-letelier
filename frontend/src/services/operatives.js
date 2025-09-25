@@ -11,3 +11,12 @@ export async function countActive(){
   return total || 0;
 }
 
+export async function listAll({ page=0, size=5 }={}){
+  const q = new URLSearchParams({ page, size }).toString();
+  return await apiFetch(`/api/operatives?${q}`);
+}
+
+export async function setActive(id, active){
+  const body = JSON.stringify({ active: !!active });
+  return await apiFetch(`/api/operatives/${encodeURIComponent(id)}/active`, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body });
+}

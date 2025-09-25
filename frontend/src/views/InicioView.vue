@@ -105,6 +105,22 @@
               <div class="app-action__desc">Registra un nuevo paciente y opcionalmente agrega su receta.</div>
             </div>
           </RouterLink>
+
+          <!-- Operativos (admin only) -->
+          <RouterLink v-if="auth.hasPerm('manageOperatives')" class="app-action" :to="{ name: 'operatives' }" role="button" aria-label="Ir a Operativos">
+            <div class="app-action__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
+                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09c.7 0 1.31-.4 1.51-1a1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.04 3.7l.06.06c.46.46 1.13.6 1.72.39.59-.21 1.03-.73 1.13-1.35V3a2 2 0 1 1 4 0v.09c.1.62.54 1.14 1.13 1.35.59.21 1.26.07 1.72-.39l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06c-.46.46-.6 1.13-.39 1.72.21.59.73 1.03 1.35 1.13H21a2 2 0 1 1 0 4h-.09c-.62.1-1.14.54-1.35 1.13z"/>
+                </g>
+              </svg>
+            </div>
+            <div class="app-action__content">
+              <div class="app-action__title">Operativos</div>
+              <div class="app-action__desc">Administra los operativos activos e inactivos.</div>
+            </div>
+          </RouterLink>
         </div>
       </div>
     </transition>
@@ -146,17 +162,19 @@ const selectedComuna = computed(() => auth.operativeComuna || '');
 .app-action:hover{ filter:brightness(1.02); box-shadow: 0 10px 28px rgba(0,0,0,.12); }
 .app-action:active{ transform: translateY(1px); }
 .app-action__icon{ width: 84px; height: 84px; border-radius: var(--radius-md); display:grid; place-items:center; background: color-mix(in oklab, var(--color-accent) 16%, var(--color-surface)); color: var(--color-accent); border: 1px solid color-mix(in oklab, var(--color-accent) 32%, var(--color-border)); }
+.app-action__icon{ font-size: 40px; }
+.app-action__icon svg{ width: 1em; height: 1em; }
 .app-action__title{ font-size: 1.25rem; font-weight: 700; margin: 0 0 4px; }
 .app-action__desc{ color: var(--color-text-muted); }
 .app-action.is-disabled{ pointer-events: none; opacity: .6; filter: grayscale(25%); }
 
 /* Existing banners */
-.op-banner{ margin-top: var(--space-3); padding: var(--space-3); border:1px solid color-mix(in oklab, #4CAF50 38%, var(--color-border)); border-radius: var(--radius-md); background: color-mix(in oklab, #E9F7E9 70%, var(--color-surface)); }
+.op-banner{ margin-top: var(--space-3); padding: var(--space-3); border:1px solid color-mix(in oklab, var(--alert-success-bg) 38%, var(--color-border)); border-radius: var(--radius-md); background: color-mix(in oklab, var(--alert-success-bg) 16%, var(--color-surface)); }
 .op-banner__title{ font-weight:600; }
 .op-banner__meta{ display:flex; gap: var(--space-3); align-items:center; flex-wrap: wrap; }
 .op-banner__count{ color: var(--color-text-muted); }
 .op-banner__link{ margin-left: 8px; color: var(--color-accent); text-decoration: underline; }
-.op-banner--ok{ border-color: color-mix(in oklab, #4CAF50 38%, var(--color-border)); background: color-mix(in oklab, #E9F7E9 70%, var(--color-surface)); }
+.op-banner--ok{ border-color: color-mix(in oklab, var(--alert-success-bg) 38%, var(--color-border)); background: color-mix(in oklab, var(--alert-success-bg) 16%, var(--color-surface)); }
 .op-banner__addr{ display:inline-flex; align-items:center; color: var(--color-text-muted); }
 .op-banner__addr svg{ color: #E53935; }
 

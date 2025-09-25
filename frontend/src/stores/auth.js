@@ -23,7 +23,7 @@ export const useAuthStore = defineStore('auth', {
       const base = { account: true };
       switch (s.role) {
         case 'admin':
-          return { ...base, viewArchive: true, createPatient: true, editPatient: true, createPrescription: true, deletePatient: true, deletePrescription: true, deleteInvoice: true };
+          return { ...base, viewArchive: true, createPatient: true, editPatient: true, createPrescription: true, deletePatient: true, deletePrescription: true, deleteInvoice: true, manageOperatives: true };
         case 'optico':
           return { ...base, viewArchive: true, createPatient: false, editPatient: false, createPrescription: true };
         case 'receptor':

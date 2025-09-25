@@ -6,6 +6,7 @@ import RecetaNuevaView from '@/views/RecetaNuevaView.vue';
 import EditarPacienteView from '@/views/EditarPacienteView.vue';
 import CuentaView from '@/views/CuentaView.vue';
 import LoginView from '@/views/LoginView.vue';
+import OperativesView from '@/views/OperativesView.vue';
 import { useAuthStore } from '@/stores/auth.js';
 import { useArchiveStore } from '@/stores/archive.js';
 import { useAuthStore as useAuthStore2 } from '@/stores/auth.js';
@@ -20,6 +21,7 @@ const router = createRouter({
     { path: '/archivo', name: 'archivo', component: ArchivoView, meta: { requiresAuth: true, perms: ['viewArchive'] } },
     { path: '/archivo/:id', name: 'archivo-detalle', component: ArchivoView, meta: { requiresAuth: true, perms: ['viewArchive'] } },
     { path: '/ingresar', name: 'paciente-nuevo', component: IngresarView, meta: { requiresAuth: true, perms: ['createPatient'] } },
+    { path: '/operatives', name: 'operatives', component: OperativesView, meta: { requiresAuth: true, perms: ['manageOperatives'] } },
     { path: '/pacientes/:id/recetas/nueva', name: 'receta-nueva', component: RecetaNuevaView, meta: { requiresAuth: true, perms: ['createPrescription'] },
       beforeEnter: async (to) => {
         const idNum = Number(to.params.id);
