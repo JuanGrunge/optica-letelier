@@ -10,5 +10,5 @@ Scripts
 
 Notas
 - Conserva tu CSS existente; los bundles se emiten a assets/app.
-- El build escribe index.html en la carpeta static. Si quieres preservar el index antiguo, renómbralo a index.legacy.html antes de construir.
+- El build escribe index.html en la carpeta static.
 

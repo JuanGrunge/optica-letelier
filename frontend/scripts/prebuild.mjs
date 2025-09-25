@@ -1,26 +1,32 @@
-import { rename, stat } from 'node:fs/promises';
+import { rm } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const staticDir = resolve(__dirname, '../../src/main/resources/static');
-const legacy = resolve(staticDir, 'index.legacy.html');
-const index = resolve(staticDir, 'index.html');
+const appDir = resolve(staticDir, 'assets/app');
+// If running inside Docker build, Vite uses VITE_OUTDIR (e.g. /web/dist)
+const envOut = (process.env.VITE_OUTDIR || '').trim();
+const outAppDir = envOut ? resolve(envOut, 'assets/app') : null;
 
-async function run(){
+async function cleanupAppAssets() {
   try {
-    await stat(index);
-  } catch { return; }
-  try {
-    await stat(legacy); // already backed up
-    return;
-  } catch {}
-  try {
-    await rename(index, legacy);
-    console.log('Backed up static/index.html -> static/index.legacy.html');
+    await rm(appDir, { recursive: true, force: true });
+    console.log('Cleaned static/assets/app');
   } catch (e) {
-    console.warn('Could not backup index.html:', e?.message || e);
+    console.warn('Could not clean app assets:', e?.message || e);
+  }
+  if (outAppDir && outAppDir !== appDir) {
+    try {
+      await rm(outAppDir, { recursive: true, force: true });
+      console.log(`Cleaned ${outAppDir.replace(/\\/g, '/')}`);
+    } catch (e) {
+      console.warn('Could not clean VITE_OUTDIR assets:', e?.message || e);
+    }
   }
 }
-run();
 
+async function run(){
+  await cleanupAppAssets();
+}
+run();
