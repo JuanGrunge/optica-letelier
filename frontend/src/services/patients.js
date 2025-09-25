@@ -25,3 +25,6 @@ export async function update(id, dto){
     body: JSON.stringify(dto)
   });
 }
+export async function remove(id){
+  return await apiFetch(`/api/patients/${encodeURIComponent(id)}`, { method: 'DELETE' });
+}

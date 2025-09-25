@@ -13,3 +13,6 @@ export async function create(dto){
     body: JSON.stringify(dto)
   });
 }
+export async function remove(id){
+  return await apiFetch(`/api/prescriptions/${encodeURIComponent(id)}`, { method: 'DELETE' });
+}

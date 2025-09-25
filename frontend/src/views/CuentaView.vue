@@ -9,39 +9,32 @@
           <p><strong>Rol:</strong> {{ roleKey }} <span v-if="roleLabel">({{ roleLabel }})</span></p>
         </div>
         <div>
+          <!-- Hint above operative selection -->
+          <div class="op-hint" :class="{ 'op-hint--ok': !!selectedLabel, 'op-hint--warn': !selectedLabel }" role="status">
+            <svg v-if="selectedLabel" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5l9-9"/></g></svg>
+            <svg v-else viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></g></svg>
+            <span>{{ selectedLabel ? 'Operativo seleccionado' : 'Selecciona tu lugar de operativo para habilitar edición y registro.' }}</span>
+          </div>
           <label class="c-form__label" for="selOperative">Lugar de operativo</label>
           <div class="inline-row">
-            <select id="selOperative" class="c-form__control" v-model="selected" @change="onChange">
+            <select id="selOperative" class="c-form__control" v-model="selected" @change="onChange" :title="!selected ? 'Selecciona tu lugar de operativo' : null">
               <option :value="null">Seleccione...</option>
               <option v-for="o in operatives" :key="o.id" :value="o.id">{{ o.lugar || o.nombre }}</option>
             </select>
-            <button class="c-btn" type="button" @click="refresh" :disabled="loading">Actualizar</button>
+            <button class="c-btn c-btn--icon c-btn--neo" type="button" @click="refresh" :disabled="loading" aria-label="Actualizar" title="Actualizar">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12a7 7 0 1 0 2-5.192"/><path d="M7 4v4h4"/></g></svg>
+            </button>
           </div>
           <p class="subtle" v-if="selectedLabel">Seleccionado: {{ selectedLabel }}</p>
           <p class="subtle inline-row" v-if="selectedAddr">
-            <a v-if="isAndroid()" :href="linkForAndroid(selectedDireccion, selectedComuna)" aria-label="Abrir lugar operativo en mapas">
-              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;">
-                <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/>
-                  <circle cx="12" cy="11" r="2"/>
-                </g>
-              </svg>
+            <a v-if="isAndroid()" class="map-pin" :href="linkForAndroid(selectedDireccion, selectedComuna)" aria-label="Abrir lugar operativo en mapas">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
               {{ selectedAddr }}</a>
-            <a v-else-if="!isIOS()" :href="linkForDesktop(selectedDireccion, selectedComuna)" target="_blank" rel="noopener" aria-label="Abrir en Google Maps">
-              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;">
-                <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/>
-                  <circle cx="12" cy="11" r="2"/>
-                </g>
-              </svg>
+            <a v-else-if="!isIOS()" class="map-pin" :href="linkForDesktop(selectedDireccion, selectedComuna)" target="_blank" rel="noopener" aria-label="Abrir en Google Maps">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
               {{ selectedAddr }}</a>
-            <a v-else :href="linkForIOS(selectedDireccion, selectedComuna)" aria-label="Abrir lugar operativo en mapas">
-              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;">
-                <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/>
-                  <circle cx="12" cy="11" r="2"/>
-                </g>
-              </svg>
+            <a v-else class="map-pin" :href="linkForIOS(selectedDireccion, selectedComuna)" aria-label="Abrir lugar operativo en mapas">
+              <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
               {{ selectedAddr }}</a>
           </p>
         </div>
@@ -82,13 +75,8 @@ const selectedDireccion = computed(() => auth.operativeDireccion || '');
 const selectedComuna = computed(() => auth.operativeComuna || '');
 
 async function refresh(){
-  try {
-    loading.value = true;
-    const page = await Operatives.listActive({ page: 0, size: 50 });
-    operatives.value = Array.isArray(page?.content) ? page.content : (Array.isArray(page) ? page : []);
-  } finally {
-    loading.value = false;
-  }
+  try { loading.value = true; const page = await Operatives.listActive({ page: 0, size: 50 }); operatives.value = Array.isArray(page?.content) ? page.content : (Array.isArray(page) ? page : []); }
+  finally { loading.value = false; }
 }
 
 function onChange(){
@@ -103,4 +91,8 @@ onMounted(() => { refresh(); });
 
 <style scoped>
 .inline-row{ display:flex; gap:8px; align-items:center; }
+.op-hint{ display:flex; align-items:center; gap:8px; padding:8px; border-radius:8px; margin-bottom:8px; border:1px solid var(--color-border); }
+.op-hint--warn{ background: var(--alert-warning-bg); color: var(--alert-warning-fg); }
+.op-hint--ok{ background: var(--alert-success-bg); color: var(--alert-success-fg); }
+.map-pin svg{ color: #E53935; }
 </style>

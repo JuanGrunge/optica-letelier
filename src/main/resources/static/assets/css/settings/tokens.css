@@ -62,5 +62,11 @@
   --glass-bg: color-mix(in oklab, var(--color-surface) 82%, transparent);
   --glass-border: rgba(0,0,0,.12);
   --glass-shadow: 0 14px 44px rgba(0,0,0,.20);
+
+  /* Alert banner tokens (safe defaults for both themes) */
+  --alert-warning-bg: #FFF59D;
+  --alert-warning-fg: #111111;
+  --alert-success-bg: #2ECC71;
+  --alert-success-fg: #FFFFFF;
 }
 

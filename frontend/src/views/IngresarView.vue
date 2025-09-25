@@ -64,8 +64,8 @@
         </template>
         <p>¿Qué deseas hacer a continuación?</p>
         <template #actions>
-          <RouterLink class="c-btn c-btn--neo" :to="{ name: 'archivo-detalle', params: { id: createdId } }" @click="nextOpen=false">Ficha paciente</RouterLink>
-          <RouterLink class="c-btn" :to="{ name: 'receta-nueva', params: { id: createdId } }" @click="nextOpen=false">Nueva receta</RouterLink>
+          <RouterLink class="c-btn c-btn--neo" :to="{ name: 'archivo-detalle', params: { id: createdId }, query: { from: 'ingresar' } }" @click="nextOpen=false">Ficha paciente</RouterLink>
+          <RouterLink v-if="canCreatePrescription" class="c-btn" :to="{ name: 'receta-nueva', params: { id: createdId } }" @click="nextOpen=false">Nueva receta</RouterLink>
         </template>
       </Modal>
     </div>
@@ -89,6 +89,8 @@ const form = reactive({
 const saving = ref(false);
 const msg = ref('');
 const ui = useUiStore();
+const auth = useAuthStore();
+const canCreatePrescription = computed(() => auth.hasPerm('createPrescription'));
 const initialSnap = ref('');
 const nextOpen = ref(false);
 const createdId = ref(null);

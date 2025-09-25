@@ -17,18 +17,18 @@ const router = createRouter({
   routes: [
     { path: '/', name: 'inicio', component: InicioView },
     { path: '/login', name: 'login', component: LoginView, meta: { requiresAuth: false } },
-    { path: '/archivo', name: 'archivo', component: ArchivoView, meta: { requiresAuth: true } },
-    { path: '/archivo/:id', name: 'archivo-detalle', component: ArchivoView, meta: { requiresAuth: true } },
-    { path: '/ingresar', name: 'paciente-nuevo', component: IngresarView, meta: { requiresAuth: true } },
-    { path: '/pacientes/:id/recetas/nueva', name: 'receta-nueva', component: RecetaNuevaView, meta: { requiresAuth: true },
+    { path: '/archivo', name: 'archivo', component: ArchivoView, meta: { requiresAuth: true, perms: ['viewArchive'] } },
+    { path: '/archivo/:id', name: 'archivo-detalle', component: ArchivoView, meta: { requiresAuth: true, perms: ['viewArchive'] } },
+    { path: '/ingresar', name: 'paciente-nuevo', component: IngresarView, meta: { requiresAuth: true, perms: ['createPatient'] } },
+    { path: '/pacientes/:id/recetas/nueva', name: 'receta-nueva', component: RecetaNuevaView, meta: { requiresAuth: true, perms: ['createPrescription'] },
       beforeEnter: async (to) => {
         const idNum = Number(to.params.id);
         if (!Number.isFinite(idNum) || idNum <= 0) return { name: 'archivo' };
         try { await Patients.getById(idNum); return true; } catch { return { name: 'archivo' }; }
       }
     },
-    { path: '/pacientes/:id/editar', name: 'paciente-editar', component: EditarPacienteView, meta: { requiresAuth: true } },
-    { path: '/cuenta', name: 'cuenta', component: CuentaView, meta: { requiresAuth: true } },
+    { path: '/pacientes/:id/editar', name: 'paciente-editar', component: EditarPacienteView, meta: { requiresAuth: true, perms: ['editPatient'] } },
+    { path: '/cuenta', name: 'cuenta', component: CuentaView, meta: { requiresAuth: true, perms: ['account'] } },
     { path: '/:pathMatch(.*)*', redirect: { name: 'inicio' } },
   ]
 });
@@ -48,6 +48,18 @@ router.beforeEach(async (to, from) => {
       return { name: 'login', query: { redirect } };
     }
   }
+
+  // RBAC: permission check
+  try {
+    const needed = Array.isArray(to.meta?.perms) ? to.meta.perms : [];
+    if (needed.length) {
+      const hasAll = needed.every(p => auth.hasPerm(p));
+      if (!hasAll) {
+        try { const ui = useUiStore(); ui.showToast('Acceso no permitido'); } catch {}
+        return { name: 'inicio' };
+      }
+    }
+  } catch {}
 
   // Gating: require operative selection for create/edit routes
   try {

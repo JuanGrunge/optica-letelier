@@ -33,7 +33,7 @@
           <span class="nav-label" data-label="Archivo">Archivo</span>
         </router-link>
       </li>
-      <li>
+      <li v-if="auth.hasPerm('createPatient')">
         <router-link class="c-header__btn" :to="{ name: 'paciente-nuevo' }" @click="closeMenu" aria-label="Nuevo Paciente">
           <svg viewBox="0 0 24 24" aria-hidden="true" class="c-header__nav_ic">
             <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

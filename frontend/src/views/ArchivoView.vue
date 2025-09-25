@@ -58,6 +58,14 @@
             </g>
           </svg>
         </button>
+        <button v-if="showBackToNew" class="c-btn c-btn--icon c-btn--back c-btn--no-anim c-card__action--tr" type="button" @click="goBackToNew" title="Volver a Nuevo Paciente" aria-label="Volver a Nuevo Paciente" style="right:56px;">
+          <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+            <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14"/>
+              <path d="M11 6l-6 6l6 6"/>
+            </g>
+          </svg>
+        </button>
       </div>
       <div class="paciente-detalle" v-if="detail">
         <div class="grid-2">
@@ -72,13 +80,13 @@
                 <template v-if="detail?.operativoDireccion"> — {{ detail.operativoDireccion }}<template v-if="detail?.operativoComuna">, {{ detail.operativoComuna }}</template></template>
               </span>
               <template v-if="detail?.operativoDireccion">
-                <a v-if="isAndroid()" class="c-btn c-btn--icon btn-inline" :href="linkForAndroid(detail.operativoDireccion, detail.operativoComuna)" aria-label="Abrir lugar operativo en mapas" title="Abrir en mapas">
+                <a v-if="isAndroid()" class="c-btn c-btn--icon btn-inline map-pin" :href="linkForAndroid(detail.operativoDireccion, detail.operativoComuna)" aria-label="Abrir lugar operativo en mapas" title="Abrir en mapas">
                   <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
                 </a>
-                <a v-else-if="!isIOS()" class="c-btn c-btn--icon btn-inline" :href="linkForDesktop(detail.operativoDireccion, detail.operativoComuna)" target="_blank" rel="noopener" aria-label="Abrir en Google Maps" title="Abrir en Google Maps">
+                <a v-else-if="!isIOS()" class="c-btn c-btn--icon btn-inline map-pin" :href="linkForDesktop(detail.operativoDireccion, detail.operativoComuna)" target="_blank" rel="noopener" aria-label="Abrir en Google Maps" title="Abrir en Google Maps">
                   <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
                 </a>
-                <a v-else class="c-btn c-btn--icon btn-inline" :href="linkForIOS(detail.operativoDireccion, detail.operativoComuna)" aria-label="Abrir en mapas" title="Abrir en mapas">
+                <a v-else class="c-btn c-btn--icon btn-inline map-pin" :href="linkForIOS(detail.operativoDireccion, detail.operativoComuna)" aria-label="Abrir en mapas" title="Abrir en mapas">
                   <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
                 </a>
               </template>
@@ -91,13 +99,13 @@
               <strong>Dirección:</strong>
               <span class="value">{{ detail.direccion || '-' }}<template v-if="detail?.comuna">, {{ detail.comuna }}</template></span>
               <template v-if="detail?.direccion">
-                <a v-if="isAndroid()" class="c-btn c-btn--icon btn-inline" :href="linkForAndroid(detail.direccion, detail.comuna)" aria-label="Abrir dirección del paciente en mapas" title="Abrir en mapas">
+                <a v-if="isAndroid()" class="c-btn c-btn--icon btn-inline map-pin" :href="linkForAndroid(detail.direccion, detail.comuna)" aria-label="Abrir dirección del paciente en mapas" title="Abrir en mapas">
                   <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
                 </a>
-                <a v-else-if="!isIOS()" class="c-btn c-btn--icon btn-inline" :href="linkForDesktop(detail.direccion, detail.comuna)" target="_blank" rel="noopener" aria-label="Abrir en Google Maps" title="Abrir en Google Maps">
+                <a v-else-if="!isIOS()" class="c-btn c-btn--icon btn-inline map-pin" :href="linkForDesktop(detail.direccion, detail.comuna)" target="_blank" rel="noopener" aria-label="Abrir en Google Maps" title="Abrir en Google Maps">
                   <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
                 </a>
-                <a v-else class="c-btn c-btn--icon btn-inline" :href="linkForIOS(detail.direccion, detail.comuna)" aria-label="Abrir en mapas" title="Abrir en mapas">
+                <a v-else class="c-btn c-btn--icon btn-inline map-pin" :href="linkForIOS(detail.direccion, detail.comuna)" aria-label="Abrir en mapas" title="Abrir en mapas">
                   <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
                 </a>
               </template>
@@ -106,7 +114,7 @@
         </div>
         <!-- Botón Editar paciente: debajo de la ficha, a la derecha -->
         <div class="actions-right">
-          <RouterLink class="c-btn c-btn--icon c-btn--neo" :to="{ name: 'paciente-editar', params: { id: detail?.id }, query: { from: route.fullPath } }" aria-label="Editar paciente" title="Editar paciente">
+          <RouterLink v-if="auth.hasPerm('editPatient')" class="c-btn c-btn--icon c-btn--neo" :class="{ 'is-disabled': !auth.hasOperative }" :title="!auth.hasOperative ? 'Selecciona tu lugar de operativo' : null" :to="{ name: 'paciente-editar', params: { id: detail?.id }, query: { from: route.fullPath } }" aria-label="Editar paciente" title="Editar paciente">
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
               <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <!-- línea base -->
@@ -118,6 +126,17 @@
               </g>
             </svg>
           </RouterLink>
+          <button v-if="auth.hasPerm('deletePatient')" class="c-btn c-btn--icon btn-danger" type="button" @click="onDeletePatient" aria-label="Eliminar paciente" title="Eliminar paciente">
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+              <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 6h18"/>
+                <path d="M8 6v-2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                <path d="M19 6l-1 14a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l-1 -14"/>
+                <path d="M10 11v6"/>
+                <path d="M14 11v6"/>
+              </g>
+            </svg>
+          </button>
         </div>
         <div class="subseccion">
           <h5>Receta reciente</h5>
@@ -125,6 +144,7 @@
             <transition-group name="list-fade" tag="ul" class="list-tiles">
               <li class="tile" v-for="r in rxItems" :key="r.id">
                 <div class="tile__title tile__title--right">{{ r.fecha || '' }}</div>
+                
                 <div class="tile__eyes">
                   <div class="tile__eye">
                     <div class="eye__label">OD</div>
@@ -152,7 +172,7 @@
         </div>
         <!-- Botón Agregar receta: debajo de receta, a la derecha -->
         <div class="actions-right">
-          <RouterLink class="c-btn c-btn--icon c-btn--neo" :to="{ name: 'receta-nueva', params: { id: detail?.id }, query: { from: route.fullPath } }" aria-label="Nueva receta" title="Nueva receta">
+          <RouterLink v-if="auth.hasPerm('createPrescription')" class="c-btn c-btn--icon c-btn--neo" :class="{ 'is-disabled': !auth.hasOperative }" :title="!auth.hasOperative ? 'Selecciona tu lugar de operativo' : null" :to="{ name: 'receta-nueva', params: { id: detail?.id }, query: { from: route.fullPath } }" aria-label="Nueva receta" title="Nueva receta">
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
               <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 5v14"/>
@@ -160,6 +180,9 @@
               </g>
             </svg>
           </RouterLink>
+          <button v-if="auth.hasPerm('deletePrescription') && rxItems.length" class="c-btn c-btn--icon btn-danger" type="button" @click="onDeleteRx(rxItems[0].id)" aria-label="Eliminar receta" title="Eliminar receta">
+            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6v-2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l-1 -14"/><path d="M10 11v6"/><path d="M14 11v6"/></g></svg>
+          </button>
         </div>
         <div class="subseccion">
           <h5>Boletas recientes</h5>
@@ -167,6 +190,11 @@
             <transition-group name="list-fade" tag="ul" class="list-tiles">
               <li class="tile" v-for="i in invItems" :key="i.id">
                 <div class="tile__title tile__title--right">{{ i.fecha || '' }} <span v-if="i.anulado" class="badge badge--warn">Anulado</span></div>
+                <div class="actions-br" v-if="auth.hasPerm('deleteInvoice') && !i.anulado">
+                  <button class="c-btn c-btn--icon btn-danger" type="button" @click="onAnnulInvoice(i.id)" aria-label="Anular boleta" title="Anular boleta">
+                    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6v-2a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1 -2 2h-8a2 2 0 0 1 -2 -2l-1 -14"/><path d="M10 11v6"/><path d="M14 11v6"/></g></svg>
+                  </button>
+                </div>
                 <div class="tile__row"><span class="tile__label">Total</span><span class="tile__value">${{ i.total || 0 }}</span></div>
                 <div v-if="i.detalle" class="tile__row"><span class="tile__label">Detalle</span><span class="tile__value">{{ i.detalle }}</span></div>
               </li>
@@ -212,6 +240,7 @@ const detail = ref(null);
 const rxItems = ref([]);
 const invItems = ref([]);
 const fullName = computed(() => [detail.value?.nombres||'', detail.value?.apellidos||''].join(' ').trim());
+const showBackToNew = computed(() => (auth.role === 'receptor') && (route.query?.from === 'ingresar'));
 
 function fmt2(n){
   if (n == null || n === '') return '-';
@@ -296,6 +325,47 @@ function backToList(){
   }
 }
 
+function goBackToNew(){ router.push({ name: 'paciente-nuevo' }); }
+
+async function onDeletePatient(){
+  if (!detail.value?.id) return;
+  const ok = window.confirm('¿Eliminar paciente y todos sus registros relacionados?');
+  if (!ok) return;
+  try {
+    await Patients.remove(detail.value.id);
+    ui.showToast('Paciente eliminado');
+    backToList();
+    try { await loadDefault(); } catch {}
+  } catch (e) { ui.showToast('No se pudo eliminar'); }
+}
+
+async function onDeleteRx(id){
+  const ok = window.confirm('¿Eliminar receta seleccionada?');
+  if (!ok) return;
+  try {
+    await Prescriptions.remove(id);
+    ui.showToast('Receta eliminada');
+    if (detail.value?.id) {
+      const rx = await Prescriptions.listByPaciente({ pacienteId: detail.value.id, page: 0, size: 5 });
+      const rxContent = Array.isArray(rx?.content) ? rx.content : [];
+      rxItems.value = rxContent.length ? [rxContent[0]] : [];
+    }
+  } catch (e) { ui.showToast('No se pudo eliminar'); }
+}
+
+async function onAnnulInvoice(id){
+  const ok = window.confirm('¿Anular boleta seleccionada?');
+  if (!ok) return;
+  try {
+    await Invoices.annul(id);
+    ui.showToast('Boleta anulada');
+    if (detail.value?.id) {
+      const inv = await Invoices.listByPaciente({ pacienteId: detail.value.id, page: 0, size: 5 });
+      invItems.value = Array.isArray(inv?.content) ? inv.content : [];
+    }
+  } catch (e) { ui.showToast('No se pudo anular'); }
+}
+
 onMounted(async () => {
   if (!auth.isAuthenticated) return;
   await loadDefault();
@@ -310,6 +380,12 @@ onMounted(async () => {
 .actions-right{ display:flex; justify-content:flex-end; gap: 8px; margin: 8px 0; }
 .inline-row{ display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap; }
 .btn-inline{ width:1.8em; height:1.8em; padding:0; line-height:1; display:inline-flex; align-items:center; justify-content:center; }
+.map-pin svg{ color: #E53935; }
+.actions-br{ position:absolute; right:8px; bottom:8px; display:flex; gap:6px; }
+.tile{ position: relative; }
+.btn-danger{ color: #fff; background: color-mix(in oklab, #C62828 85%, var(--color-surface)); border: 1px solid color-mix(in oklab, #C62828 60%, var(--color-border)); }
+.btn-danger:hover{ filter: brightness(1.05); }
+.is-disabled{ pointer-events:none; opacity:.6; filter: grayscale(25%); }
 .map-menu{ position:absolute; top:100%; right:0; background: var(--color-surface, #fff); border:1px solid var(--color-border, #ddd); border-radius:6px; padding:6px; display:flex; flex-direction:column; gap:4px; z-index:10; min-width:160px; }
 
 /* Receta reciente: ojos horizontal en desktop, specs verticales por ojo */

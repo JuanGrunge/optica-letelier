@@ -29,11 +29,11 @@ public class PatientController {
     public PatientDTO get(@PathVariable Long id){return service.get(id);}
 
     @PostMapping
-    @PreAuthorize("hasAnyRole('ADMIN','OPTICO')")
+    @PreAuthorize("hasAnyRole('ADMIN','RECEPTOR')")
     public PatientDTO create(@RequestBody PatientDTO dto){return service.create(dto);}
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasAnyRole('ADMIN','OPTICO')")
+    @PreAuthorize("hasRole('ADMIN')")
     public PatientDTO update(@PathVariable Long id, @RequestBody PatientDTO dto){return service.update(id,dto);}
 
     @DeleteMapping("/{id}")

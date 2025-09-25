@@ -10,7 +10,6 @@ export const useAuthStore = defineStore('auth', {
     error: '',
     intentAfterLogin: null,
     hydrated: false,
-    role: '',
     operativeId: null,
     operativeLabel: '',
     operativeDireccion: '',
@@ -19,40 +18,16 @@ export const useAuthStore = defineStore('auth', {
   getters: {
     isAuthenticated: (s) => !!s.user,
     hasOperative: (s) => s.operativeId != null && Number.isFinite(Number(s.operativeId)),
-    permissions: (s) => {
-      const base = { account: true };
-      switch (s.role) {
-        case 'admin':
-          return { ...base, viewArchive: true, createPatient: true, editPatient: true, createPrescription: true, deletePatient: true, deletePrescription: true, deleteInvoice: true };
-        case 'optico':
-          return { ...base, viewArchive: true, createPatient: false, editPatient: false, createPrescription: true };
-        case 'receptor':
-          return { ...base, viewArchive: true, createPatient: true, editPatient: false, createPrescription: false };
-        default:
-          return base;
-      }
-    },
   },
   actions: {
-    _pickPrimaryRole(u){
-      const roles = Array.isArray(u?.roles) ? u.roles : (u?.role ? [u.role] : []);
-      const norm = roles.map(r => String(r).replace(/^ROLE_/i, '').toUpperCase());
-      if (norm.includes('ADMIN')) return 'admin';
-      if (norm.includes('OPTICO')) return 'optico';
-      if (norm.includes('RECEPTOR')) return 'receptor';
-      return '';
-    },
-    hasPerm(perm){ return !!this.permissions?.[perm]; },
     async me() {
       try {
         this.loading = true;
         this.error = '';
         const user = await AuthApi.me();
         this.user = user || null;
-        this.role = this._pickPrimaryRole(user);
       } catch (e) {
         this.user = null;
-        this.role = '';
       } finally {
         this.loading = false;
         this.hydrated = true;
@@ -76,7 +51,6 @@ export const useAuthStore = defineStore('auth', {
       try {
         const user = await AuthApi.login(username, password);
         this.user = user;
-        this.role = this._pickPrimaryRole(user);
         this.hydrated = true;
       } catch (e) {
         this.error = e?.message || 'Error de autenticación';
@@ -89,7 +63,7 @@ export const useAuthStore = defineStore('auth', {
     async logout() {
       try { await AuthApi.logout(); }
       finally {
-        this.user = null; this.role = ''; this.hydrated = true;
+        this.user = null; this.hydrated = true;
         try { const archive = useArchiveStore(); archive.clear(); } catch {}
         // Clear session-scoped selection on logout
         this.operativeId = null; this.operativeLabel = '';
@@ -130,3 +104,4 @@ export const useAuthStore = defineStore('auth', {
     }
   }
 });
+
