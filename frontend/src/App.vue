@@ -13,6 +13,8 @@
     <div v-else class="app-splash" aria-label="Cargando">
       <div class="spinner" role="progressbar" aria-busy="true"></div>
     </div>
+    <!-- Login overlay dentro del shell/panel (antes del footer) -->
+    <LoginOverlay />
 
     <footer class="c-footer" aria-label="Sitio">
       <div class="c-footer__inner">
@@ -42,8 +44,6 @@
       </div>
     </footer>
   </div>
-  <!-- Login overlay controlado por store (cubre contenido, no el footer) -->
-  <LoginOverlay />
   <AppToast />
 </template>
 
@@ -123,15 +123,27 @@ a.c-btn, a.c-btn:visited, a.c-btn:hover { text-decoration: none; }
 }
 
 /* App layout shell: sticky footer without fixing it */
+html, body, #root{ min-height: 100%; }
+.no-session, body{ margin: 0; height: 100%; }
+/* Override global shell padding from base.css to avoid extra space under footer */
+body{ --shell-bottom-pad: 0px; --shell-panel-gap: var(--size-header); }
+/* Keep a symmetric visual gap for the blurred panel between header and footer */
+body::before{ bottom: var(--shell-panel-gap, var(--size-header)); }
+body.no-session::before{ bottom: var(--shell-panel-gap, var(--size-header)); }
 .app-shell{ min-height: 100vh; display: flex; flex-direction: column; }
-#app{ flex: 1 0 auto; }
-.app-splash{ flex: 1 0 auto; display:flex; align-items:center; justify-content:center; }
+@supports (height: 100dvh){ .app-shell{ min-height: 100dvh; } }
+#app{ flex: 1 1 auto; min-height: 0; }
+.app-splash{ flex: 1 1 auto; display:flex; align-items:center; justify-content:center; }
 
-/* Login overlay: ensure it doesn't cover the footer */
+/* Login overlay: below header, within side gutters; scrollable on small viewports */
 #loginOverlay{
   position: fixed;
-  inset: 0;
+  top: var(--size-header);
+  left: var(--shell-gutter);
+  right: var(--shell-gutter);
+  bottom: var(--shell-panel-gap, var(--size-header));
   z-index: 9999; /* below footer so footer stays visible */
+  overflow: auto;
 }
 </style>
 <style>
@@ -139,14 +151,18 @@ a.c-btn, a.c-btn:visited, a.c-btn:hover { text-decoration: none; }
 .c-footer{
   background: var(--color-bg-elev, #fff);
   color: var(--color-text-muted, #666);
-  border-top: 1px solid var(--color-border, #ccc);
+  /* Use inset shadow instead of border to avoid 1px overflow/scroll */
+  box-shadow: inset 0 1px 0 var(--color-border, #ccc);
   position: relative;
   z-index: 10001; /* ensure above overlays */
+  width: 100%;
+  margin-top: auto; /* push to bottom in flex column */
 }
+/* Footer permanece después del contenido; overlay está confinado al panel y no lo cubre */
 .dark .c-footer{
   background: var(--color-bg-elev, #1f1f1f);
   color: var(--color-text-muted, #aaa);
-  border-top-color: var(--color-border, #3a3a3a);
+  box-shadow: inset 0 1px 0 var(--color-border, #3a3a3a);
 }
 .c-footer__inner{ display:flex; flex-direction: column; align-items:center; justify-content:center; padding: 12px 16px; gap: 6px; text-align:center; }
 .c-footer__icons{ display:flex; align-items:center; justify-content:center; gap: 12px; }
