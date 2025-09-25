@@ -15,5 +15,6 @@ public record PatientDTO(
         boolean activo,
         String operativoLugar,
         String operativoDireccion,
-        String operativoComuna
+        String operativoComuna,
+        Long operativeId
 ) {}

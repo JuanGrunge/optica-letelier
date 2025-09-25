@@ -8,6 +8,8 @@ import CuentaView from '@/views/CuentaView.vue';
 import LoginView from '@/views/LoginView.vue';
 import { useAuthStore } from '@/stores/auth.js';
 import { useArchiveStore } from '@/stores/archive.js';
+import { useAuthStore as useAuthStore2 } from '@/stores/auth.js';
+import { useUiStore } from '@/stores/ui.js';
 import * as Patients from '@/services/patients.js';
 
 const router = createRouter({
@@ -46,6 +48,20 @@ router.beforeEach(async (to, from) => {
       return { name: 'login', query: { redirect } };
     }
   }
+
+  // Gating: require operative selection for create/edit routes
+  try {
+    const needsOperative = (r) => !!r && (
+      r.name === 'paciente-nuevo' || r.name === 'paciente-editar' || r.name === 'receta-nueva'
+    );
+    if (needsOperative(to)){
+      const a2 = useAuthStore2();
+      if (!a2.hasOperative){
+        try { const ui = useUiStore(); ui.showToast('Selecciona tu lugar de operativo para habilitar edición y registro.'); } catch {}
+        return { name: 'cuenta' };
+      }
+    }
+  } catch {}
 
   // Limpiar cache de Archivo al salir a rutas ajenas
   try {

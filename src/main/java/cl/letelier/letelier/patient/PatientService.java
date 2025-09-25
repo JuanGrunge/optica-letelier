@@ -35,9 +35,15 @@ public class PatientService {
         Operative sur = opRepo.findByNombreAndFecha("Operativo Sur", today)
                 .orElseGet(() -> opRepo.save(newOperative("Operativo Sur", "Consultorio Sur", "Av. Sur 300", today)));
 
-        // Asignación round-robin por ID
-        int mod = (int)(p.getId() % 3);
-        Operative chosen = (mod == 0 ? centro : (mod == 1 ? norte : sur));
+        // Asociar operativo seleccionado si viene en DTO y está activo; si no, asignación round-robin
+        Operative chosen;
+        if (dto.operativeId() != null) {
+            chosen = opRepo.findById(dto.operativeId()).orElseThrow();
+            if (!chosen.isActivo()) throw new IllegalArgumentException("Operativo inactivo");
+        } else {
+            int mod = (int)(p.getId() % 3);
+            chosen = (mod == 0 ? centro : (mod == 1 ? norte : sur));
+        }
         p.getOperatives().add(chosen);
         p = repo.save(p);
         return PatientMapper.toDTO(p);

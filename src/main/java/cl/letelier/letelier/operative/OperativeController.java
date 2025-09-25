@@ -13,8 +13,10 @@ public class OperativeController{
     public OperativeController(OperativeService service){this.service=service;}
 
     @GetMapping @PreAuthorize("hasAnyRole('ADMIN','OPTICO','RECEPTOR')")
-    public PageResponse<OperativeDTO> list(@RequestParam(defaultValue="0") int page,@RequestParam(defaultValue="20") int size){
-        Page<OperativeDTO> p = service.list(page,size); return PageResponse.of(p);
+    public PageResponse<OperativeDTO> list(@RequestParam(defaultValue="0") int page,
+                                           @RequestParam(defaultValue="20") int size,
+                                           @RequestParam(required=false) Boolean active){
+        Page<OperativeDTO> p = service.list(page,size,active); return PageResponse.of(p);
     }
     @GetMapping("/{id}") @PreAuthorize("hasAnyRole('ADMIN','OPTICO','RECEPTOR')")
     public OperativeDTO get(@PathVariable Long id){return service.get(id);}

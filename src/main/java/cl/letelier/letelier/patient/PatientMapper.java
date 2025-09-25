@@ -25,7 +25,8 @@ public class PatientMapper {
         return new PatientDTO(
             p.getId(), p.getNombres(), p.getApellidos(), p.getRut(),
             p.getFechaNac(), p.getTelefono(), p.getEmail(), p.getDireccion(), p.getComuna(), p.isActivo(),
-            opLugar, opDireccion, opComuna
+            opLugar, opDireccion, opComuna,
+            null
         );
     }
     public static void updateEntity(Patient p, PatientDTO d){

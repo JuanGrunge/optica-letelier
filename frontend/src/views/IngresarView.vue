@@ -76,6 +76,7 @@
 <script setup>
 import { reactive, ref, computed, onMounted } from 'vue';
 import * as Patients from '@/services/patients.js';
+import { useAuthStore } from '@/stores/auth.js';
 import { useUiStore } from '@/stores/ui.js';
 import { esRutValido, formatearRut } from '@/composables/validators.js';
 import Modal from '@/components/Modal.vue';
@@ -110,6 +111,11 @@ async function onSave(){
       dto.rut = formatearRut(dto.rut);
     }
     Object.keys(dto).forEach(k => { if (dto[k] === '') dto[k] = null; });
+    // Asociar operativo seleccionado (si existe) al crear
+    try {
+      const auth = useAuthStore();
+      if (auth?.operativeId != null) dto.operativeId = Number(auth.operativeId);
+    } catch {}
     const saved = await Patients.create(dto);
     createdId.value = saved?.id ?? null;
     msg.value = 'Paciente guardado correctamente.';
