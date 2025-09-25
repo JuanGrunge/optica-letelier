@@ -9,15 +9,7 @@
             <label class="c-form__label" for="nombres">Nombres</label>
             <input id="nombres" class="c-form__control" v-model.trim="form.nombres" placeholder="Ej: Juan" required />
           </div>
-          <div class="c-form__group">
-            <label class="c-form__label" for="comuna">Comuna</label>
-            <select id="comuna" class="c-form__control" v-model="form.comuna" required>
-              <option value="" disabled>Seleccione comuna</option>
-              <optgroup v-for="r in REGIONS_COMUNAS" :key="r.name" :label="r.name">
-                <option v-for="c in r.comunas" :key="r.name + ':' + c" :value="c">{{ c }}</option>
-              </optgroup>
-            </select>
-          </div>
+          
           <div class="c-form__group">
             <label class="c-form__label" for="apellidos">Apellidos</label>
             <input id="apellidos" class="c-form__control" v-model.trim="form.apellidos" placeholder="Ej: Pérez" required />
@@ -38,9 +30,18 @@
             <label class="c-form__label" for="email">Email</label>
             <input id="email" type="email" class="c-form__control" v-model.trim="form.email" placeholder="usuario@dominio.cl" />
           </div>
-          <div class="c-form__group" style="grid-column:1 / -1;">
-            <label class="c-form__label" for="direccion">Dirección</label>
-            <input id="direccion" class="c-form__control" v-model.trim="form.direccion" placeholder="Calle 123, Ciudad" required />
+          <div class="c-form__group">
+            <label class="c-form__label" for="direccion">Direcci�n</label>
+            <input id="direccion" class="c-form__control" v-model.trim="form.direccion" placeholder="Calle 123" required />
+          </div>
+          <div class="c-form__group">
+            <label class="c-form__label" for="comuna">Comuna</label>
+            <select id="comuna" class="c-form__control" v-model="form.comuna" required>
+              <option value="" disabled>Seleccione comuna</option>
+              <optgroup v-for="r in REGIONS_COMUNAS" :key="r.name" :label="r.name">
+                <option v-for="c in r.comunas" :key="r.name + ': ' + c" :value="c">{{ c }}</option>
+              </optgroup>
+            </select>
           </div>
         </div>
         <div class="c-form__actions c-form__actions--end">
@@ -116,3 +117,4 @@ function onRutBlur(){
 
 <style scoped>
 </style>
+

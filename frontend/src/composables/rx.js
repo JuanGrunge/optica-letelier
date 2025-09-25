@@ -4,7 +4,7 @@ import { roundQ, clampIntInRange } from './validators.js';
 export const RX_LIMITS = Object.freeze({
   ESF: { min: -20, max: 20, step: 0.25, decimals: 2, showSign: true },
   CIL: { min: -6,  max: 6,  step: 0.25, decimals: 2, showSign: true }, // Se normaliza a negativo al guardar
-  EJE: { min: 0,   max: 180, step: 1,    decimals: 0, showSign: false },
+  EJE: { min: 0,   max: 180, step: 1,    decimals: 2, showSign: false },
   ADD: { min: 0,   max: 3.5, step: 0.25, decimals: 2, showSign: true }
 });
 

@@ -38,6 +38,7 @@
     if (!Array.isArray(items) || items.length === 0) {
       return '<p>No hay recetas para el criterio.</p>';
     }
+    const fmt2 = (n) => (Number.isFinite(Number(n)) ? Number(n).toFixed(2) : '');
     const rows = items.map(r => `
       <tr>
         <td>${r.id ?? ''}</td>
@@ -76,8 +77,8 @@
     try {
       await window.PrescriptionsService.createPrescription({
         pacienteId: Number(pacienteId),
-        odEsfera: parseFloat(odEsfera), odCilindro: parseFloat(odCilindro), odEje: parseInt(odEje),
-        oiEsfera: parseFloat(oiEsfera), oiCilindro: parseFloat(oiCilindro), oiEje: parseInt(oiEje),
+        odEsfera: parseFloat(odEsfera), odCilindro: parseFloat(odCilindro), odEje: parseFloat(odEje),
+        oiEsfera: parseFloat(oiEsfera), oiCilindro: parseFloat(oiCilindro), oiEje: parseFloat(oiEje),
         addPower: addPower ? parseFloat(addPower) : null,
         observaciones, fecha
       });

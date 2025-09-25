@@ -129,21 +129,21 @@
                   <div class="tile__eye">
                     <div class="eye__label">OD</div>
                     <div class="eye__specs">
-                      <div>ESF {{ r.odEsfera != null ? r.odEsfera : '-' }}</div>
-                      <div>CIL {{ r.odCilindro != null ? r.odCilindro : '-' }}</div>
-                      <div>EJE {{ r.odEje != null ? r.odEje : '-' }}</div>
+                      <div>ESF {{ fmt2(r.odEsfera) }}</div>
+                      <div>CIL {{ fmt2(r.odCilindro) }}</div>
+                      <div>EJE {{ fmt2(r.odEje) }}</div>
                     </div>
                   </div>
                   <div class="tile__eye">
                     <div class="eye__label">OI</div>
                     <div class="eye__specs">
-                      <div>ESF {{ r.oiEsfera != null ? r.oiEsfera : '-' }}</div>
-                      <div>CIL {{ r.oiCilindro != null ? r.oiCilindro : '-' }}</div>
-                      <div>EJE {{ r.oiEje != null ? r.oiEje : '-' }}</div>
+                      <div>ESF {{ fmt2(r.oiEsfera) }}</div>
+                      <div>CIL {{ fmt2(r.oiCilindro) }}</div>
+                      <div>EJE {{ fmt2(r.oiEje) }}</div>
                     </div>
                   </div>
                 </div>
-                <div v-if="r.addPower!=null" class="tile__row"><span class="tile__label">ADD</span><span class="tile__value">{{ r.addPower }}</span></div>
+                <div v-if="r.addPower!=null" class="tile__row"><span class="tile__label">ADD</span><span class="tile__value">{{ fmt2(r.addPower) }}</span></div>
                 <div v-if="r.observaciones" class="tile__obs">{{ r.observaciones }}</div>
               </li>
             </transition-group>
@@ -212,6 +212,12 @@ const detail = ref(null);
 const rxItems = ref([]);
 const invItems = ref([]);
 const fullName = computed(() => [detail.value?.nombres||'', detail.value?.apellidos||''].join(' ').trim());
+
+function fmt2(n){
+  if (n == null || n === '') return '-';
+  const v = Number(n);
+  return Number.isFinite(v) ? v.toFixed(2) : '-';
+}
 
 async function loadDefault(){
   try {

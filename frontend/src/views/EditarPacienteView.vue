@@ -18,15 +18,6 @@
             <input id="nombres" class="c-form__control" v-model.trim="form.nombres" placeholder="Ej: Juan" required />
           </div>
           <div class="c-form__group">
-            <label class="c-form__label" for="comuna">Comuna</label>
-            <select id="comuna" class="c-form__control" v-model="form.comuna" required>
-              <option value="" disabled>Seleccione comuna</option>
-              <optgroup v-for="r in REGIONS_COMUNAS" :key="r.name" :label="r.name">
-                <option v-for="c in r.comunas" :key="r.name + ':' + c" :value="c">{{ c }}</option>
-              </optgroup>
-            </select>
-          </div>
-          <div class="c-form__group">
             <label class="c-form__label" for="apellidos">Apellidos</label>
             <input id="apellidos" class="c-form__control" v-model.trim="form.apellidos" placeholder="Ej: Pérez" required />
           </div>
@@ -46,48 +37,21 @@
             <label class="c-form__label" for="email">Email</label>
             <input id="email" type="email" class="c-form__control" v-model.trim="form.email" placeholder="usuario@dominio.cl" />
           </div>
-          <div class="c-form__group" style="grid-column:1 / -1;">
+          <div class="c-form__group">
             <label class="c-form__label" for="direccion">Dirección</label>
             <div class="inline-row">
               <input id="direccion" class="c-form__control" v-model.trim="form.direccion" placeholder="Calle 123" required />
-              <template v-if="false">
-                <a v-if="isAndroid()" class="c-btn c-btn--icon btn-inline" :href="linkForAndroid(form.direccion, form.comuna)" aria-label="Abrir en mapas" title="Abrir en mapas">
-                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-                    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/>
-                      <circle cx="12" cy="11" r="2"/>
-                    </g>
-                  </svg>
-                </a>
-                <a v-else-if="!isIOS()" class="c-btn c-btn--icon btn-inline" :href="linkForDesktop(form.direccion, form.comuna)" target="_blank" rel="noopener" aria-label="Abrir en Google Maps" title="Abrir en Google Maps">
-                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-                    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/>
-                      <circle cx="12" cy="11" r="2"/>
-                    </g>
-                  </svg>
-                </a>
-                <a class="c-btn c-btn--icon btn-inline" :href="linkForIOS(form.direccion, form.comuna)" aria-label="Abrir en mapas" title="Abrir en mapas">
-                  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-                    <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/>
-                      <circle cx="12" cy="11" r="2"/>
-                    </g>
-                  </svg>
-                </a>
-              </template>
               <!-- Map buttons disabled -->
-              <template v-if="false">
-              <button v-else class="c-btn c-btn--icon btn-inline" type="button" disabled title="Sin dirección" aria-label="Sin dirección">
-                <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-                  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/>
-                    <circle cx="12" cy="11" r="2"/>
-                  </g>
-                </svg>
-              </button>
-              </template>
             </div>
+          </div>
+          <div class="c-form__group">
+            <label class="c-form__label" for="comuna">Comuna</label>
+            <select id="comuna" class="c-form__control" v-model="form.comuna" required>
+              <option value="" disabled>Seleccione comuna</option>
+              <optgroup v-for="r in REGIONS_COMUNAS" :key="r.name" :label="r.name">
+                <option v-for="c in r.comunas" :key="r.name + ':' + c" :value="c">{{ c }}</option>
+              </optgroup>
+            </select>
           </div>
         </div>
         <div class="c-form__actions c-form__actions--end">
@@ -190,3 +154,4 @@ function goBack(){
 .btn-inline{ width:1.8em; height:1.8em; padding:0; line-height:1; display:inline-flex; align-items:center; justify-content:center; }
 .map-menu{ position:absolute; top:100%; right:0; background: var(--color-surface, #fff); border:1px solid var(--color-border, #ddd); border-radius:6px; padding:6px; display:flex; flex-direction:column; gap:4px; z-index:10; min-width:160px; }
 </style>
+
