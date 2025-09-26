@@ -39,6 +39,67 @@
         </div>
 
         <div class="app-actions">
+          <!-- 1) Nuevo Paciente (solo admin) -->
+          <RouterLink v-if="auth.role==='admin' && auth.hasPerm('createPatient')"
+            class="app-action"
+            :to="{ name: 'paciente-nuevo' }" role="button" aria-label="Ir a Nuevo Paciente">
+            <div class="app-action__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/>
+                  <path d="M6 21v-2a4 4 0 0 1 4 -4h4"/>
+                  <path d="M16 19h6"/>
+                  <path d="M19 16v6"/>
+                </g>
+              </svg>
+            </div>
+            <div class="app-action__content">
+              <div class="app-action__title">Nuevo Paciente</div>
+              <div class="app-action__desc">Crear y registrar un nuevo paciente.</div>
+            </div>
+          </RouterLink>
+
+          <!-- 2) Nueva Receta (solo admin) -->
+          <RouterLink v-if="auth.role==='admin' && auth.hasPerm('createPrescription')"
+            class="app-action"
+            :to="{ name: 'receta-nueva-optico' }" role="button" aria-label="Ir a Nueva Receta">
+            <div class="app-action__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 3h10"/>
+                  <path d="M4 3v14a3 3 0 0 0 3 3h6"/>
+                  <path d="M14 3l4 4h-2a2 2 0 0 1-2-2z"/>
+                  <path d="M8 8v8"/>
+                  <path d="M8 8h3a2 2 0 0 1 0 4H8"/>
+                  <path d="M11 12l4 4"/>
+                  <path d="M15 12l-4 4"/>
+                  <path d="M16 19h6"/>
+                  <path d="M19 16v6"/>
+                </g>
+              </svg>
+            </div>
+            <div class="app-action__content">
+              <div class="app-action__title">Nueva Receta</div>
+              <div class="app-action__desc">Ingresar receta para un paciente.</div>
+            </div>
+          </RouterLink>
+
+          <!-- 3) Archivo (todos con permiso) -->
+          <RouterLink v-if="auth.hasPerm('viewArchive')" class="app-action" :to="{ name: 'archivo' }" role="button" aria-label="Ir a Archivo">
+            <div class="app-action__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 19a9 9 0 0 1 9 -9h9"/>
+                  <path d="M3 6h18"/>
+                  <path d="M3 6v13a2 2 0 0 0 2 2h13"/>
+                </g>
+              </svg>
+            </div>
+            <div class="app-action__content">
+              <div class="app-action__title">Archivo</div>
+              <div class="app-action__desc">Consultar y gestionar pacientes.</div>
+            </div>
+          </RouterLink>
           <RouterLink class="app-action" :to="{ name: 'cuenta' }" role="button" aria-label="Ir a Cuenta">
             <div class="app-action__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
@@ -57,22 +118,9 @@
           <RouterLink v-if="auth.hasPerm('manageOperatives')" class="app-action" :to="{ name: 'operatives' }" role="button" aria-label="Ir a Operativos">
             <div class="app-action__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" aria-hidden="true">
-                <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <!-- Gear with motion arrows -->
-                  <circle cx="12" cy="12" r="4.2"/>
-                  <circle cx="12" cy="12" r="2"/>
-                  <path d="M12 5v2"/>
-                  <path d="M12 17v2"/>
-                  <path d="M5 12h2"/>
-                  <path d="M17 12h2"/>
-                  <path d="M8.5 8.5l1.2 1.2"/>
-                  <path d="M15.5 15.5l-1.2-1.2"/>
-                  <path d="M15.5 8.5l-1.2 1.2"/>
-                  <path d="M8.5 15.5l1.2-1.2"/>
-                  <path d="M5 12a7 7 0 1 0 2-5.192"/>
-                  <path d="M7 4v4h4"/>
-                  <path d="M19 12a7 7 0 1 1-2 5.192"/>
-                  <path d="M17 20v-4h-4"/>
+                <g fill="currentColor">
+                  <!-- Gear (standard solid cog) -->
+                  <path d="M19.14 12.94c.04-.31.06-.63.06-.94s-.02-.63-.06-.94l2.03-1.58a.5.5 0 0 0 .12-.65l-1.92-3.32a.5.5 0 0 0-.6-.22l-2.39.96a7.38 7.38 0 0 0-1.63-.95l-.36-2.54a.5.5 0 0 0-.5-.42h-3.84a.5.5 0 0 0-.5.42l-.36 2.54c-.57.23-1.12.56-1.63.95l-2.39-.96a.5.5 0 0 0-.6.22L2.71 8.83a.5.5 0 0 0 .12.65l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94L2.83 14.52a.5.5 0 0 0-.12.65l1.92 3.32c.14.24.44.34.7.22l2.39-.96c.51.39 1.05.72 1.63.95l.36 2.54a.5.5 0 0 0 .5.42h3.84a.5.5 0 0 0 .5-.42l.36-2.54c.58-.23 1.12-.56 1.63-.95l2.39.96c.25.12.56.02.7-.22l1.92-3.32a.5.5 0 0 0-.12-.65l-2.03-1.58ZM12 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z"/>
                 </g>
               </svg>
             </div>

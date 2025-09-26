@@ -39,8 +39,19 @@ services:
       # Permite fijar orígenes CORS vía system property sin tocar código.
       # Establece PUBLIC_ORIGIN en tu entorno (p.ej. https://tu-dominio) o deja * por ahora.
       JAVA_TOOL_OPTIONS: "-Dapp.cors.allowed-origins=${PUBLIC_ORIGIN:-*} -Dserver.forward-headers-strategy=framework"
+    expose:
+      - "8080"
+
+  proxy:
+    image: nginx:alpine
+    container_name: letelier-proxy
+    restart: unless-stopped
     ports:
-      - "8080:8080"
+      - "8080:80"  # Cloudflare Tunnel points here
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/maintenance.html:/usr/share/nginx/html/maintenance.html:ro
+      - ./nginx/static:/usr/share/nginx/html/static:ro
 
 volumes:
   db-data:

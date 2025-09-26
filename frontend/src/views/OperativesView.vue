@@ -44,19 +44,12 @@
             <table class="c-table rx-table op-table" role="table" aria-label="Listado de operativos">
               <thead>
                 <tr>
-                  <th scope="col" class="col-action">Acciones</th>
                   <th scope="col" class="col-name">Nombre/Lugar</th>
                   <th scope="col" class="col-status">Estado</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="o in items" :key="o.id" @click="openDetail(o)" style="cursor: pointer;">
-                  <td class="col-action">
-                    <div class="c-switch" style="--w:42px; --h:22px; --pad:3px" @click.stop>
-                      <input :id="'tgl-'+o.id" type="checkbox" :checked="!!o.active" :aria-label="`Cambiar estado de ${o.nombre || o.name || 'operativo'}`" @change="onToggle(o, $event)" @click.stop />
-                      <label class="c-switch__slider" :for="'tgl-'+o.id" @click.stop></label>
-                    </div>
-                  </td>
                   <td class="col-name">{{ o.nombre || o.name || '-' }}</td>
                   <td class="col-status">
                     <div class="status-wrap">
@@ -118,7 +111,10 @@
               </thead>
               <tbody>
                 <tr v-for="p in patients" :key="p.id">
-                  <td>{{ (p.nombres||'') + ' ' + (p.apellidos||'') }}</td>
+                  <td>
+                    {{ (p.nombres||'') + ' ' + (p.apellidos||'') }}
+                    <RouterLink v-if="isIncomplete(p)" class="badge badge--warn" :to="{ name: 'paciente-editar', params: { id: p.id } }" title="Completar datos" aria-label="Completar datos" style="margin-left:.5rem; text-decoration:none;">Incompleto</RouterLink>
+                  </td>
                   <td>{{ p.rut || '-' }}</td>
                   <td>{{ formatDate(selectedOperative?.fecha) }}</td>
                 </tr>
@@ -159,6 +155,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import { RouterLink } from 'vue-router';
 import Modal from '@/components/Modal.vue';
 import { useUiStore } from '@/stores/ui.js';
 import { useAuthStore } from '@/stores/auth.js';
@@ -189,6 +186,14 @@ const patientsPage = ref(0);
 const patientsSize = 10;
 const patientsPages = computed(() => Math.max(1, Math.ceil(patientsTotal.value / patientsSize)));
 const opFormOpen = ref(false);
+
+function isIncomplete(p){
+  try {
+    const hasNames = !!(p?.nombres && p?.apellidos);
+    const hasComuna = !!p?.comuna;
+    return !(hasNames && hasComuna);
+  } catch { return true; }
+}
 
 async function load(){
   loading.value = true; error.value = false;
@@ -354,7 +359,6 @@ function normalizeOperative(x){
 .rx-table th{ text-align:left; font-weight:600; }
 .op-table{ width:100%; border-collapse: collapse; }
 .op-table th, .op-table td{ padding: var(--space-3); }
-.op-table .col-action{ text-align: center; width: 80px; }
 .op-table .col-name{ text-align: left; }
 .op-table .col-status{ text-align: center; }
 .status-wrap{ display:flex; align-items:center; justify-content:center; gap: var(--space-3); }

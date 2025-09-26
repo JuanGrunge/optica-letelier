@@ -7,25 +7,38 @@
         <label class="c-form__label" for="rutBuscar">RUT del paciente</label>
         <div class="inline-row">
           <input id="rutBuscar" class="c-form__control" v-model.trim="rut" placeholder="12.345.678-K"/>
-          <button class="c-btn c-btn--icon c-btn--neo" type="button" @click="onFind" aria-label="Buscar" title="Buscar">
+          <button class="c-btn c-btn--icon btn-inline" type="button" @click="onFind" aria-label="Buscar" title="Buscar" style="background:transparent; border-color:transparent;">
             <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="M21 21l-6-6"/></g></svg>
           </button>
         </div>
         <p class="subtle" v-if="msg">{{ msg }}</p>
+        <div v-if="notFoundMode" class="o-grid o-grid__2" style="margin-top:12px;">
+          <div class="c-form__group">
+            <label class="c-form__label">Nombres</label>
+            <input class="c-form__control" v-model.trim="newNames.nombres" placeholder="Nombre(s)"/>
+          </div>
+          <div class="c-form__group">
+            <label class="c-form__label">Apellidos</label>
+            <input class="c-form__control" v-model.trim="newNames.apellidos" placeholder="Apellido(s)"/>
+          </div>
+          <div class="c-form__actions c-form__actions--end" style="grid-column: 1 / -1;">
+            <button class="c-btn c-btn--icon btn-inline" type="button" @click="onCreateFromNames" :disabled="creatingNew" aria-label="Guardar y continuar" title="Guardar y continuar" style="background:transparent; border-color:transparent;">
+              <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10"/><path d="M8 8l4-4l4 4"/><path d="M5 20h14"/></g></svg>
+            </button>
+            <span class="subtle">{{ msgNew }}</span>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Card 2: Nueva Receta (colapsable; se expande tras corroborar RUT) -->
     <div class="c-card" key="rx-op-form">
       <h2 style="margin-right:48px;">Nueva Receta</h2>
-      <button class="c-btn c-btn--icon c-btn--back c-btn--no-anim c-card__action--tr" type="button" :disabled="!paciente" @click="rxOpen = !rxOpen" :aria-label="rxOpen ? 'Contraer' : 'Expandir'" :title="rxOpen ? 'Contraer' : 'Expandir'">
-        <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" :style="{ transform: rxOpen ? 'rotate(180deg)' : 'none', opacity: !paciente ? .5 : 1 }"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6l6-6"/></g></svg>
-      </button>
       <transition name="fade-fast">
-      <div v-show="rxOpen && paciente">
+      <div v-if="paciente">
         <div class="rx-header">
           <div><strong>Nombre:</strong> {{ pacienteNombre || '-' }}</div>
-          <div><strong>RUT:</strong> {{ paciente?.rut || rut }}</div>
+          <div><strong>RUT:</strong> {{ (paciente && paciente.rut) || rut }}</div>
           <div><strong>Operativo:</strong> {{ operativeLabel || '-' }}</div>
         </div>
         <div class="rx-form">
@@ -103,15 +116,13 @@
 </template>
 
 <script setup>
-import { reactive, ref, computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { reactive, ref, computed, onMounted } from 'vue';
+import { onBeforeRouteLeave } from 'vue-router';
 import { useUiStore } from '@/stores/ui.js';
 import { useAuthStore } from '@/stores/auth.js';
 import * as Patients from '@/services/patients.js';
 import RxPicker from '@/components/RxPicker.vue';
 import { normalizeRxPayload, RX_LIMITS } from '@/composables/rx.js';
-
-const router = useRouter();
 const ui = useUiStore();
 const auth = useAuthStore();
 
@@ -121,35 +132,97 @@ const rut = ref('');
 const paciente = ref(null);
 const pacienteNombre = computed(() => paciente.value ? `${paciente.value.nombres||''} ${paciente.value.apellidos||''}`.trim() : '');
 const msg = ref('');
-const rxOpen = ref(false);
+const notFoundMode = ref(false);
+const newNames = reactive({ nombres: '', apellidos: '' });
+const creatingNew = ref(false);
+const msgNew = ref('');
 
 async function onFind(){
   msg.value=''; paciente.value=null;
   const raw = (rut.value||'').trim(); if (!raw){ msg.value='Ingresa un RUT'; return; }
   try {
-    const page = await Patients.list({ q: raw, page: 0, size: 1 });
+    const page = await Patients.list({ q: raw, page: 0, size: 5 });
     const list = Array.isArray(page?.content) ? page.content : [];
-    paciente.value = list.find(p => (p?.rut||'').toLowerCase() === raw.toLowerCase()) || list[0] || null;
-    if (paciente.value) rxOpen.value = true;
-  } catch { paciente.value=null; }
+    const found = list.find(p => (p?.rut||'').toLowerCase() === raw.toLowerCase()) || null;
+    if (found) {
+      paciente.value = found;
+      // limpiar buscador y mini formulario
+      rut.value = '';
+      notFoundMode.value = false;
+      newNames.nombres = '';
+      newNames.apellidos = '';
+      msg.value = '';
+      msgNew.value = '';
+      return;
+    }
+  } catch { /* seguir a creaci0n */ }
+  // No encontrado: expandir solicitando nombres/apellidos obligatorios
+  notFoundMode.value = true;
 }
 
-const pacNew = reactive({ nombres: '', apellidos: '', comuna: '', direccion: '' });
-const creating = ref(false);
-const msgCreate = ref('');
-
-async function onCreateAndProceed(){
+async function onCreateFromNames(){
   try {
-    msgCreate.value=''; creating.value=true;
-    if (!pacNew.nombres || !pacNew.apellidos || !pacNew.comuna){ msgCreate.value='Completa nombres, apellidos y comuna'; return; }
-    const dto = { nombres: pacNew.nombres, apellidos: pacNew.apellidos, rut: rut.value||null, direccion: pacNew.direccion||null, comuna: pacNew.comuna, activo: true };
+    msgNew.value=''; creatingNew.value=true;
+    const nombres = (newNames.nombres||'').trim();
+    const apellidos = (newNames.apellidos||'').trim();
+    if (!nombres || !apellidos){ msgNew.value='Ingresa nombres y apellidos'; return; }
+    const raw = (rut.value||'').trim(); if (!raw){ msg.value='Ingresa un RUT'; return; }
+    const dto = { rut: raw, nombres, apellidos, activo: true };
     if (auth.role !== 'admin' && auth?.operativeId != null) dto.operativeId = Number(auth.operativeId);
     const created = await Patients.create(dto);
     paciente.value = created;
-    rxOpen.value = true;
-    ui.showToast('Paciente creado');
-  } catch { msgCreate.value = 'No se pudo crear'; }
-  finally { creating.value=false; }
+    // ocultar mini formulario y limpiar buscador para un estado limpio
+    notFoundMode.value = false;
+    rut.value = '';
+    newNames.nombres = '';
+    newNames.apellidos = '';
+    msg.value = '';
+    msgNew.value = '';
+  } catch { msgNew.value = 'No se pudo crear'; }
+  finally { creatingNew.value=false; }
+}
+
+function resetAll(){
+  try {
+    rut.value = '';
+    paciente.value = null;
+    msg.value = '';
+    notFoundMode.value = false;
+    newNames.nombres = '';
+    newNames.apellidos = '';
+    msgNew.value = '';
+    rx.odEsfera = rx.odCilindro = rx.odEje = null;
+    rx.oiEsfera = rx.oiCilindro = rx.oiEje = null;
+    rx.addPower = null; rx.observaciones = '';
+    msgRx.value=''; savingRx.value=false;
+  } catch {}
+}
+
+onMounted(() => { resetAll(); });
+
+onBeforeRouteLeave((_to, _from, next) => {
+  // Resetea al salir para evitar persistencia de datos; usa confirm minimal si hay datos cargados
+  const hasPatient = !!(paciente.value && paciente.value.id);
+  const hasRutOnly = !!(rut.value && !hasPatient);
+  const hasRx = [rx.odEsfera, rx.odCilindro, rx.odEje, rx.oiEsfera, rx.oiCilindro, rx.oiEje, rx.addPower, rx.observaciones]
+    .some(v => v != null && v !== '');
+  if ((hasPatient || hasRx || hasRutOnly) && typeof window !== 'undefined'){
+    const ok = window.confirm('Tienes cambios sin guardar (RUT/paciente/receta). ¿Deseas salir de todas formas?');
+    if (!ok) return next(false);
+  }
+  resetAll();
+  next();
+});
+
+// Compat: si el template aún contiene el bloque de "paciente no encontrado",
+// definimos estos refs para evitar errores aunque no se usen.
+const pacNew = reactive({ nombres: '', apellidos: '', comuna: '', direccion: '' });
+const creating = ref(false);
+const msgCreate = ref('');
+async function onCreateAndProceed(){
+  // El flujo oficial crea el paciente automáticamente por RUT desde onFind.
+  // Dejamos un mensaje gentil por si alguien interactúa aquí.
+  msgCreate.value = 'Usa el buscador por RUT para continuar.';
 }
 
 const rx = reactive({ odEsfera:null, odCilindro:null, odEje:null, oiEsfera:null, oiCilindro:null, oiEje:null, addPower:null, observaciones:'' });

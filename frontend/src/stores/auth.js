@@ -113,19 +113,24 @@ export const useAuthStore = defineStore('auth', {
       } catch {}
     },
     async validateOperativeActive(){
-      if (this.operativeId == null) return;
+      // Returns { valid: boolean, cleared: boolean }
+      if (this.operativeId == null) return { valid: true, cleared: false };
+      const currentId = this.operativeId;
       try {
         const page = await Operatives.listActive({ page: 0, size: 200 });
         const list = Array.isArray(page?.content) ? page.content : (Array.isArray(page) ? page : []);
-        const found = list.some(o => Number(o.id) === Number(this.operativeId));
+        const found = list.some(o => Number(o.id) === Number(currentId));
         if (!found) {
           // Clear selection if deactivated or missing
           this.operativeId = null; this.operativeLabel = '';
           this.operativeDireccion = ''; this.operativeComuna = '';
           try { sessionStorage.removeItem('operativeSelection'); } catch {}
+          return { valid: false, cleared: true };
         }
+        return { valid: true, cleared: false };
       } catch {
         // network or auth issues: keep current selection optimistic
+        return { valid: true, cleared: false };
       }
     }
   }

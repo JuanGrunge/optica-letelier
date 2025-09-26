@@ -1,106 +1,96 @@
-# Óptica Letelier — SPA de Gestión
+# Ã“ptica Letelier â€” SPA de GestiÃ³n
 
-Aplicación web para gestionar pacientes, recetas y boletas. Pensada para uso diario en mesa de recepción, ópticos y administración. Enfocada en rapidez, legibilidad y pasos claros.
-
---
-
-## Resumen de Funcionalidades
-
-- Cuenta: ver usuario/rol y seleccionar tu “lugar de operativo”.
-- Archivo (buscador): encontrar pacientes por RUT y abrir su ficha.
-- Ficha del Paciente: datos, última receta y boletas recientes; accesos a Editar / Nueva receta (según permisos).
-- Nuevo Paciente: registrar un paciente y, opcionalmente, continuar a “Nueva receta”.
-- Mapas en 1 clic: abrir direcciones en tu app de mapas. Los íconos de pin se muestran en rojo para mayor contraste.
-- Confirmaciones y avisos: se piden confirmaciones para acciones críticas y se muestran toasts de resultado.
+AplicaciÃ³n web para gestionar pacientes, recetas y boletas. DiseÃ±ada para recepciÃ³n, Ã³pticos y administraciÃ³n. Enfocada en rapidez, legibilidad y pasos claros.
 
 --
 
-## Roles y Permisos
+## Resumen
+
+- Cuenta: ver usuario/rol y (solo noâ€‘admin) seleccionar el lugar de operativo.
+- Archivo: buscar pacientes por RUT y abrir su ficha.
+- Ficha del Paciente: datos, receta reciente y boletas; accesos a Editar / Nueva receta (segÃºn permisos).
+- Nuevo Paciente (recepciÃ³n): registrar un paciente.
+- Mapas en 1 clic: abrir direcciones en tu app de mapas.
+- Confirmaciones y avisos para acciones crÃ­ticas.
+
+--
+
+## Roles y permisos
 
 - Admin
-  - Acceso total. Puede eliminar paciente (con sus registros), recetas individualmente y anular boletas.
-- Óptico
-  - Puede ver Archivo y crear recetas. No puede crear ni editar pacientes.
+  - Acceso total. Puede eliminar paciente (y sus registros), eliminar recetas y anular boletas.
+  - No depende de â€œlugar de operativoâ€ y no ve el selector en Cuenta.
+- Ã“ptico
+  - Ver Archivo y crear recetas. No crea/edita pacientes.
 - Receptor
-  - Puede ver Archivo y crear pacientes. No puede crear recetas.
+  - Ver Archivo y crear pacientes. No crea recetas.
 
 Notas
-- Todos pueden acceder a “Cuenta”.
-- La app oculta botones/menús no permitidos por tu rol, y bloquea la navegación restringida.
-- Para crear/editar, debes seleccionar antes un “lugar de operativo”. Si falta, verás un aviso y un tooltip explicativo.
+- Todos pueden acceder a â€œCuentaâ€.
+- La UI oculta botones/menÃºs no permitidos y bloquea rutas restringidas.
+- Solo noâ€‘admin: para crear/editar debes seleccionar antes un â€œlugar de operativoâ€. Si falta o estÃ¡ inactivo, verÃ¡s un aviso.
 
 --
 
-## Flujo Rápido (Paso a Paso)
+## Flujo rÃ¡pido
 
-1) Inicia sesión con tu usuario y contraseña.
-2) Ve a Cuenta y selecciona tu “lugar de operativo”.
-   - Verás un aviso amarillo si falta, y verde cuando ya esté seleccionado.
-3) Desde Inicio o el Header, entra a Archivo y busca por RUT.
+1) Inicia sesiÃ³n con tu usuario y contraseÃ±a.
+2) (Noâ€‘admin) Ve a Cuenta y selecciona tu â€œlugar de operativoâ€.
+3) Desde Inicio o Header, entra a Archivo y busca por RUT.
 4) Abre la ficha del paciente para ver datos, receta reciente y boletas.
-5) Acciones según tu rol:
-   - Receptor: “Nuevo Paciente”. Tras crear, puedes ver la ficha.
-   - Óptico/Admin: “Nueva Receta” desde la ficha (o al terminar de crear paciente si aplica).
-   - Admin: eliminar paciente / receta y anular boleta (siempre con confirmación).
+5) Acciones por rol:
+   - Receptor: â€œNuevo Pacienteâ€.
+   - Ã“ptico/Admin: â€œNueva Recetaâ€.
+   - Admin: ademÃ¡s puede eliminar paciente/receta y anular boleta (con confirmaciÃ³n).
 
 --
 
-## Cuenta (Operativo)
+## Nueva Receta (Ã³ptico)
 
-- Muestra tu usuario y rol.
-- Selecciona tu “lugar de operativo” desde la lista (usa el botón de actualizar para refrescarla).
-- El aviso encima del selector te guía: amarillo si falta, verde si está configurado.
-
---
-
-## Archivo (Buscador)
-
-- Escribe un RUT y presiona “Buscar”.
-- Si no ingresas RUT, verás una lista paginada.
-- Haz clic en un paciente para abrir su ficha.
+- Buscar por RUT (botÃ³n soloâ€‘Ã­cono transparente a la derecha).
+- Si no existe el RUT: se expande la misma tarjeta para ingresar Nombre(s) y Apellido(s) obligatorios y crear el paciente (asociado al operativo del usuario si aplica).
+- Si existe: se identifica y se muestra el formulario clÃ­nico.
+- Al identificar/crear paciente, el buscador se limpia y desaparece el miniâ€‘form para mantener la vista limpia.
 
 --
 
-## Ficha del Paciente
+## Archivo y Operativos
 
-- Datos: Nombre, RUT, Fecha de nacimiento, Teléfono, Email, Dirección (con acceso a mapas) y Lugar Operativo.
-- Receta reciente: muestra OD/OI y observaciones.
-- Boletas recientes: fecha, total y estado (Anulado si corresponde).
-- Acciones (según permisos y operativo):
-  - Editar paciente.
-  - Nueva receta.
-  - Eliminar paciente (admin).
-  - Eliminar receta (admin) y Anular boleta (admin). Siempre se pide confirmación.
+- Listado de pacientes y pacientes por operativo muestran un badge â€œIncompletoâ€ si faltan datos mÃ­nimos (nombres, apellidos o comuna).
+- Ese badge es un botÃ³n que dirige a â€œEditar pacienteâ€.
 
 --
 
-## Nuevo Paciente
+## Operativos
 
-- Completa Nombres, Apellidos, RUT, Fecha Nac., Teléfono, Email, Dirección y Comuna.
-- Al guardar:
-  - Óptico/Admin: puedes ir a “Nueva receta” o ver la ficha.
-  - Receptor: podrás ver la ficha.
+- El switch de â€œActivo/Inactivoâ€ se gestiona solo dentro de la ficha del operativo (no en el listado).
 
 --
 
-## Mapas
+## Orden de navegaciÃ³n
 
-- El ícono de pin (rojo) abre la ubicación:
-  - Android: selector del sistema (elige tu app favorita).
-  - iOS: app de mapas nativa.
-  - Computador: Google Maps en el navegador.
+- Header e Inicio priorizan: Nuevo Paciente, Nueva Receta, Archivo, Operativos (admin), Cuenta.
 
 --
 
-## Interfaz y Accesibilidad
+## Proxy de mantenciÃ³n (demo / tÃºnel)
 
-- Botones de acción sólidos (guardar/editar/eliminar) son compactos para mejor proporción.
-- Avisos de color con alto contraste: amarillo (pendiente) y verde (ok).
-- Tooltips explican por qué un botón puede estar deshabilitado (operativo faltante).
-- Confirmaciones en acciones críticas para evitar errores.
+- Nginx en `:8080` sirve una pÃ¡gina de mantenciÃ³n si la app aÃºn no responde (500/502/503/504). Ãštil cuando se levanta Docker (3â€“5 min) o en demos con Cloudflare Tunnel.
+- Toggle claro/oscuro en header (botÃ³n â€œinvisibleâ€, sol blanco en modo oscuro).
+
+--
+
+## SesiÃ³n y seguridad
+
+- HttpSession (JSESSIONID) con inactividad de 60 min.
+- Si la sesiÃ³n vence (401), se redirige a Login con aviso.
+- Recomendado (HTTPS):
+  - `server.servlet.session.cookie.secure=true`
+  - `server.servlet.session.cookie.same-site=Lax`
 
 --
 
 ## Ayuda
 
-¿Problemas o ideas? Indica qué intentaste, qué esperabas y el mensaje/resultado que viste. Si puedes, agrega una captura.
+Â¿Problemas o ideas? Indica quÃ© intentaste, quÃ© esperabas y el mensaje/resultado observado. Si puedes, agrega una captura.
+

@@ -34,7 +34,10 @@
             <tr v-for="p in items" :key="p.id" class="row-paciente" role="button" tabindex="0"
                 @click="openDetail(p.id)" @keydown.enter.prevent="openDetail(p.id)" @keydown.space.prevent="openDetail(p.id)">
               <td>{{ p.rut }}</td>
-              <td>{{ (p.nombres||'') + ' ' + (p.apellidos||'') }}</td>
+              <td>
+                {{ (p.nombres||'') + ' ' + (p.apellidos||'') }}
+                <RouterLink v-if="isIncomplete(p)" class="badge badge--warn" :to="{ name: 'paciente-editar', params: { id: p.id } }" @click.stop title="Completar datos" aria-label="Completar datos" style="margin-left:.5rem; text-decoration:none;">Incompleto</RouterLink>
+              </td>
             </tr>
             <tr v-if="!loading && items.length===0"><td colspan="2" class="subtle">Sin resultados</td></tr>
           </transition-group>
@@ -80,6 +83,12 @@
         </button>
       </div>
       <div class="paciente-detalle" v-if="detail">
+        <div v-if="isIncomplete(detail)" class="alert-banner alert-banner--warning" role="status" style="margin-bottom:8px;">
+          Datos incompletos: completa nombres y comuna.
+          <RouterLink class="c-btn c-btn--icon btn-inline" :to="{ name: 'paciente-editar', params: { id: detail.id } }" style="margin-left:8px" aria-label="Editar paciente" title="Editar paciente">
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/><path d="M20.71 7.04a1 1 0 0 0 0-1.41l-2.34-2.34a1 1 0 0 0-1.41 0l-1.83 1.83l3.75 3.75l1.83-1.83z"/></g></svg>
+          </RouterLink>
+        </div>
         <div class="grid-2">
           <div>
             <p><strong>Nombre:</strong> {{ fullName }}</p>
@@ -126,7 +135,7 @@
         </div>
         <!-- Botón Editar paciente: debajo de la ficha, a la derecha -->
         <div class="actions-right">
-          <RouterLink v-if="auth.hasPerm('editPatient')" class="c-btn c-btn--icon c-btn--neo" :class="{ 'is-disabled': !auth.hasOperative }" :title="!auth.hasOperative ? 'Selecciona tu lugar de operativo' : null" :to="{ name: 'paciente-editar', params: { id: detail?.id }, query: { from: route.fullPath } }" aria-label="Editar paciente" title="Editar paciente">
+          <RouterLink v-if="auth.hasPerm('editPatient')" class="c-btn c-btn--icon c-btn--neo" :class="{ 'is-disabled': (!auth.hasOperative && auth.role!=='admin') }" :title="(!auth.hasOperative && auth.role!=='admin') ? 'Selecciona tu lugar de operativo' : null" :to="{ name: 'paciente-editar', params: { id: detail?.id }, query: { from: route.fullPath } }" aria-label="Editar paciente" title="Editar paciente">
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
               <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <!-- línea base -->
@@ -184,7 +193,7 @@
         </div>
         <!-- Botón Agregar receta: debajo de receta, a la derecha -->
         <div class="actions-right">
-          <RouterLink v-if="auth.hasPerm('createPrescription')" class="c-btn c-btn--icon c-btn--neo" :class="{ 'is-disabled': !auth.hasOperative }" :title="!auth.hasOperative ? 'Selecciona tu lugar de operativo' : null" :to="{ name: 'receta-nueva', params: { id: detail?.id }, query: { from: route.fullPath } }" aria-label="Nueva receta" title="Nueva receta">
+          <RouterLink v-if="auth.hasPerm('createPrescription')" class="c-btn c-btn--icon c-btn--neo" :class="{ 'is-disabled': (!auth.hasOperative && auth.role!=='admin') }" :title="(!auth.hasOperative && auth.role!=='admin') ? 'Selecciona tu lugar de operativo' : null" :to="{ name: 'receta-nueva', params: { id: detail?.id }, query: { from: route.fullPath } }" aria-label="Nueva receta" title="Nueva receta">
             <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
               <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M12 5v14"/>
@@ -238,6 +247,14 @@ const route = useRoute();
 const router = useRouter();
 const ui = useUiStore();
 const archive = useArchiveStore();
+
+function isIncomplete(p){
+  try {
+    const hasNames = !!(p?.nombres && p?.apellidos);
+    const hasComuna = !!p?.comuna;
+    return !(hasNames && hasComuna);
+  } catch { return true; }
+}
 
 const query = ref(archive.q || '');
 const items = ref(archive.items || []);

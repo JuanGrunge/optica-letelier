@@ -65,6 +65,21 @@ router.beforeEach(async (to, from) => {
     }
   } catch {}
 
+  // Revalidar seleccin de operativo al navegar y notificar si fue desactivado
+  try {
+    const res = await auth.validateOperativeActive();
+    if (res?.cleared) {
+      try { const ui = useUiStore(); ui.showToast('Tu lugar de operativo fue desactivado. Selecciona otro en Cuenta.'); } catch {}
+      // Si la ruta requiere un operativo (para no-admin), redirigir a Cuenta
+      const needsOperative = (r) => !!r && (
+        r.name === 'paciente-nuevo' || r.name === 'receta-nueva'
+      );
+      if (needsOperative(to) && auth.role !== 'admin') {
+        return { name: 'cuenta' };
+      }
+    }
+  } catch {}
+
   // Gating: require operative selection for create/edit routes
   try {
     const needsOperative = (r) => !!r && (
