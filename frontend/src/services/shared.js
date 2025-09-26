@@ -16,7 +16,7 @@ export async function apiFetchAuth(url, options={}){
   } catch (e) {
     if (e && Number(e.status) === 401) {
       const here = window.location.pathname + window.location.search + window.location.hash;
-      const target = '/login?redirect=' + encodeURIComponent(here);
+      const target = '/login?reason=expired&redirect=' + encodeURIComponent(here);
       // Prefer SPA navigation if router is available, otherwise hard redirect.
       try {
         // Lazy import to avoid hard coupling/cycles if possible.

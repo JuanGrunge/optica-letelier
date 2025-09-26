@@ -58,18 +58,21 @@
             <div class="app-action__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M8 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/>
-                  <path d="M6 21v-2a4 4 0 0 1 4 -4h4"/>
-                  <circle cx="19" cy="19" r="2.2"/>
-                  <circle cx="19" cy="19" r="1.1"/>
-                  <path d="M19 15.8v1.2"/>
-                  <path d="M19 21.9v1.2"/>
-                  <path d="M15.8 19h1.2"/>
-                  <path d="M21.9 19h1.2"/>
-                  <path d="M16.9 16.9l.9.9"/>
-                  <path d="M21.1 16.9l-.9.9"/>
-                  <path d="M16.9 21.1l.9-.9"/>
-                  <path d="M21.1 21.1l-.9-.9"/>
+                  <!-- Gear with motion arrows -->
+                  <circle cx="12" cy="12" r="4.2"/>
+                  <circle cx="12" cy="12" r="2"/>
+                  <path d="M12 5v2"/>
+                  <path d="M12 17v2"/>
+                  <path d="M5 12h2"/>
+                  <path d="M17 12h2"/>
+                  <path d="M8.5 8.5l1.2 1.2"/>
+                  <path d="M15.5 15.5l-1.2-1.2"/>
+                  <path d="M15.5 8.5l-1.2 1.2"/>
+                  <path d="M8.5 15.5l1.2-1.2"/>
+                  <path d="M5 12a7 7 0 1 0 2-5.192"/>
+                  <path d="M7 4v4h4"/>
+                  <path d="M19 12a7 7 0 1 1-2 5.192"/>
+                  <path d="M17 20v-4h-4"/>
                 </g>
               </svg>
             </div>
@@ -95,7 +98,7 @@
             </div>
           </RouterLink>
 
-          <RouterLink v-if="auth.hasPerm('createPatient')" class="app-action" :class="{ 'is-disabled': !hasOperative }" :title="!hasOperative ? 'Selecciona tu lugar de operativo' : null" :to="{ name: 'paciente-nuevo' }" role="button" aria-label="Ir a Nuevo Paciente">
+          <RouterLink v-if="auth.hasPerm('createPatient')" class="app-action" :class="{ 'is-disabled': !hasOperative && auth.role!=='admin' }" :title="(!hasOperative && auth.role!=='admin') ? 'Selecciona tu lugar de operativo' : null" :to="{ name: 'paciente-nuevo' }" role="button" aria-label="Ir a Nuevo Paciente">
             <div class="app-action__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
                 <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

@@ -143,7 +143,7 @@ async function onCreateAndProceed(){
     msgCreate.value=''; creating.value=true;
     if (!pacNew.nombres || !pacNew.apellidos || !pacNew.comuna){ msgCreate.value='Completa nombres, apellidos y comuna'; return; }
     const dto = { nombres: pacNew.nombres, apellidos: pacNew.apellidos, rut: rut.value||null, direccion: pacNew.direccion||null, comuna: pacNew.comuna, activo: true };
-    if (auth?.operativeId != null) dto.operativeId = Number(auth.operativeId);
+    if (auth.role !== 'admin' && auth?.operativeId != null) dto.operativeId = Number(auth.operativeId);
     const created = await Patients.create(dto);
     paciente.value = created;
     rxOpen.value = true;

@@ -345,9 +345,9 @@ async function onDeletePatient(){
   const ok = window.confirm('¿Eliminar paciente y todos sus registros relacionados?');
   if (!ok) return;
   try {
-    // Pre-check operativo activo
+    // Pre-check operativo activo (no aplica a admin)
     try {
-      if (auth?.operativeId != null){
+      if (auth.role !== 'admin' && auth?.operativeId != null){
         const o = await Operatives.getById(auth.operativeId);
         const isActive = !!(o?.active ?? o?.enabled ?? o?.activo);
         if (!isActive){ ui.showToast('El lugar de operativo se encuentra inactivo. Selecciona otro.'); router.push({ name: 'cuenta' }); return; }
@@ -364,9 +364,9 @@ async function onDeleteRx(id){
   const ok = window.confirm('¿Eliminar receta seleccionada?');
   if (!ok) return;
   try {
-    // Pre-check operativo activo
+    // Pre-check operativo activo (no aplica a admin)
     try {
-      if (auth?.operativeId != null){
+      if (auth.role !== 'admin' && auth?.operativeId != null){
         const o = await Operatives.getById(auth.operativeId);
         const isActive = !!(o?.active ?? o?.enabled ?? o?.activo);
         if (!isActive){ ui.showToast('El lugar de operativo se encuentra inactivo. Selecciona otro.'); router.push({ name: 'cuenta' }); return; }
@@ -386,9 +386,9 @@ async function onAnnulInvoice(id){
   const ok = window.confirm('¿Anular boleta seleccionada?');
   if (!ok) return;
   try {
-    // Pre-check operativo activo
+    // Pre-check operativo activo (no aplica a admin)
     try {
-      if (auth?.operativeId != null){
+      if (auth.role !== 'admin' && auth?.operativeId != null){
         const o = await Operatives.getById(auth.operativeId);
         const isActive = !!(o?.active ?? o?.enabled ?? o?.activo);
         if (!isActive){ ui.showToast('El lugar de operativo se encuentra inactivo. Selecciona otro.'); router.push({ name: 'cuenta' }); return; }

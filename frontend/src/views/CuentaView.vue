@@ -9,14 +9,14 @@
           <p><strong>Rol:</strong> {{ roleKey }} <span v-if="roleLabel">({{ roleLabel }})</span></p>
         </div>
         <div>
-          <!-- Hint above operative selection -->
-          <div class="op-hint" :class="{ 'op-hint--ok': !!selectedLabel, 'op-hint--warn': !selectedLabel }" role="status">
+          <!-- Hint above operative selection (hidden for admin) -->
+          <div v-if="auth.role !== 'admin'" class="op-hint" :class="{ 'op-hint--ok': !!selectedLabel, 'op-hint--warn': !selectedLabel }" role="status">
             <svg v-if="selectedLabel" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3l5-5"/></g></svg>
             <svg v-else viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></g></svg>
             <span>{{ selectedLabel ? 'Operativo seleccionado' : 'Selecciona tu lugar de operativo para habilitar edición y registro.' }}</span>
           </div>
-          <label class="c-form__label" for="selOperative">Lugar de operativo</label>
-          <div class="inline-row">
+          <label v-if="auth.role !== 'admin'" class="c-form__label" for="selOperative">Lugar de operativo</label>
+          <div v-if="auth.role !== 'admin'" class="inline-row">
             <select id="selOperative" class="c-form__control" v-model="selected" @change="onChange" :title="!selected ? 'Selecciona tu lugar de operativo' : null">
               <option :value="null">Seleccione...</option>
               <option v-for="o in operatives" :key="o.id" :value="o.id">{{ o.lugar || o.nombre }}</option>
@@ -25,8 +25,8 @@
               <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12a7 7 0 1 0 2-5.192"/><path d="M7 4v4h4"/></g></svg>
             </button>
           </div>
-          <p class="subtle" v-if="selectedLabel">Seleccionado: {{ selectedLabel }}</p>
-          <p class="subtle inline-row" v-if="selectedAddr">
+          <p class="subtle" v-if="selectedLabel && auth.role !== 'admin'">Seleccionado: {{ selectedLabel }}</p>
+          <p class="subtle inline-row" v-if="selectedAddr && auth.role !== 'admin'">
             <a v-if="isAndroid()" class="map-pin" :href="linkForAndroid(selectedDireccion, selectedComuna)" title="Abrir en mapas">
               <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
               {{ selectedAddr }}</a>

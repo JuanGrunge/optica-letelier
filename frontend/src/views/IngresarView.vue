@@ -161,7 +161,7 @@ async function onSave(){
     Object.keys(dto).forEach(k => { if (dto[k] === '') dto[k] = null; });
     try {
       const auth = useAuthStore();
-      if (auth?.operativeId != null) dto.operativeId = Number(auth.operativeId);
+      if (auth.role !== 'admin' && auth?.operativeId != null) dto.operativeId = Number(auth.operativeId);
     } catch {}
     const saved = await Patients.create(dto);
     createdId.value = saved?.id ?? null;

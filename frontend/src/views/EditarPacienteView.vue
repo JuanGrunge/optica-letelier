@@ -173,7 +173,7 @@ async function onSave(){
       dto.rut = formatearRut(dto.rut);
     }
     Object.keys(dto).forEach(k => { if (dto[k] === '') dto[k] = null; });
-    try { if (auth?.operativeId != null) dto.operativeId = Number(auth.operativeId); } catch {}
+    try { if (auth.role !== 'admin' && auth?.operativeId != null) dto.operativeId = Number(auth.operativeId); } catch {}
     await Patients.update(id.value, dto);
     msg.value = 'Paciente actualizado correctamente.';
     ui.showToast('Paciente actualizado');

@@ -101,17 +101,18 @@
             <svg viewBox="0 0 24 24" aria-hidden="true" class="c-header__nav_ic">
               <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <!-- Persona + engranaje dentro de círculo en la esquina -->
-                <path d="M8 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/>
-                <path d="M6 21v-2a4 4 0 0 1 4 -4h4"/>
-                <circle cx="19" cy="19" r="1"/>
-                <path d="M19 16v1"/>
-                <path d="M19 21v1"/>
-                <path d="M22 19h-1"/>
-                <path d="M17 19h-1"/>
-                <path d="M21.12 16.88l-.7.7"/>
-                <path d="M16.88 16.88l.7.7"/>
-                <path d="M21.12 21.12l-.7-.7"/>
-                <path d="M16.88 21.12l.7-.7"/>
+                <circle cx="12" cy="12" r="4.2"/>
+                <circle cx="12" cy="12" r="2"/>
+                <path d="M12 5v2"/>
+                <path d="M12 17v2"/>
+                <path d="M5 12h2"/>
+                <path d="M17 12h2"/>
+                <path d="M8.5 8.5l1.2 1.2"/>
+                <path d="M15.5 15.5l-1.2-1.2"/>
+                <path d="M15.5 8.5l-1.2 1.2"/>
+                <path d="M8.5 15.5l1.2-1.2"/>
+                <path d="M5 12a7 7 0 1 0 2-5.192"/>
+                <path d="M7 4v4h4"/>
               </g>
             </svg>
             <span class="nav-label" data-label="Operativos">Operativos</span>

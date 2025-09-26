@@ -8,7 +8,7 @@
         <label for="loginPass">Contraseña</label>
         <input class="c-login__input" id="loginPass" v-model.trim="password" autocomplete="current-password" type="password" placeholder="••••••••" required />
         <button type="submit" class="c-login__btn" :disabled="loading">{{ loading ? 'Ingresando…' : 'Entrar' }}</button>
-        <p id="loginMsg" class="login-msg" aria-live="polite">{{ error }}</p>
+        <p id="loginMsg" class="login-msg" aria-live="polite">{{ error || reasonMsg }}</p>
         <details class="hint">
           <summary>¿Primera vez?</summary>
           <small>
@@ -35,6 +35,13 @@ const username = ref('');
 const password = ref('');
 const loading = computed(() => auth.loading);
 const error = computed(() => auth.error);
+const reasonMsg = computed(() => {
+  const r = String(route.query?.reason || '');
+  if (r === 'expired') return 'Tu sesión expiró. Vuelve a iniciar sesión.';
+  if (r === 'auth') return 'Inicia sesión para continuar.';
+  if (r === 'perm') return 'Acceso no permitido. Inicia sesión con otro perfil.';
+  return '';
+});
 const isAuth = computed(() => auth.isAuthenticated);
 const ready = computed(() => auth.hydrated);
 

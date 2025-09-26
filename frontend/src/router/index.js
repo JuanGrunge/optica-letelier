@@ -49,7 +49,7 @@ router.beforeEach(async (to, from) => {
     if (!auth.isAuthenticated) {
       const redirect = encodeURIComponent(to.fullPath);
       auth.intentAfterLogin = to.fullPath; // compatibilidad
-      return { name: 'login', query: { redirect } };
+      return { name: 'login', query: { redirect, reason: 'auth' } };
     }
   }
 
