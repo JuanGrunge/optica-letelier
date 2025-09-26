@@ -14,7 +14,7 @@ public class Operative {
     @Size(max=120) private String comuna;
     private LocalDate fecha;
     @Size(max=360) private String observaciones;
-    private boolean activo=true;
+    private boolean activo=false;
 
     public Long getId(){return id;}
     public String getNombre(){return nombre;} public void setNombre(String v){this.nombre=v;}

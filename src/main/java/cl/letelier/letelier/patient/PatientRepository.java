@@ -25,4 +25,9 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     long countByActivoTrue();
 
     Page<Patient> findByActivoTrue(Pageable pageable);
+
+    @Query(value = "select p.* from patient p join patient_operative po on po.patient_id=p.id where po.operative_id = :op and p.activo=true order by p.id desc",
+           countQuery = "select count(*) from patient p join patient_operative po on po.patient_id=p.id where po.operative_id = :op and p.activo=true",
+           nativeQuery = true)
+    Page<Patient> findByOperative(@Param("op") Long operativeId, Pageable pageable);
 }

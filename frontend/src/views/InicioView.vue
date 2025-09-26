@@ -3,59 +3,42 @@
     <transition name="card-fade" mode="out-in">
       <div class="c-card" key="home-card">
         <h2>{{ greeting }}</h2>
-        <p class="subtle">¿A dónde quieres navegar?</p>
+        <p class="subtle">¿Dónde quieres navegar?</p>
 
-        <!-- Warning banner directly under greeting (not nested with cards) -->
-        <div v-if="!hasOperative" class="alert-banner alert-banner--warning" role="region" aria-label="Operativos disponibles">
+        <div v-if="!hasOperative && auth.role !== 'admin'" class="alert-banner alert-banner--warning" role="region" aria-label="Operativos disponibles">
           <div class="alert-banner__title">
-            Selecciona tu lugar de operativo para habilitar edición y registro.
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/><path d="M12 16h.01"/></g></svg>
+            <span>Selecciona tu lugar de operativo para habilitar edición y registro.</span>
             <RouterLink class="op-banner__link" :to="{ name: 'cuenta' }">Ir a Cuenta</RouterLink>
           </div>
         </div>
 
-        <!-- Selected operative banner (unchanged) -->
-        <div v-else class="op-banner op-banner--ok" role="region" aria-label="Operativo seleccionado">
+        <div v-else-if="auth.role !== 'admin'" class="op-banner op-banner--ok" role="region" aria-label="Operativo seleccionado">
           <div class="op-banner__title">
-            Tu lugar de operativo
+            <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3l5-5"/></g></svg>
+            <span>Tu lugar de operativo</span>
             <RouterLink class="op-banner__link" :to="{ name: 'cuenta' }">cambiar lugar de operativo</RouterLink>
           </div>
           <div class="op-banner__meta">
             <span class="op-banner__count">{{ selectedLabel || '-' }}</span>
             <template v-if="selectedAddr">
               <a v-if="isAndroid()" class="op-banner__addr" :href="linkForAndroid(selectedDireccion, selectedComuna)" aria-label="Abrir lugar operativo en mapas">
-                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;">
-                  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/>
-                    <circle cx="12" cy="11" r="2"/>
-                  </g>
-                </svg>
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
                 {{ selectedAddr }}
               </a>
               <a v-else-if="!isIOS()" class="op-banner__addr" :href="linkForDesktop(selectedDireccion, selectedComuna)" target="_blank" rel="noopener" aria-label="Abrir en Google Maps">
-                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;">
-                  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/>
-                    <circle cx="12" cy="11" r="2"/>
-                  </g>
-                </svg>
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
                 {{ selectedAddr }}
               </a>
               <a v-else class="op-banner__addr" :href="linkForIOS(selectedDireccion, selectedComuna)" aria-label="Abrir lugar operativo en mapas">
-                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;">
-                  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/>
-                    <circle cx="12" cy="11" r="2"/>
-                  </g>
-                </svg>
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" style="vertical-align:middle; margin-right:6px;"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-6-4.35-6-10a6 6 0 1 1 12 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2"/></g></svg>
                 {{ selectedAddr }}
               </a>
             </template>
           </div>
         </div>
 
-        <!-- Navigation cards grid: Account first -->
         <div class="app-actions">
-          <!-- Cuenta (first) -->
           <RouterLink class="app-action" :to="{ name: 'cuenta' }" role="button" aria-label="Ir a Cuenta">
             <div class="app-action__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
@@ -71,7 +54,31 @@
             </div>
           </RouterLink>
 
-          <!-- Archivo (second) -->
+          <RouterLink v-if="auth.hasPerm('manageOperatives')" class="app-action" :to="{ name: 'operatives' }" role="button" aria-label="Ir a Operativos">
+            <div class="app-action__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 7a4 4 0 1 0 8 0a4 4 0 1 0 -8 0"/>
+                  <path d="M6 21v-2a4 4 0 0 1 4 -4h4"/>
+                  <circle cx="19" cy="19" r="2.2"/>
+                  <circle cx="19" cy="19" r="1.1"/>
+                  <path d="M19 15.8v1.2"/>
+                  <path d="M19 21.9v1.2"/>
+                  <path d="M15.8 19h1.2"/>
+                  <path d="M21.9 19h1.2"/>
+                  <path d="M16.9 16.9l.9.9"/>
+                  <path d="M21.1 16.9l-.9.9"/>
+                  <path d="M16.9 21.1l.9-.9"/>
+                  <path d="M21.1 21.1l-.9-.9"/>
+                </g>
+              </svg>
+            </div>
+            <div class="app-action__content">
+              <div class="app-action__title">Operativos</div>
+              <div class="app-action__desc">Administra los operativos activos e inactivos.</div>
+            </div>
+          </RouterLink>
+
           <RouterLink class="app-action" :to="{ name: 'archivo' }" role="button" aria-label="Ir a Archivo">
             <div class="app-action__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
@@ -88,7 +95,6 @@
             </div>
           </RouterLink>
 
-          <!-- Nuevo Paciente (third) -->
           <RouterLink v-if="auth.hasPerm('createPatient')" class="app-action" :class="{ 'is-disabled': !hasOperative }" :title="!hasOperative ? 'Selecciona tu lugar de operativo' : null" :to="{ name: 'paciente-nuevo' }" role="button" aria-label="Ir a Nuevo Paciente">
             <div class="app-action__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true">
@@ -102,23 +108,29 @@
             </div>
             <div class="app-action__content">
               <div class="app-action__title">Nuevo Paciente</div>
-              <div class="app-action__desc">Registra un nuevo paciente y opcionalmente agrega su receta.</div>
+              <div class="app-action__desc">Registra un nuevo paciente.</div>
             </div>
           </RouterLink>
 
-          <!-- Operativos (admin only) -->
-          <RouterLink v-if="auth.hasPerm('manageOperatives')" class="app-action" :to="{ name: 'operatives' }" role="button" aria-label="Ir a Operativos">
+          <RouterLink v-if="auth.hasPerm('createPrescription')" class="app-action" :class="{ 'is-disabled': !hasOperative && auth.role!=='admin' }" :title="(!hasOperative && auth.role!=='admin') ? 'Selecciona tu lugar de operativo' : null" :to="{ name: 'receta-nueva-optico' }" role="button" aria-label="Ir a Nueva Receta">
             <div class="app-action__icon" aria-hidden="true">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"/>
-                  <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09c.7 0 1.31-.4 1.51-1a1.65 1.65 0 0 0-.33-1.82l-.06-.06A2 2 0 1 1 7.04 3.7l.06.06c.46.46 1.13.6 1.72.39.59-.21 1.03-.73 1.13-1.35V3a2 2 0 1 1 4 0v.09c.1.62.54 1.14 1.13 1.35.59.21 1.26.07 1.72-.39l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06c-.46.46-.6 1.13-.39 1.72.21.59.73 1.03 1.35 1.13H21a2 2 0 1 1 0 4h-.09c-.62.1-1.14.54-1.35 1.13z"/>
+                  <path d="M4 3h10"/>
+                  <path d="M4 3v14a3 3 0 0 0 3 3h6"/>
+                  <path d="M14 3l4 4h-2a2 2 0 0 1-2-2z"/>
+                  <path d="M8 8v8"/>
+                  <path d="M8 8h3a2 2 0 0 1 0 4H8"/>
+                  <path d="M11 12l4 4"/>
+                  <path d="M15 12l-4 4"/>
+                  <path d="M16 19h6"/>
+                  <path d="M19 16v6"/>
                 </g>
               </svg>
             </div>
             <div class="app-action__content">
-              <div class="app-action__title">Operativos</div>
-              <div class="app-action__desc">Administra los operativos activos e inactivos.</div>
+              <div class="app-action__title">Nueva Receta</div>
+              <div class="app-action__desc">Busca al paciente por RUT y registra su receta.</div>
             </div>
           </RouterLink>
         </div>
@@ -132,6 +144,7 @@ import { ref, computed, onMounted } from 'vue';
 import { useAuthStore } from '@/stores/auth.js';
 import * as Operatives from '@/services/operatives.js';
 import { isAndroid, isIOS, linkForAndroid, linkForDesktop, linkForIOS } from '@/composables/maps.js';
+
 const auth = useAuthStore();
 const user = computed(() => auth.user?.username || '');
 const greeting = computed(() => {
@@ -167,21 +180,14 @@ const selectedComuna = computed(() => auth.operativeComuna || '');
 .app-action__title{ font-size: 1.25rem; font-weight: 700; margin: 0 0 4px; }
 .app-action__desc{ color: var(--color-text-muted); }
 .app-action.is-disabled{ pointer-events: none; opacity: .6; filter: grayscale(25%); }
-
-/* Existing banners */
-.op-banner{ margin-top: var(--space-3); padding: var(--space-3); border:1px solid color-mix(in oklab, var(--alert-success-bg) 38%, var(--color-border)); border-radius: var(--radius-md); background: color-mix(in oklab, var(--alert-success-bg) 16%, var(--color-surface)); }
+.op-banner{ margin-top: var(--space-3); padding: var(--space-3); border:1px solid color-mix(in oklab, var(--alert-success-bg) 38%, transparent); border-radius: var(--radius-md); background: color-mix(in oklab, var(--alert-success-bg) 22%, transparent); color: var(--color-text); }
 .op-banner__title{ font-weight:600; }
+.alert-banner__title, .op-banner__title{ display:flex; align-items:center; gap:8px; }
 .op-banner__meta{ display:flex; gap: var(--space-3); align-items:center; flex-wrap: wrap; }
 .op-banner__count{ color: var(--color-text-muted); }
-.op-banner__link{ margin-left: 8px; color: var(--color-accent); text-decoration: underline; }
-.op-banner--ok{ border-color: color-mix(in oklab, var(--alert-success-bg) 38%, var(--color-border)); background: color-mix(in oklab, var(--alert-success-bg) 16%, var(--color-surface)); }
+.op-banner__link{ margin-left: 8px; color: inherit; text-decoration: underline; }
+.op-banner--ok{ border-color: color-mix(in oklab, var(--alert-success-bg) 38%, transparent); background: color-mix(in oklab, var(--alert-success-bg) 22%, transparent); color: var(--color-text); }
 .op-banner__addr{ display:inline-flex; align-items:center; color: var(--color-text-muted); }
 .op-banner__addr svg{ color: #E53935; }
-
-/* New alert banner styles (tokens provide contrast in light/dark) */
-.alert-banner{ border-radius: var(--radius-md); padding: var(--space-3); margin-top: var(--space-3); }
-.alert-banner--warning{ background: var(--alert-warning-bg); color: var(--alert-warning-fg); }
-.alert-banner--success{ background: var(--alert-success-bg); color: var(--alert-success-fg); }
-
-@media (min-width: 720px){ .app-actions{ grid-template-columns: 1fr 1fr; } }
+.op-banner__addr svg{ vertical-align: middle; transform: translateY(1px); }
 </style>

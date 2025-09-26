@@ -3,6 +3,7 @@ import InicioView from '@/views/InicioView.vue';
 import ArchivoView from '@/views/ArchivoView.vue';
 import IngresarView from '@/views/IngresarView.vue';
 import RecetaNuevaView from '@/views/RecetaNuevaView.vue';
+import RecetaNuevaOpticoView from '@/views/RecetaNuevaOpticoView.vue';
 import EditarPacienteView from '@/views/EditarPacienteView.vue';
 import CuentaView from '@/views/CuentaView.vue';
 import LoginView from '@/views/LoginView.vue';
@@ -21,6 +22,7 @@ const router = createRouter({
     { path: '/archivo', name: 'archivo', component: ArchivoView, meta: { requiresAuth: true, perms: ['viewArchive'] } },
     { path: '/archivo/:id', name: 'archivo-detalle', component: ArchivoView, meta: { requiresAuth: true, perms: ['viewArchive'] } },
     { path: '/ingresar', name: 'paciente-nuevo', component: IngresarView, meta: { requiresAuth: true, perms: ['createPatient'] } },
+    { path: '/recetas/nueva', name: 'receta-nueva-optico', component: RecetaNuevaOpticoView, meta: { requiresAuth: true, perms: ['createPrescription'] } },
     { path: '/operatives', name: 'operatives', component: OperativesView, meta: { requiresAuth: true, perms: ['manageOperatives'] } },
     { path: '/pacientes/:id/recetas/nueva', name: 'receta-nueva', component: RecetaNuevaView, meta: { requiresAuth: true, perms: ['createPrescription'] },
       beforeEnter: async (to) => {
@@ -38,7 +40,7 @@ const router = createRouter({
 router.beforeEach(async (to, from) => {
   const auth = useAuthStore();
 
-  // Esperar hidratación antes de decidir
+  // Esperar hidrataciÃƒÂ³n antes de decidir
   try {
     if (!auth.hydrated) await auth.me();
   } catch {}
@@ -66,12 +68,13 @@ router.beforeEach(async (to, from) => {
   // Gating: require operative selection for create/edit routes
   try {
     const needsOperative = (r) => !!r && (
-      r.name === 'paciente-nuevo' || r.name === 'paciente-editar' || r.name === 'receta-nueva'
+      r.name === 'paciente-nuevo' || r.name === 'receta-nueva'
     );
     if (needsOperative(to)){
       const a2 = useAuthStore2();
+      if (a2.role === 'admin') { return true; }
       if (!a2.hasOperative){
-        try { const ui = useUiStore(); ui.showToast('Selecciona tu lugar de operativo para habilitar edición y registro.'); } catch {}
+        try { const ui = useUiStore(); ui.showToast('Selecciona tu lugar de operativo para habilitar ediciÃ³n y registro.'); } catch {}
         return { name: 'cuenta' };
       }
     }

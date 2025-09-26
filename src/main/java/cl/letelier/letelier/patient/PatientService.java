@@ -7,6 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
+import org.springframework.data.domain.PageRequest;
 
 @Service @Transactional
 public class PatientService {
@@ -51,7 +52,7 @@ public class PatientService {
 
     private Operative newOperative(String nombre, String lugar, String direccion, LocalDate fecha){
         Operative o = new Operative();
-        o.setNombre(nombre); o.setLugar(lugar); o.setDireccion(direccion); o.setFecha(fecha); o.setActivo(true);
+        o.setNombre(nombre); o.setLugar(lugar); o.setDireccion(direccion); o.setFecha(fecha); o.setActivo(false);
         return o;
     }
     public PatientDTO update(Long id, PatientDTO dto){
@@ -66,5 +67,9 @@ public class PatientService {
 
     public long countActive(){
         return repo.countByActivoTrue();
+    }
+
+    public Page<PatientDTO> listByOperative(Long operativeId, int page, int size){
+        return repo.findByOperative(operativeId, PageRequest.of(page, size)).map(PatientMapper::toDTO);
     }
 }

@@ -23,4 +23,10 @@ public class OperativeService{
     public void softDelete(Long id){Operative o=repo.findById(id).orElseThrow(); o.setActivo(false); repo.save(o);} 
 
     public List<String> distinctPlaces(){ return repo.findDistinctPlaces(); }
+
+    public OperativeDTO setActive(Long id, boolean active){
+        Operative o = repo.findById(id).orElseThrow();
+        o.setActivo(active);
+        return OperativeMapper.toDTO(repo.save(o));
+    }
 }

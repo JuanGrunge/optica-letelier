@@ -105,8 +105,12 @@
       <p class="subtle">Rango: {{ formattedMin }} … {{ formattedMax }}<span v-if="suffix">{{ suffix }}</span></p>
     </div>
     <template #actions>
-      <button class="c-btn" type="button" @click="onDialogCancel">Cancelar</button>
-      <button class="c-btn c-btn--neo" type="button" @click="onDialogSave">Guardar</button>
+      <button class="c-btn c-btn--icon c-btn--back btn-inline" type="button" @click="onDialogCancel" aria-label="Cancelar" title="Cancelar">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9l6 6M15 9l-6 6"/></g></svg>
+      </button>
+      <button class="c-btn c-btn--icon c-btn--back btn-inline" type="button" @click="onDialogSave" aria-label="Aceptar" title="Aceptar">
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3l5-5"/></g></svg>
+      </button>
     </template>
   </Modal>
 </template>

@@ -41,9 +41,21 @@
         </table>
       </div>
       <div class="pagination" v-if="total!=null">
-        <button :disabled="page<=0 || loading" @click="loadPage(page-1)">Anterior</button>
+        <button class="c-btn c-btn--icon c-btn--back btn-inline" :disabled="page<=0 || loading" @click="loadPage(page-1)" aria-label="Anterior" title="Anterior">
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
+            <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 6l-6 6l6 6"/>
+            </g>
+          </svg>
+        </button>
         <span class="page-info">Página {{ page+1 }} · Total: {{ total }}</span>
-        <button :disabled="(page+1)>=pages || loading" @click="loadPage(page+1)">Siguiente</button>
+        <button class="c-btn c-btn--icon c-btn--back btn-inline" :disabled="(page+1)>=pages || loading" @click="loadPage(page+1)" aria-label="Siguiente" title="Siguiente">
+          <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18">
+            <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 6l6 6l-6 6"/>
+            </g>
+          </svg>
+        </button>
       </div>
       <p class="subtle">{{ message }}</p>
     </div>
@@ -215,6 +227,7 @@ import { RouterLink, useRoute, useRouter } from 'vue-router';
 import * as Patients from '@/services/patients.js';
 import * as Prescriptions from '@/services/prescriptions.js';
 import * as Invoices from '@/services/invoices.js';
+import * as Operatives from '@/services/operatives.js';
 import { useAuthStore } from '@/stores/auth.js';
 import { useUiStore } from '@/stores/ui.js';
 import { useArchiveStore } from '@/stores/archive.js';
@@ -332,6 +345,14 @@ async function onDeletePatient(){
   const ok = window.confirm('¿Eliminar paciente y todos sus registros relacionados?');
   if (!ok) return;
   try {
+    // Pre-check operativo activo
+    try {
+      if (auth?.operativeId != null){
+        const o = await Operatives.getById(auth.operativeId);
+        const isActive = !!(o?.active ?? o?.enabled ?? o?.activo);
+        if (!isActive){ ui.showToast('El lugar de operativo se encuentra inactivo. Selecciona otro.'); router.push({ name: 'cuenta' }); return; }
+      }
+    } catch {}
     await Patients.remove(detail.value.id);
     ui.showToast('Paciente eliminado');
     backToList();
@@ -343,6 +364,14 @@ async function onDeleteRx(id){
   const ok = window.confirm('¿Eliminar receta seleccionada?');
   if (!ok) return;
   try {
+    // Pre-check operativo activo
+    try {
+      if (auth?.operativeId != null){
+        const o = await Operatives.getById(auth.operativeId);
+        const isActive = !!(o?.active ?? o?.enabled ?? o?.activo);
+        if (!isActive){ ui.showToast('El lugar de operativo se encuentra inactivo. Selecciona otro.'); router.push({ name: 'cuenta' }); return; }
+      }
+    } catch {}
     await Prescriptions.remove(id);
     ui.showToast('Receta eliminada');
     if (detail.value?.id) {
@@ -357,6 +386,14 @@ async function onAnnulInvoice(id){
   const ok = window.confirm('¿Anular boleta seleccionada?');
   if (!ok) return;
   try {
+    // Pre-check operativo activo
+    try {
+      if (auth?.operativeId != null){
+        const o = await Operatives.getById(auth.operativeId);
+        const isActive = !!(o?.active ?? o?.enabled ?? o?.activo);
+        if (!isActive){ ui.showToast('El lugar de operativo se encuentra inactivo. Selecciona otro.'); router.push({ name: 'cuenta' }); return; }
+      }
+    } catch {}
     await Invoices.annul(id);
     ui.showToast('Boleta anulada');
     if (detail.value?.id) {
@@ -380,7 +417,7 @@ onMounted(async () => {
 .actions-right{ display:flex; justify-content:flex-end; gap: 8px; margin: 8px 0; }
 .inline-row{ display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap; }
 .btn-inline{ width:1.8em; height:1.8em; padding:0; line-height:1; display:inline-flex; align-items:center; justify-content:center; }
-.map-pin svg{ color: #E53935; }
+.map-pin svg{ color: #E53935; vertical-align: middle; transform: translateY(1px); }
 .actions-br{ position:absolute; right:8px; bottom:8px; display:flex; gap:6px; }
 .tile{ position: relative; }
 .btn-danger{ color: #fff; background: color-mix(in oklab, #C62828 85%, var(--color-surface)); border: 1px solid color-mix(in oklab, #C62828 60%, var(--color-border)); }
@@ -398,5 +435,7 @@ onMounted(async () => {
   .tile__eye{ flex: 1 1 0; }
 }
 </style>
+
+
 
 

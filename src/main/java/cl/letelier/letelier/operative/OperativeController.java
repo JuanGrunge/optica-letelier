@@ -10,7 +10,8 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/operatives")
 public class OperativeController{
     private final OperativeService service;
-    public OperativeController(OperativeService service){this.service=service;}
+    private final cl.letelier.letelier.patient.PatientService patientService;
+    public OperativeController(OperativeService service, cl.letelier.letelier.patient.PatientService patientService){this.service=service; this.patientService = patientService;}
 
     @GetMapping @PreAuthorize("hasAnyRole('ADMIN','OPTICO','RECEPTOR')")
     public PageResponse<OperativeDTO> list(@RequestParam(defaultValue="0") int page,
@@ -30,4 +31,24 @@ public class OperativeController{
     @GetMapping("/places")
     @PreAuthorize("hasAnyRole('ADMIN','OPTICO','RECEPTOR')")
     public java.util.List<String> places(){ return service.distinctPlaces(); }
+
+    @GetMapping("/{id}/patients")
+    @PreAuthorize("hasAnyRole('ADMIN','OPTICO','RECEPTOR')")
+    public cl.letelier.letelier.common.PageResponse<cl.letelier.letelier.patient.PatientDTO> patientsByOperative(
+            @PathVariable Long id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size){
+        var p = patientService.listByOperative(id, page, size);
+        return cl.letelier.letelier.common.PageResponse.of(p);
+    }
+
+    // Toggle active state (prototype-friendly, optional force flag ignored here)
+    public static class ActiveReq { public boolean active; public boolean isActive(){ return active; } }
+    @PatchMapping("/{id}/active")
+    @PreAuthorize("hasRole('ADMIN')")
+    public OperativeDTO setActive(@PathVariable Long id,
+                                  @RequestParam(name="force", defaultValue = "false") boolean force,
+                                  @RequestBody ActiveReq body){
+        return service.setActive(id, body != null && body.isActive());
+    }
 }

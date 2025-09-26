@@ -176,6 +176,8 @@
 import { reactive, ref, onMounted, computed } from 'vue';
 import { useRoute } from 'vue-router';
 import * as Prescriptions from '@/services/prescriptions.js';
+import * as Operatives from '@/services/operatives.js';
+import { useAuthStore } from '@/stores/auth.js';
 import * as Patients from '@/services/patients.js';
 import { useUiStore } from '@/stores/ui.js';
 import { normalizeRxPayload, RX_LIMITS } from '@/composables/rx.js';
@@ -185,6 +187,7 @@ import RxPicker from '@/components/RxPicker.vue';
 const route = useRoute();
 import { useRouter } from 'vue-router';
 const router = useRouter();
+const auth = useAuthStore();
 const pacienteId = computed(() => route.params.id);
 const paciente = ref(null);
 const pacienteNombre = computed(() => paciente.value ? `${paciente.value.nombres||''} ${paciente.value.apellidos||''}`.trim() : '');
@@ -260,6 +263,16 @@ const diagnosticSuggestions = computed(() => {
 async function onSaveRx(){
   try {
     savingRx.value = true; msg.value='';
+    // Admin no se restringe por selección de operativo; para otros perfiles se valida más arriba en router
+    if (auth.role !== 'admin'){
+      try {
+        if (auth?.operativeId != null){
+          const o = await Operatives.getById(auth.operativeId);
+          const isActive = !!(o?.active ?? o?.enabled ?? o?.activo);
+          if (!isActive){ ui.showToast('El lugar de operativo se encuentra inactivo. Selecciona otro.'); savingRx.value=false; router.push({ name: 'cuenta' }); return; }
+        }
+      } catch {}
+    }
     const normalized = normalizeRxPayload(rx);
     const dto = { pacienteId: Number(pacienteId.value), ...normalized, activo: true };
     await Prescriptions.create(dto);
